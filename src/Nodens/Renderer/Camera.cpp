@@ -1,6 +1,5 @@
-#include "ndpch.h"
 #include "Camera.h"
 
-namespace Nodens {
+#include "ndpch.h"
 
-}
+namespace Nodens {}

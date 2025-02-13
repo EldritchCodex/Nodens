@@ -1,10 +1,6 @@
 #pragma once
 
 namespace Nodens {
-	class ComputeShader
-	{
+class ComputeShader {};
 
-	};
-
-}
-
+}  // namespace Nodens

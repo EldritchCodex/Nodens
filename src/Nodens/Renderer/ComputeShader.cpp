@@ -1,8 +1,9 @@
-#include "ndpch.h"
 #include "ComputeShader.h"
 
+#include "ndpch.h"
+
 namespace Nodens {
-	/*
-	*/
+/*
+ */
 
 }

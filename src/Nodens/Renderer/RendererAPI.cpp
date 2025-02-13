@@ -1,6 +1,7 @@
-#include "ndpch.h"
 #include "RendererAPI.h"
 
+#include "ndpch.h"
+
 namespace Nodens {
-	RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL;
+RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL;
 }
