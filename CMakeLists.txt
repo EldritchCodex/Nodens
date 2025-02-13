@@ -96,6 +96,7 @@ target_precompile_headers(${PROJECT_NAME}
 
 # link opengl lib
 find_package(OpenGL REQUIRED)
+
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
     glad

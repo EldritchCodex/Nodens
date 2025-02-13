@@ -8,6 +8,3 @@
 [submodule "vendor/implot3d"]
 	path = vendor/implot3d
 	url = https://github.com/TheDreamCycle/implot3d-cmake.git
-[submodule "vendor/tracy"]
-	path = vendor/tracy
-	url = https://github.com/wolfpld/tracy.git
