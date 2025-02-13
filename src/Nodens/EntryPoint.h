@@ -1,4 +1,5 @@
 #pragma once
+
 #ifdef ND_PLATFORM_WINDOWS
 #pragma message("Including entry point")
 extern Nodens::Application* Nodens::CreateApplication();

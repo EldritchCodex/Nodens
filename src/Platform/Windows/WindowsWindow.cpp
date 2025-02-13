@@ -62,10 +62,11 @@ void WindowsWindow::Init(const WindowProps& props) {
   // This allows us to retrieve the WindowData from the GLFWwindow* by
   // using the function glfwGetWindowUserPointer(GLFWwindow*) and casting
   // it to WindowData.
+
   SetVSync(props.VSync);
 
   //----------------------------------------------------------------------------
-  // Set GLFW callbacks                |--> this is a lambda function
+  // Set GLFW callbacks            
   glfwSetWindowSizeCallback(
       m_Window, [](GLFWwindow* window, int width, int height) {
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);

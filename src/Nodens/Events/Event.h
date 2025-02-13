@@ -8,7 +8,7 @@
 
 namespace Nodens {
 // Events are currently blocking, meaning when an event occurs it
-// immediately gets dispatched and must be dealt with right then an there.
+// immediately gets dispatched and must be dealt with right then and there.
 // For the future, a better strategy might be to buffer events in an event
 // bus and process them during the "event" part of the update stage.
 
@@ -71,7 +71,7 @@ class EventDispatcher {
  public:
   EventDispatcher(Event& event) : m_Event(event) {}
 
-  // F will be resolved on compile time
+  // F will be resolved at compile time
   template <typename T, typename F>
   bool Dispatch(const F& func) {
     if (m_Event.GetEventType() == T::GetStaticType()) {

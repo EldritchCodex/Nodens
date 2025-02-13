@@ -15,6 +15,7 @@ Application* Application::s_Instance = nullptr;
 // for the rest of the program.
 
 Application::Application() {
+  ND_PROFILE_ZONE_SCOPED;
   ND_CORE_ASSERT(!s_Instance, "Application already exists!");
   s_Instance = this;
 
@@ -29,6 +30,7 @@ Application::Application() {
 }
 
 Application::Application(const WindowProps& props) {
+  ND_PROFILE_ZONE_SCOPED;
   ND_CORE_ASSERT(!s_Instance, "Application already exists!");
   s_Instance = this;
 

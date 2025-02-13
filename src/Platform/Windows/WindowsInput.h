@@ -3,6 +3,7 @@
 #include "Nodens/Input.h"
 
 namespace Nodens {
+
 class WindowsInput : public Input {
  protected:
   virtual bool IsKeyPressedImpl(int keycode) override;
@@ -10,5 +11,6 @@ class WindowsInput : public Input {
   virtual std::pair<float, float> GetMousePositionImpl() override;
   virtual float GetMouseXImpl() override;
   virtual float GetMouseYImpl() override;
+  
 };
 }  // namespace Nodens

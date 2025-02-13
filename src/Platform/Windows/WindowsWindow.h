@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Nodens/Renderer/GraphicsContext.h"
+#include "Nodens/GraphicsContext.h"
 #include "Nodens/Window.h"
 
 namespace Nodens {

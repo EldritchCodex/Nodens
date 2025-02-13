@@ -5,6 +5,7 @@
 #include "ndpch.h"
 
 namespace Nodens {
+  
 struct WindowProps {
   std::string Title;
   unsigned int Width;
@@ -20,8 +21,8 @@ struct WindowProps {
 class Window {
  public:
   using EventCallbackFn = std::function<void(Event&)>;
-  // Type alias. Identical to 'typedef std::function<void(Event&)>
-  // EventCallbackFn'
+  // Type alias. Identical to 
+  // 'typedef std::function<void(Event&)> EventCallbackFn'
 
   virtual ~Window() {}
 
