@@ -17,5 +17,5 @@ https://github.com/user-attachments/assets/3025146c-d49b-4a10-84ea-3dcfa74ac59e
 https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 
 # References
-- ["Game Engine" video series, from TheCherno](https://youtu.be/JxIZbV_XjAs?si=7pmsVuj70O3h6LJi).
+- ["Game Engine" video series, from TheCherno](https://youtube.com/playlist?list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT).
 
