@@ -10,6 +10,11 @@
 #include "Nodens/Profiling.h"
 #include "Nodens/imgui/ImGuiLayer.h"
 
+// VENDOR LIBRARIES
+#include "imgui/imgui.h"
+#include "implot/implot.h"
+#include "implot3d/implot3d.h"
+
 //------Renderer-------------------
 #include "Nodens/Renderer/Buffer.h"
 #include "Nodens/Renderer/DirectionalLight.h"

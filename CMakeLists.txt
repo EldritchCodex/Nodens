@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.8)
-project(nodens VERSION 0.2.0 LANGUAGES CXX)
+project(nodens VERSION 0.3.0 LANGUAGES CXX)
 
-# Options 
+# Options
 option(ND_ENABLE_PROFILING "Enable Tracy profiling" ON)
 
 # Definitions
@@ -109,3 +109,7 @@ target_link_libraries(${PROJECT_NAME}
 
 # Tell GLFW not to include OpenGL headers (already included by glad)
 add_definitions(-DGLFW_INCLUDE_NONE)
+
+# Examples =====================================================================
+set(EXAMPLES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/examples)
+add_subdirectory(${EXAMPLES_PATH})
