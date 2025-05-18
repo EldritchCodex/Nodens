@@ -18,7 +18,7 @@ Sinewave3dLayer::Sinewave3dLayer() : Layer("Sinewave3d") {
     ys3d[i] = std::sinf(float(10 * 3.1415f * xs3d[i]));
     zs3d[i] = std::cosf(10 * 3.1415f * xs3d[i]);
   }
-}  // TestLayer::TestLayer
+}  // Sinewave3dLayer::Sinewave3dLayer
 
 void Sinewave3dLayer::OnUpdate(Nodens::TimeStep previous_update_duration) {
   ND_PROFILE_ZONE_SCOPED;
@@ -31,13 +31,13 @@ void Sinewave3dLayer::OnUpdate(Nodens::TimeStep previous_update_duration) {
     ys3d[i] = std::sinf(10 * 3.1415f * xs3d[i]);
     zs3d[i] = std::cosf(10 * 3.1415f * xs3d[i]);
   }
-}  // TestLayer::OnUpdate
+}  // Sinewave3dLayer::OnUpdate
 
 void Sinewave3dLayer::OnImGuiRender(Nodens::TimeStep ts) {
   ND_PROFILE_ZONE_SCOPED;
   ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 
-  // Implot example
+  // Implot
   ImGui::Begin("ImPlot Example");
   if (ImPlot::BeginPlot("Sine Wave", ImVec2(-1, -1))) {
     ImPlot::SetupAxes("x", "y", ImPlotAxisFlags_AutoFit,
@@ -47,7 +47,7 @@ void Sinewave3dLayer::OnImGuiRender(Nodens::TimeStep ts) {
   }
   ImGui::End();
 
-  // Implot3D example
+  // Implot3D
   ImGui::Begin("ImPlot3D Example");
   if (ImPlot3D::BeginPlot("Sine Wave 3D", ImVec2(-1, -1))) {
     ImPlot3D::SetupAxes("x", "y", "z", ImPlot3DAxisFlags_AutoFit,
@@ -56,7 +56,7 @@ void Sinewave3dLayer::OnImGuiRender(Nodens::TimeStep ts) {
     ImPlot3D::EndPlot();
   }
   ImGui::End();
-}  // TestLayer::OnImGuiRender
+}  // Sinewave3dLayer::OnImGuiRender
 
 void Sinewave3dLayer::OnEvent(Nodens::Event& event) {
   ND_PROFILE_ZONE_SCOPED;
@@ -64,8 +64,8 @@ void Sinewave3dLayer::OnEvent(Nodens::Event& event) {
   Nodens::EventDispatcher dispatcher(event);
   dispatcher.Dispatch<Nodens::WindowResizeEvent>(
       ND_BIND_EVENT_FN(Sinewave3dLayer::OnWindowResizeEvent));
-}  // TestLayer::OnEvent
+}  // Sinewave3dLayer::OnEvent
 
 bool Sinewave3dLayer::OnWindowResizeEvent(Nodens::WindowResizeEvent& event) {
   return true;
-}  // TestLayer::OnMouseMovedEvent
+}  // Sinewave3dLayer::OnMouseMovedEvent
