@@ -5,7 +5,7 @@
 
 #include "nodens.h"  // Nodens Engine lib
 
-class NodensTestLayer : public Nodens::Layer {
+class Sinewave3dLayer : public Nodens::Layer {
  public:
   // Nodens Engine Functions
   // =========================================================================================
@@ -13,7 +13,7 @@ class NodensTestLayer : public Nodens::Layer {
    *   \brief The constructor is called only once when the layer is created in
    * the stack.
    */
-  NodensTestLayer();
+  Sinewave3dLayer();
 
   /**
    *   \brief This function is called once per frame.

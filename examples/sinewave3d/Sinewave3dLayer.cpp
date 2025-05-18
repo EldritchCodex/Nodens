@@ -1,8 +1,8 @@
-#include "NodensTestLayer.h"
+#include "Sinewave3dLayer.h"
 
 #include <cmath>
 
-NodensTestLayer::NodensTestLayer() : Layer("TestLayer") {
+Sinewave3dLayer::Sinewave3dLayer() : Layer("Sinewave3d") {
   ND_PROFILE_ZONE_SCOPED;
 
   // Set ImGui theme
@@ -20,7 +20,7 @@ NodensTestLayer::NodensTestLayer() : Layer("TestLayer") {
   }
 }  // TestLayer::TestLayer
 
-void NodensTestLayer::OnUpdate(Nodens::TimeStep previous_update_duration) {
+void Sinewave3dLayer::OnUpdate(Nodens::TimeStep previous_update_duration) {
   ND_PROFILE_ZONE_SCOPED;
 
   for (int i = 0; i < 1001; i++) {
@@ -33,7 +33,7 @@ void NodensTestLayer::OnUpdate(Nodens::TimeStep previous_update_duration) {
   }
 }  // TestLayer::OnUpdate
 
-void NodensTestLayer::OnImGuiRender(Nodens::TimeStep ts) {
+void Sinewave3dLayer::OnImGuiRender(Nodens::TimeStep ts) {
   ND_PROFILE_ZONE_SCOPED;
   ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 
@@ -58,14 +58,14 @@ void NodensTestLayer::OnImGuiRender(Nodens::TimeStep ts) {
   ImGui::End();
 }  // TestLayer::OnImGuiRender
 
-void NodensTestLayer::OnEvent(Nodens::Event& event) {
+void Sinewave3dLayer::OnEvent(Nodens::Event& event) {
   ND_PROFILE_ZONE_SCOPED;
 
   Nodens::EventDispatcher dispatcher(event);
   dispatcher.Dispatch<Nodens::WindowResizeEvent>(
-      ND_BIND_EVENT_FN(NodensTestLayer::OnWindowResizeEvent));
+      ND_BIND_EVENT_FN(Sinewave3dLayer::OnWindowResizeEvent));
 }  // TestLayer::OnEvent
 
-bool NodensTestLayer::OnWindowResizeEvent(Nodens::WindowResizeEvent& event) {
+bool Sinewave3dLayer::OnWindowResizeEvent(Nodens::WindowResizeEvent& event) {
   return true;
 }  // TestLayer::OnMouseMovedEvent
