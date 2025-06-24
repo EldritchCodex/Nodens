@@ -1,6 +1,8 @@
+![nodens-banner](https://github.com/user-attachments/assets/bcc5166f-747b-421d-9b79-191b8995b002)
+
 # Introduction
 
-**Nodens** is a simple framework for developing interactive applications on Windows. 
+**Nodens** is a C++ framework for interactive desktop applications (Windows only for now).
 
 It combines third-party libraries with a core custom framework to provide:
  - user input processing and window management (from [GLFW](https://www.glfw.org/));
@@ -18,4 +20,3 @@ https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 
 # References
 - ["Game Engine" video series, from TheCherno](https://youtube.com/playlist?list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT).
-
