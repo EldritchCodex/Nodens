@@ -1,4 +1,4 @@
-![nodens-banner2](https://github.com/user-attachments/assets/2d85dfb6-76d1-472e-adf8-fd9e4aaf6b3d)
+![nodens-banner3](https://github.com/user-attachments/assets/1a0e2932-e99d-4432-8e26-88a350368cd7)
 
 # Introduction
 
