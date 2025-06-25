@@ -6,7 +6,6 @@
 #include "Input.h"
 #include "Log.h"
 #include "Profiling.h"
-#include "Renderer/Renderer.h"
 #include "ndpch.h"
 
 namespace Nodens {
