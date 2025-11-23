@@ -6,6 +6,7 @@
 #include "Nodens/Events/Event.h"
 #include "Nodens/LayerStack.h"
 #include "Nodens/imgui/ImGuiLayer.h"
+#include "Nodens/JobSystem.h"
 #include "Window.h"
 
 namespace Nodens {
@@ -24,6 +25,8 @@ class Application {
 
   inline Window& GetWindow() { return *m_Window; }
 
+  inline JobSystem& GetJobSystem() { return *m_JobSystem; }
+
   static inline Application& Get() { return *s_Instance; }
 
  private:
@@ -34,6 +37,9 @@ class Application {
   std::unique_ptr<Window> m_Window;
   ImGuiLayer* m_ImGuiLayer;
   LayerStack m_LayerStack;
+  
+  std::unique_ptr<JobSystem> m_JobSystem;
+
   float m_LastFrameTime = 0;
 
  private:

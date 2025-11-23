@@ -1,12 +1,15 @@
 ﻿cmake_minimum_required(VERSION 3.8)
 project(nodens VERSION 0.3.0 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Options
 option(ND_ENABLE_PROFILING "Enable Tracy profiling" ON)
 
-# Definitions
+# Definitions \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-# Vendor dependencies ========================================
+# Vendor dependencies
 set(NODENS_VENDOR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 
 # GLAD
@@ -54,7 +57,7 @@ set(GLM_PATH ${NODENS_VENDOR_PATH}/glm)
 file(GLOB_RECURSE GLM_HEADER_FILES ${GLM_PATH}/glm/*.hpp)
 file(GLOB_RECURSE GLM_INLINE_FILES ${GLM_PATH}/glm/*.inl)
 
-# Nodens Library ============================================
+# Nodens Library \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 set(NODENS_SRC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(NODENS_INC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE NODENS_SOURCE_FILES ${NODENS_SRC_PATH}/*.cpp)
@@ -110,6 +113,6 @@ target_link_libraries(${PROJECT_NAME}
 # Tell GLFW not to include OpenGL headers (already included by glad)
 add_definitions(-DGLFW_INCLUDE_NONE)
 
-# Examples =====================================================================
+# Examples \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 set(EXAMPLES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 add_subdirectory(${EXAMPLES_PATH})

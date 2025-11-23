@@ -9,6 +9,7 @@ It combines third-party libraries with a core custom framework to provide:
  - an immediate mode GUI (from [ImGui](https://github.com/ocornut/imgui));
  - 2D/3D graph plotting (from [ImPlot](https://github.com/epezent/implot) and [ImPlot3D](https://github.com/brenocq/implot3d));
  - frame profiling (from [Tracy](https://github.com/wolfpld/tracy) 0.11.1).
+ - multithreaded job system (custom thread pool using `std::future` for background tasks);
 
 # Applications Showcase
 Here are some applications created using the Nodens framework.

@@ -18,6 +18,8 @@ Application::Application() {
   ND_CORE_ASSERT(!s_Instance, "Application already exists!");
   s_Instance = this;
 
+  m_JobSystem = std::make_unique<JobSystem>();
+
   m_Window = std::unique_ptr<Window>(Window::Create());
   m_Window->SetEventCallback(ND_BIND_EVENT_FN(Application::OnEvent));
   // 1. Events come from the window.
@@ -29,9 +31,11 @@ Application::Application() {
 }
 
 Application::Application(const WindowProps& props) {
-  ND_PROFILE_ZONE_SCOPED;
   ND_CORE_ASSERT(!s_Instance, "Application already exists!");
+  ND_PROFILE_ZONE_SCOPED;
+
   s_Instance = this;
+  m_JobSystem = std::make_unique<JobSystem>();
 
   m_Window = std::unique_ptr<Window>(Window::Create(props));
   m_Window->SetEventCallback(ND_BIND_EVENT_FN(Application::OnEvent));
