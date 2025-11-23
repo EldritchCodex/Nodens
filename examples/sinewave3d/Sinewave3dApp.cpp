@@ -8,6 +8,8 @@
 // Main application layer
 class Sinewave3dApp : public Nodens::Application {
  public:
+  Sinewave3dApp() { PushLayer(new Sinewave3dLayer()); }
+
   Sinewave3dApp(const Nodens::WindowProps props) : Application(props) {
     PushLayer(new Sinewave3dLayer());
   }
@@ -15,7 +17,7 @@ class Sinewave3dApp : public Nodens::Application {
   ~Sinewave3dApp() {}
 };
 
-Nodens::Application *Nodens::CreateApplication() {
+Nodens::Application* Nodens::CreateApplication() {
   return new Sinewave3dApp(
-      Nodens::WindowProps("Nodens Example - Sinewave3d", 800, 600, false));
+      Nodens::WindowProps("[NodensApp Example] Sinewave3d", 800, 600, false));
 }

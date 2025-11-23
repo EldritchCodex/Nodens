@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.8)
 project(sinewave3d LANGUAGES CXX)
 
-# Set options
+# Set Nodens options
 set(ND_ENABLE_PROFILING ON)
 
 # Definitions ====================================
