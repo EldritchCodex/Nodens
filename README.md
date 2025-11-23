@@ -18,4 +18,7 @@ https://github.com/user-attachments/assets/3025146c-d49b-4a10-84ea-3dcfa74ac59e
 https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 
 # References
-- ["Game Engine" video series, from TheCherno](https://youtube.com/playlist?list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT).
+
+[1] Gregory, J. (2019) Game engine architecture. Third edition. Boca Raton London New York: CRC Press, Taylor & Francis Group (An A.K. Peters book).
+
+[2] The Cherno (no date) Game Engine Series, YouTube. Available at: http://www.youtube.com/playlist?list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT.
