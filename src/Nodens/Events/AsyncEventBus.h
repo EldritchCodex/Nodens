@@ -2,15 +2,17 @@
 
 #include "Nodens/Events/Event.h"
 #include <functional>
+#include <memory>
+#include <mutex>
+#include <typeindex>
 #include <unordered_map>
 #include <vector>
-#include <typeindex>
-#include <mutex>
-#include <memory>
 
-namespace Nodens {
+namespace Nodens
+{
 
-class AsyncEventBus {
+class AsyncEventBus
+{
 public:
     // Define a generic handler type
     using EventHandler = std::function<void(Event&)>;
@@ -22,11 +24,12 @@ public:
     // 1. SUBSCRIBE
     // Systems call this to listen for specific events (e.g., "CollisionEvent")
     // ==================================================================
-    template<typename T>
-    void Subscribe(const std::function<void(T&)>& handler) {
+    template <typename T> void Subscribe(const std::function<void(T&)>& handler)
+    {
         // We wrap the specific handler (T&) into a generic one (Event&)
         // This allows us to store all handlers in a single generic list.
-        auto wrapper = [handler](Event& e) {
+        auto wrapper = [handler](Event& e)
+        {
             // Safe cast because we map this wrapper to typeid(T) below
             handler(static_cast<T&>(e));
         };
@@ -39,8 +42,8 @@ public:
     // Systems call this to broadcast an event. It returns IMMEDIATELY.
     // The actual processing happens later on a background thread.
     // ==================================================================
-    template<typename T>
-    void Publish(T event) {
+    template <typename T> void Publish(T event)
+    {
         // CRITICAL: We must COPY the event into a smart pointer.
         // The original 'event' variable on the stack will be destroyed
         // immediately after this function returns, but the thread needs
@@ -64,4 +67,4 @@ private:
     std::mutex m_Mutex;
 };
 
-}
+} // namespace Nodens

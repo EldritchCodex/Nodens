@@ -2,8 +2,9 @@
 
 #include "ndpch.h"
 
-namespace Nodens {
+namespace Nodens
+{
 Layer::Layer(const std::string& name) : m_DebugName(name) {}
 
 Layer::~Layer() {}
-}  // namespace Nodens
+} // namespace Nodens

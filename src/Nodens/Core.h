@@ -12,7 +12,8 @@
 
 #define ND_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-namespace Nodens {
+namespace Nodens
+{
 /// @brief Generates a bitfield mask at compile-time.
 /// @details It uses 'consteval' to ensure zero runtime cost, enforcing
 /// execution during compilation.
@@ -20,28 +21,30 @@ namespace Nodens {
 /// large flags).
 /// @param x The bit position to shift.
 /// @return The shifted bit mask.
-template <std::integral T = int>
-consteval T Bit(T x) {
-  return T(1) << x;
+template <std::integral T = int> consteval T Bit(T x)
+{
+    return T(1) << x;
 }
 
-}  // namespace Nodens
+} // namespace Nodens
 
 #ifdef ND_ENABLE_ASSERTS
-#define ND_ASSERT(x, ...)                             \
-  {                                                   \
-    if (!(x)) {                                       \
-      ND_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-      __debugbreak();                                 \
-    }                                                 \
-  }
-#define ND_CORE_ASSERT(x, ...)                             \
-  {                                                        \
-    if (!(x)) {                                            \
-      ND_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-      __debugbreak();                                      \
-    }                                                      \
-  }
+#define ND_ASSERT(x, ...)                                                                                              \
+    {                                                                                                                  \
+        if (!(x))                                                                                                      \
+        {                                                                                                              \
+            ND_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                            \
+            __debugbreak();                                                                                            \
+        }                                                                                                              \
+    }
+#define ND_CORE_ASSERT(x, ...)                                                                                         \
+    {                                                                                                                  \
+        if (!(x))                                                                                                      \
+        {                                                                                                              \
+            ND_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                       \
+            __debugbreak();                                                                                            \
+        }                                                                                                              \
+    }
 
 #else
 #define ND_ASSERT(x, ...)

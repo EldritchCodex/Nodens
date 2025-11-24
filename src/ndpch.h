@@ -11,4 +11,4 @@
 
 #ifdef ND_PLATFORM_WINDOWS
 #include <Windows.h>
-#endif  // ND_PLATFORM_WINDOWS
+#endif // ND_PLATFORM_WINDOWS

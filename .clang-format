@@ -1,0 +1,34 @@
+---
+Language:        Cpp
+Standard:        c++20
+BasedOnStyle:    LLVM
+
+# Indentation
+IndentWidth:     4
+TabWidth:        4
+UseTab:          Never
+AccessModifierOffset: -4
+
+# Alignment
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignOperands:   true
+AlignTrailingComments: true
+
+# Brace Wrapping
+BreakBeforeBraces: Allman
+
+# C++20 Specifics
+SpaceAfterTemplateKeyword: true
+IndentRequiresClause: true
+
+# Pointer Alignment
+PointerAlignment: Left
+
+# Line Breaking
+ColumnLimit:     120
+BinPackArguments: false
+BinPackParameters: false
+AllowShortFunctionsOnASingleLine: Inline
+...

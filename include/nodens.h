@@ -18,4 +18,4 @@
 #ifdef MAIN_APPLICATION_FILE
 #pragma message("MAIN_APPLICATION_FILE defined")
 #include "Nodens/EntryPoint.h"
-#endif  // MAIN_APPLICATION_FILE
+#endif // MAIN_APPLICATION_FILE
