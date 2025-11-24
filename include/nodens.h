@@ -10,10 +10,10 @@
 #include "Nodens/Profiling.h"
 #include "Nodens/imgui/ImGuiLayer.h"
 
-// VENDOR LIBRARIES
-#include "imgui/imgui.h"
-#include "implot/implot.h"
-#include "implot3d/implot3d.h"
+// Vendor libraries that users will interact directly with
+#include "imgui.h"
+#include "implot.h"
+#include "implot3d.h"
 
 #ifdef MAIN_APPLICATION_FILE
 #pragma message("MAIN_APPLICATION_FILE defined")

@@ -2,7 +2,7 @@
 
 // Check if Profiling is enabled (Defined in CMakeLists.txt)
 #ifdef TRACY_ENABLE
-    #include <Tracy.hpp>
+    #include <tracy/Tracy.hpp>
     #include <cstring>
 
     // 1. Standard Scope

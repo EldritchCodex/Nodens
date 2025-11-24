@@ -1,13 +1,13 @@
 [submodule "vendor/imgui"]
 	path = vendor/imgui
-	url = https://github.com/TheDreamCycle/imgui-cmake.git
+	url = https://github.com/ocornut/imgui.git
 	branch = docking
 [submodule "vendor/implot"]
 	path = vendor/implot
-	url = https://github.com/TheDreamCycle/implot-cmake.git
+	url = https://github.com/epezent/implot.git
 [submodule "vendor/implot3d"]
 	path = vendor/implot3d
-	url = https://github.com/TheDreamCycle/implot3d-cmake.git
+	url = https://github.com/brenocq/implot3d.git
 [submodule "vendor/tracy"]
 	path = vendor/tracy
 	url = https://github.com/wolfpld/tracy.git
