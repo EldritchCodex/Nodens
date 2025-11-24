@@ -2,7 +2,7 @@
 
 # Introduction
 
-**Nodens** is a C++ framework for interactive desktop applications (Windows only for now).
+**Nodens** is a basic C++20 framework for developing interactive desktop applications with a GUI.
 
 It combines third-party libraries with a core custom framework to provide:
  - user input processing and window management (from [GLFW](https://www.glfw.org/));
