@@ -68,10 +68,9 @@ private:
     void WorkerLoop(std::stop_token stoken);
 
 private:
-    /// @brief Pool of worker threads.
-    /// @note std::jthread (C++20) automatically joins on destruction.
-    std::vector<std::jthread> m_Threads;
-
+    /* Resources must be declared BEFORE the threads that use them,
+     * so they are destroyed AFTER the threads join.
+     */
     /// @brief The thread-safe queue of tasks pending execution.
     std::queue<std::function<void()>> m_Tasks;
 
@@ -81,6 +80,10 @@ private:
     /// @brief Condition variable to put threads to sleep when there is no work.
     /// @note std::condition_variable_any is required to work with std::stop_token.
     std::condition_variable_any m_Condition;
+
+    /// @brief Pool of worker threads.
+    /// @note std::jthread (C++20) automatically joins on destruction.
+    std::vector<std::jthread> m_Threads;
 };
 
 } // namespace Nodens

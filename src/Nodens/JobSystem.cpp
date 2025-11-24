@@ -58,48 +58,40 @@ JobSystem::~JobSystem()
 
 void JobSystem::WorkerLoop(std::stop_token stoken)
 {
-    while (true)
+    while (!stoken.stop_requested())
     {
         std::function<void()> task;
         {
             std::unique_lock<std::mutex> lock(m_QueueMutex);
 
-            // C++20 WAIT LOGIC:
-            // The wait() function here does three things atomically:
-            // 1. Unlocks the mutex.
-            // 2. Checks the predicate: "Are there tasks?" OR "Is stop requested?"
-            // 3. If neither, it sleeps.
-            //
-            // If stop is requested, 'wait' returns false immediately.
-            bool active = m_Condition.wait(lock, stoken, [this] { return !m_Tasks.empty(); });
+            // Wait until there is a task or we are stopped.
+            // condition_variable_any::wait accepts a stop_token.
+            // It handles the lock/unlock/relock dance automatically.
+            bool tasksAvailable = m_Condition.wait(lock, stoken, [this] { return !m_Tasks.empty(); });
 
-            // If wait returned false, it means a stop was requested and the predicate
-            // failed. However, we must be careful: we might have been stopped BUT
-            // there are still tasks left. Ideally, we might want to finish the queue.
-            // For now, we exit immediately if stopped and empty.
-            if (!active && m_Tasks.empty())
+            // If we woke up but there are no tasks (meaning stop was requested
+            // and the predicate returned false), we should exit.
+            // Note: 'tasksAvailable' is the result of the predicate.
+            if (!tasksAvailable && stoken.stop_requested())
             {
                 return;
             }
 
-            // If we are here, we have the lock and there is a task (or we are
-            // stopping but clearing the queue). Double check queue isn't empty to be
-            // safe.
+            // Double check queue size to be safe
             if (m_Tasks.empty())
             {
-                if (stoken.stop_requested())
-                    return;
-                continue; // Spurious wake-up protection
+                continue;
             }
 
             task = std::move(m_Tasks.front());
             m_Tasks.pop();
-        } // Lock releases here
+        }
 
-        // Execute the task outside the lock so other threads aren't blocked.
+        // Execute outside the lock
         {
             ND_PROFILE_ZONE_SCOPED;
-            task();
+            if (task)
+                task();
         }
     }
 }
