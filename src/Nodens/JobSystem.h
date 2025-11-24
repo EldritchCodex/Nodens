@@ -68,9 +68,6 @@ private:
     void WorkerLoop(std::stop_token stoken);
 
 private:
-    /* Resources must be declared BEFORE the threads that use them,
-     * so they are destroyed AFTER the threads join.
-     */
     /// @brief The thread-safe queue of tasks pending execution.
     std::queue<std::function<void()>> m_Tasks;
 
@@ -83,6 +80,8 @@ private:
 
     /// @brief Pool of worker threads.
     /// @note std::jthread (C++20) automatically joins on destruction.
+    /// @warning Thread objects need to be declared after the resources they use to ensure
+    /// proper destruction order.
     std::vector<std::jthread> m_Threads;
 };
 
