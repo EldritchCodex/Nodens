@@ -52,6 +52,7 @@ endif()
 add_subdirectory(examples)
 
 
+
 # Doxygen documentation ////////////////////////////////////////////////////////
 # Check if Doxygen is installed
 find_package(Doxygen)
@@ -62,11 +63,12 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
     # Define the Doxygen target
-    add_custom_target(nodens-docs ALL
+    add_custom_target(nodens-docs
         COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen"
-        VERBATIM)
+        VERBATIM
+    )
 
     # Auto-configure the Doxyfile
     configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
