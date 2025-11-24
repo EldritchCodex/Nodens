@@ -1,10 +1,31 @@
 #pragma once
 
+#include <concepts>
 #include <memory>
 
-#ifdef ND_DEBUG
-#define ND_ENABLE_ASSERTS
-#endif // ND_DEBUG
+// Platform detection logic remains the same...
+#ifdef _WIN32
+#define ND_PLATFORM_WINDOWS
+#else
+#error "Unsupported platform!"
+#endif
+
+#define ND_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+namespace Nodens {
+/// @brief Generates a bitfield mask at compile-time.
+/// @details It uses 'consteval' to ensure zero runtime cost, enforcing
+/// execution during compilation.
+/// @tparam T The integer type of the result (defaults to int, use uint64_t for
+/// large flags).
+/// @param x The bit position to shift.
+/// @return The shifted bit mask.
+template <std::integral T = int>
+consteval T Bit(T x) {
+  return T(1) << x;
+}
+
+}  // namespace Nodens
 
 #ifdef ND_ENABLE_ASSERTS
 #define ND_ASSERT(x, ...)                             \
@@ -25,19 +46,4 @@
 #else
 #define ND_ASSERT(x, ...)
 #define ND_CORE_ASSERT(x, ...)
-
-#endif  // ND_ENABLE_ASSERTS
-
-#define BIT(x) (1 << x)  // Shift 1 to the left by x places (ex 1 << 2 = 100)
-#define ND_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
-
-// std::bind(Application::OnEvent*, Application*, std::placeholders::_1)
-
-namespace Nodens {
-template <typename T>
-using Scope = std::unique_ptr<T>;
-
-template <typename T>
-using Ref = std::shared_ptr<T>;
-
-}  // namespace Nodens
+#endif

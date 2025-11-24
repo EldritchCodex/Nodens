@@ -1,83 +1,108 @@
 #pragma once
 
+#include "Nodens/Events/Event.h"
 #include <sstream>
 
-#include "Event.h"
-
 namespace Nodens {
-class WindowResizeEvent : public Event {
- public:
-  WindowResizeEvent(unsigned int width, unsigned int height)
-      : m_Width(width), m_Height(height) {}
 
-  std::string ToString() const override {
-    std::stringstream ss;
-    ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
-    return ss.str();
-  }
+    // -------------------------------------------------------------------------
+    // WINDOW RESIZE
+    // -------------------------------------------------------------------------
 
-  inline unsigned int GetWidth() { return m_Width; }
-  inline unsigned int GetHeight() { return m_Height; }
+    /// @brief Event triggered when the native window is resized.
+    /// @details Contains the new width and height of the window.
+    class WindowResizeEvent : public EventImpl<WindowResizeEvent, EventType::WindowResize>
+    {
+    public:
+        /// @brief The debug name of this event.
+        static constexpr char Name[] = "WindowResize";
 
-  EVENT_CLASS_TYPE(WindowResize)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
- private:
-  unsigned int m_Width, m_Height;
-};
+        /// @brief The categories this event belongs to.
+        static constexpr int Category = EventCategoryApplication;
 
-class WindowMovedEvent : public Event {
- public:
-  WindowMovedEvent() {}
+        /// @brief Constructs a resize event.
+        /// @param width The new width of the window.
+        /// @param height The new height of the window.
+        WindowResizeEvent(unsigned int width, unsigned int height)
+            : m_Width(width), m_Height(height) {}
 
-  EVENT_CLASS_TYPE(WindowMoved)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
+        /// @brief Gets the new window width.
+        inline unsigned int GetWidth() const { return m_Width; }
 
-class WindowCloseEvent : public Event {
- public:
-  WindowCloseEvent() {}
+        /// @brief Gets the new window height.
+        inline unsigned int GetHeight() const { return m_Height; }
 
-  EVENT_CLASS_TYPE(WindowClose)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
+        /// @brief Debug string representation.
+        std::string ToString() const override
+        {
+            std::stringstream ss;
+            ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
+            return ss.str();
+        }
 
-class WindowFocusEvent : public Event {
- public:
-  WindowFocusEvent() {}
+    private:
+        unsigned int m_Width, m_Height;
+    };
 
-  EVENT_CLASS_TYPE(WindowFocus)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
+    // -------------------------------------------------------------------------
+    // WINDOW CLOSE
+    // -------------------------------------------------------------------------
 
-class WindowLostFocusEvent : public Event {
- public:
-  WindowLostFocusEvent() {}
+    /// @brief Event triggered when the user attempts to close the window.
+    /// @details This is usually dispatched before the application actually shuts down,
+    /// allowing systems to save state or cancel the close.
+    class WindowCloseEvent : public EventImpl<WindowCloseEvent, EventType::WindowClose>
+    {
+    public:
+        static constexpr char Name[] = "WindowClose";
+        static constexpr int Category = EventCategoryApplication;
 
-  EVENT_CLASS_TYPE(WindowLostFocus)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
+        WindowCloseEvent() = default;
+    };
 
-class AppUpdateEvent : public Event {
- public:
-  AppUpdateEvent() {}
+    // -------------------------------------------------------------------------
+    // APP TICK
+    // -------------------------------------------------------------------------
 
-  EVENT_CLASS_TYPE(AppUpdate)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
+    /// @brief Event triggered every fixed simulation step.
+    /// @details Useful for physics or fixed-timestep logic logic.
+    class AppTickEvent : public EventImpl<AppTickEvent, EventType::AppTick>
+    {
+    public:
+        static constexpr char Name[] = "AppTick";
+        static constexpr int Category = EventCategoryApplication;
 
-class AppTickEvent : public Event {
- public:
-  AppTickEvent() {}
+        AppTickEvent() = default;
+    };
 
-  EVENT_CLASS_TYPE(AppTick)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
+    // -------------------------------------------------------------------------
+    // APP UPDATE
+    // -------------------------------------------------------------------------
 
-class AppRenderEvent : public Event {
- public:
-  AppRenderEvent() {}
+    /// @brief Event triggered once per frame update.
+    /// @details Use this for variable time-step logic (Input polling, Camera movement).
+    class AppUpdateEvent : public EventImpl<AppUpdateEvent, EventType::AppUpdate>
+    {
+    public:
+        static constexpr char Name[] = "AppUpdate";
+        static constexpr int Category = EventCategoryApplication;
 
-  EVENT_CLASS_TYPE(AppRender)
-  EVENT_CLASS_CATEGORY(EventCategoryApplication)
-};
-}  // namespace Nodens
+        AppUpdateEvent() = default;
+    };
+
+    // -------------------------------------------------------------------------
+    // APP RENDER
+    // -------------------------------------------------------------------------
+
+    /// @brief Event triggered when the application is ready to render.
+    /// @details This is often used to synchronize ImGui rendering or custom draw passes.
+    class AppRenderEvent : public EventImpl<AppRenderEvent, EventType::AppRender>
+    {
+    public:
+        static constexpr char Name[] = "AppRender";
+        static constexpr int Category = EventCategoryApplication;
+
+        AppRenderEvent() = default;
+    };
+
+}
