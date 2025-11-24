@@ -6,9 +6,9 @@
 
 It combines third-party libraries with a core custom framework to provide:
  - user input processing and window management (from [GLFW](https://www.glfw.org/));
- - an immediate mode GUI (from [ImGui](https://github.com/ocornut/imgui));
- - 2D/3D graph plotting (from [ImPlot](https://github.com/epezent/implot) and [ImPlot3D](https://github.com/brenocq/implot3d));
- - frame profiling (from [Tracy](https://github.com/wolfpld/tracy) 0.11.1).
+ - an immediate mode GUI (from [ImGui](https://github.com/ocornut/imgui) docking);
+ - 2D/3D graph plotting (from [ImPlot](https://github.com/epezent/implot) main and [ImPlot3D](https://github.com/brenocq/implot3d) main);
+ - frame profiling (from [Tracy](https://github.com/wolfpld/tracy) v0.13.0).
  - multithreaded job system (custom thread pool using `std::future` for background tasks);
  - asynchronous event bus (thread-safe pub/sub system using the `JobSystem`);
 
