@@ -9,17 +9,33 @@
 #include <sstream>
 #include <vector>
 
+/// @brief Layer for the AsyncEvent example.
+/// This layer demonstrates how to use the Nodens::AsyncEventBus to dispatch events that are processed in background
+/// threads.
 class AsyncEventLayer : public Nodens::Layer
 {
 public:
+    /// @brief Constructs the AsyncEventLayer.
     AsyncEventLayer();
+    
+    /// @brief Destroys the AsyncEventLayer.
     virtual ~AsyncEventLayer() = default;
 
+    /// @brief Called when the layer is attached to the layer stack.
     virtual void OnAttach() override;
+
+    /// @brief Called every frame to update the layer.
+    /// @param ts The time since the last frame.
     virtual void OnUpdate(Nodens::TimeStep ts) override;
+
+    /// @brief Called every frame to render the ImGui UI.
+    /// @param ts The time since the last frame.
     virtual void OnImGuiRender(Nodens::TimeStep ts) override;
 
 private:
+    /// @brief Adds a scan result to the data vectors.
+    /// This function is thread-safe.
+    /// @param e The event containing the scan results.
     void AddResult(const PlanetaryScanEvent& e);
 
 private:
