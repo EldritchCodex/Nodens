@@ -24,8 +24,8 @@ JobSystem::JobSystem()
         m_Threads.emplace_back(
             [this, i](std::stop_token stoken)
             {
-                // Profiler hook: Give the thread a name so we can see it when using
-                // Tracy.
+                // Profiler hook: Give the thread a name so we can see it when
+                // using Tracy.
                 std::string name = "Worker " + std::to_string(i);
                 ND_PROFILE_SET_THREAD_NAME(name.c_str());
 
@@ -58,36 +58,40 @@ JobSystem::~JobSystem()
 
 void JobSystem::WorkerLoop(std::stop_token stoken)
 {
+    // The main loop for each worker thread. It continues as long as no stop is requested.
     while (!stoken.stop_requested())
     {
+        // This will hold the task to be executed.
         std::move_only_function<void()> task;
         {
+            // Lock the queue to safely access it.
             std::unique_lock<std::mutex> lock(m_QueueMutex);
 
-            // Wait until there is a task or we are stopped.
-            // condition_variable_any::wait accepts a stop_token.
-            // It handles the lock/unlock/relock dance automatically.
+            // Wait on the condition variable. The thread will sleep until a new task is added
+            // or a stop is requested. The lambda is a predicate that checks if the queue is not empty.
+            // The wait will only proceed if the predicate is true or if a stop is requested.
             bool tasksAvailable = m_Condition.wait(lock, stoken, [this] { return !m_Tasks.empty(); });
 
-            // If we woke up but there are no tasks (meaning stop was requested
-            // and the predicate returned false), we should exit.
-            // Note: 'tasksAvailable' is the result of the predicate.
+            // If wait returns because a stop was requested and there are no tasks, exit the loop.
             if (!tasksAvailable && stoken.stop_requested())
             {
                 return;
             }
 
-            // Double check queue size to be safe
+            // Although the predicate should protect against this, a double check ensures thread safety
+            // in case of spurious wakeups.
             if (m_Tasks.empty())
             {
                 continue;
             }
 
+            // A task is available, so move it from the queue to the local 'task' variable.
             task = std::move(m_Tasks.front());
             m_Tasks.pop();
         }
 
-        // Execute outside the lock
+        // Execute the task outside the lock to avoid holding the lock unnecessarily
+        // and to allow other threads to queue up tasks.
         {
             ND_PROFILE_ZONE_SCOPED;
             if (task)
