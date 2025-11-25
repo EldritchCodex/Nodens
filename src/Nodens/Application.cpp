@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include <glfw/glfw3.h>
+#include <ranges>
 
 #include "Events/ApplicationEvent.h"
 #include "Input.h"
@@ -104,9 +105,9 @@ void Application::OnEvent(Event& e)
     dispatcher.Dispatch<WindowCloseEvent>(ND_BIND_EVENT_FN(Application::OnWindowClose));
 
     // Run through LayerStack from last to first
-    for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+    for (auto layer : m_LayerStack | std::views::reverse)
     {
-        (*--it)->OnEvent(e);
+        layer->OnEvent(e);
         if (e.Handled)
             break;
     }
