@@ -9,9 +9,6 @@ class JobSystemLayer : public Nodens::Layer {
   JobSystemLayer();
   virtual ~JobSystemLayer() = default;
 
-  virtual void OnAttach() override;
-  virtual void OnDetach() override;
-
   // We check for job completion here
   virtual void OnUpdate(Nodens::TimeStep ts) override;
 

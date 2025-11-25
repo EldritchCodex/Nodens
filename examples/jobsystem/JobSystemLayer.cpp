@@ -7,9 +7,6 @@
 
 JobSystemLayer::JobSystemLayer() : Layer("JobSystemLayer") {}
 
-void JobSystemLayer::OnAttach() {}
-void JobSystemLayer::OnDetach() {}
-
 void JobSystemLayer::OnUpdate(Nodens::TimeStep ts) {
   m_TimePassed += ts;
 
