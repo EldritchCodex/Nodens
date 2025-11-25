@@ -1,3 +1,3 @@
-add_subdirectory(sinewave3d)
+add_subdirectory(circularwave3d)
 add_subdirectory(jobsystem)
 add_subdirectory(asyncevent)
