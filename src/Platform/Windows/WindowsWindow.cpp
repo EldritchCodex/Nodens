@@ -47,9 +47,10 @@ void WindowsWindow::Init(const WindowProps& props)
         ND_CORE_ASSERT(succes, "Could not initialize GLFW!");
         glfwSetErrorCallback(GLFWErrorCallback);
 
-        // Set OpenGL version to 3.3
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        // Set OpenGL version to 4.6
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Use Core Profile

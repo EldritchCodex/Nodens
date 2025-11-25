@@ -22,8 +22,8 @@ void OpenGLContext::Init()
     ND_CORE_ASSERT(status, "Failed to initialize glad!");
 
     ND_CORE_INFO("OpenGL Info:");
-    ND_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
-    ND_CORE_INFO("  GPU Used: {0}", glGetString(GL_RENDERER));
+    ND_CORE_INFO("  Version: {0}", (const char*)glGetString(GL_VERSION));
+    ND_CORE_INFO("  GPU Used: {0}", (const char*)glGetString(GL_RENDERER));
 
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
