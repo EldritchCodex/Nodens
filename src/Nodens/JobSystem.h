@@ -69,7 +69,7 @@ private:
 
 private:
     /// @brief The thread-safe queue of tasks pending execution.
-    std::queue<std::function<void()>> m_Tasks;
+    std::queue<std::move_only_function<void()>> m_Tasks;
 
     /// @brief Mutex to protect access to m_Tasks.
     std::mutex m_QueueMutex;

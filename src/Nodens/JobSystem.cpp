@@ -60,7 +60,7 @@ void JobSystem::WorkerLoop(std::stop_token stoken)
 {
     while (!stoken.stop_requested())
     {
-        std::function<void()> task;
+        std::move_only_function<void()> task;
         {
             std::unique_lock<std::mutex> lock(m_QueueMutex);
 
