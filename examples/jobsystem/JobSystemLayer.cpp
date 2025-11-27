@@ -29,7 +29,6 @@ void JobSystemLayer::OnUpdate(Nodens::TimeStep ts) {
 }
 void JobSystemLayer::OnImGuiRender(Nodens::TimeStep ts) {
   ND_PROFILE_ZONE_SCOPED;
-  ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 
   ImGui::Begin("Job System Control Panel");
   ImGui::Text("Application Average: %.3f ms/frame (%.1f FPS)",

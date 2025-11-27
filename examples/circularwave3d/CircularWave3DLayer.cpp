@@ -36,7 +36,6 @@ void CircularWave3DLayer::OnUpdate(Nodens::TimeStep previous_update_duration)
 void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)
 {
     ND_PROFILE_ZONE_SCOPED;
-    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 
     // Implot
     ImGui::Begin("ImPlot Example");

@@ -12,7 +12,7 @@ endif()
 # Nodens Source files
 set(NODENS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
-# Sinewave Source files
+# Example Source files
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/)
 file(GLOB_RECURSE SOURCE_FILES ${SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE HEADER_FILES ${SOURCE_DIR}/*.h)
