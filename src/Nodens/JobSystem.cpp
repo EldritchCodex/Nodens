@@ -65,7 +65,7 @@ void JobSystem::WorkerLoop(std::stop_token stoken)
         std::move_only_function<void()> task;
         {
             // Lock the queue to safely access it.
-            std::unique_lock<std::mutex> lock(m_QueueMutex);
+            std::unique_lock lock(m_QueueMutex);
 
             // Wait on the condition variable. The thread will sleep until a new task is added
             // or a stop is requested. The lambda is a predicate that checks if the queue is not empty.
@@ -88,6 +88,12 @@ void JobSystem::WorkerLoop(std::stop_token stoken)
             // A task is available, so move it from the queue to the local 'task' variable.
             task = std::move(m_Tasks.front());
             m_Tasks.pop();
+
+            // Visualize queue size decreasing
+            ND_PROFILE_PLOT("Job Queue Size", (int64_t)m_Tasks.size());
+
+            // Mark that this thread is currently holding the lock (Optional, for high contention debug)
+            ND_PROFILE_LOCK_MARK(m_QueueMutex);
         }
 
         // Execute the task outside the lock to avoid holding the lock unnecessarily

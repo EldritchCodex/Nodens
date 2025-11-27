@@ -10,6 +10,8 @@
 #include <thread>
 #include <vector>
 
+#include "Nodens/Profiling.h"
+
 namespace Nodens
 {
 
@@ -38,7 +40,6 @@ public:
     template <class F, class... Args>
     auto Submit(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>
     {
-
         // Determine the return type of the submitted function F
         using return_type = typename std::invoke_result<F, Args...>::type;
 
@@ -50,11 +51,13 @@ public:
         std::future<return_type> res = task->get_future();
         {
             // Lock the queue to safely add the new task
-            std::unique_lock<std::mutex> lock(m_QueueMutex);
+            std::unique_lock lock(m_QueueMutex);
 
             // We wrap the task in a generic void lambda because the queue
             // only holds std::function<void()>.
             m_Tasks.emplace([task]() { (*task)(); });
+
+            ND_PROFILE_PLOT("Job Queue Size", (int64_t)m_Tasks.size());
         }
 
         // Wake up exactly one worker thread to handle this new task.
@@ -72,7 +75,7 @@ private:
     std::queue<std::move_only_function<void()>> m_Tasks;
 
     /// @brief Mutex to protect access to m_Tasks.
-    std::mutex m_QueueMutex;
+    ND_PROFILE_LOCKABLE(std::mutex, m_QueueMutex);
 
     /// @brief Condition variable to put threads to sleep when there is no work.
     /// @note std::condition_variable_any is required to work with std::stop_token.
