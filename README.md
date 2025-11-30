@@ -60,6 +60,10 @@ Examples of application codes are provided in the `examples/` folder.
    - **Subscriber:** A background worker listens for these events, simulates a randomized workload (variable sleep time), generates "scientific data" (distance/atmosphere density), and reports the results back.
    - **Visualization:** The main thread safely locks the data mutex to render the incoming results on a scatter plot and a latency graph in real-time.
 
+##### Showcasing performance profiling for multithreaded workloads
+
+https://github.com/user-attachments/assets/4d345eb7-46c5-4360-a7f0-55466ec753ff
+
 
 # Applications Showcase
 
