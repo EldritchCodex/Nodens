@@ -80,12 +80,12 @@ https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 
 | Library                                             | Role / Domain      | Description                                               | Integration Method   | Version/Branch/Tag |
 | :-------------------------------------------------- | :----------------- | :-------------------------------------------------------- | :------------------- | :----------------- |
-| **[GLAD](https://glad.dav1d.de/)**                  | **Graphics Core**  | OpenGL function loader.                                   | Generated / External | 0.1.35             |
-| **[GLFW](https://www.glfw.org/)**                   | **System & Input** | Cross-platform for window, context, and input management. | **Git Submodule**    | 3.4                |
-| **[GLM](https://github.com/g-truc/glm)**            | **Mathematics**    | Header-only mathematics library.                          | **Git Submodule**    | 1.0.2              |
+| **[GLAD](https://glad.dav1d.de/)**                  | **Graphics Core**  | OpenGL function loader.                                   | Generated / External | v0.1.35             |
+| **[GLFW](https://www.glfw.org/)**                   | **System & Input** | Cross-platform for window, context, and input management. | **Git Submodule**    | v3.4                |
+| **[GLM](https://github.com/g-truc/glm)**            | **Mathematics**    | Header-only mathematics library.                          | **Git Submodule**    | v1.0.2              |
 | **[ImGui](https://github.com/ocornut/imgui)**       | **UI / Tools**     | Bloat-free Immediate Mode GUI.                            | **Git Submodule**    | v1.92.5-docking    |
-| **[ImPlot](https://github.com/epezent/implot)**     | **Visualization**  | 2D data plotting extension for ImGui.                     | **Git Submodule**    | master             |
-| **[ImPlot3D](https://github.com/brenocq/implot3d)** | **Visualization**  | 3D data plotting extension for ImGui.                     | **Git Submodule**    | main               |
+| **[ImPlot](https://github.com/epezent/implot)**     | **Visualization**  | 2D data plotting extension for ImGui.                     | **Git Submodule**    | v0.17             |
+| **[ImPlot3D](https://github.com/brenocq/implot3d)** | **Visualization**  | 3D data plotting extension for ImGui.                     | **Git Submodule**    | v0.3              |
 | **[SPDLog](https://github.com/gabime/spdlog)**      | **Utilities**      | Fast, header-only/compiled logging library.               | **Git Submodule**    | v1.16.0            |
 | **[Tracy](https://github.com/wolfpld/tracy)**       | **Profiling**      | Real-time frame profiler.                                 | **Git Submodule**    | v0.13.0            |
 
