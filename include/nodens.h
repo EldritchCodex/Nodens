@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Nodens/Application.h"
-#include "Nodens/Core/TimeStep.h"
+#include "Nodens/TimeStep.h"
 #include "Nodens/Input.h"
 #include "Nodens/KeyCodes.h"
 #include "Nodens/Layer.h"
