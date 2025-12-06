@@ -1,13 +1,15 @@
 #pragma once
 
 #include "Core.h"
-#include "Nodens/TimeStep.h"
 #include "Nodens/Events/ApplicationEvent.h"
 #include "Nodens/Events/Event.h"
 #include "Nodens/JobSystem.h"
 #include "Nodens/LayerStack.h"
+#include "Nodens/TimeStep.h"
 #include "Nodens/imgui/ImGuiLayer.h"
 #include "Window.h"
+
+#include <memory>
 
 namespace Nodens
 {
@@ -15,8 +17,14 @@ namespace Nodens
 class Application
 {
 public:
-    Application();
-    Application(const WindowProps& props);
+    /**
+     * @brief Constructs the Application with specified or default window properties.
+     * * This single constructor handles both default initialization and initialization
+     * with custom WindowProps, eliminating code duplication.
+     * * @param props The properties for the window (title, width, height, vsync).
+     * Defaults to WindowProps() if not provided.
+     */
+    explicit Application(const WindowProps& props = WindowProps());
     virtual ~Application();
 
     void Run();
@@ -25,8 +33,7 @@ public:
     void PushLayer(Layer* layer);
     void PushOverlay(Layer* overlay);
 
-    inline Window& GetWindow() { return *m_Window; }
-
+    inline Window&    GetWindow() { return *m_Window; }
     inline JobSystem& GetJobSystem() { return *m_JobSystem; }
 
     static inline Application& Get() { return *s_Instance; }
@@ -42,7 +49,7 @@ private:
 
     std::unique_ptr<JobSystem> m_JobSystem;
 
-    float m_LastFrameTime = 0;
+    float m_LastFrameTime = 0.0f;
 
 private:
     static Application* s_Instance;
@@ -50,4 +57,5 @@ private:
 
 // To be defined in CLIENT
 Application* CreateApplication();
+
 } // namespace Nodens
