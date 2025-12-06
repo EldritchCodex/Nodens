@@ -1,8 +1,8 @@
 #include "AsyncEventBus.h"
 
 #include "Nodens/Application.h"
-#include "Nodens/Profiling.h"
 #include "ndpch.h"
+#include <tracy/Tracy.hpp>
 
 namespace Nodens
 {
@@ -23,14 +23,15 @@ void AsyncEventBus::SubscribeInternal(std::type_index type, EventHandler handler
 void AsyncEventBus::PublishInternal(std::shared_ptr<Event> event)
 {
     // Profile the act of submitting (usually fast)
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     Application::Get().GetJobSystem().Submit(
         [this, event]()
         {
             // Profile the asynchronous execution (the actual work)
-            // We name the zone dynamically based on the event type
-            ND_PROFILE_ZONE_NAMED_DYNAMIC(event->GetName());
+            ZoneScoped;
+            const char* name = event->GetName();
+            ZoneName(name, strlen(name));
 
             std::vector<EventHandler> handlers;
             {

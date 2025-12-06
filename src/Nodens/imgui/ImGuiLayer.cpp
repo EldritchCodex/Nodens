@@ -2,7 +2,7 @@
 #include "ndpch.h"
 
 #include "Nodens/Application.h"
-#include "Nodens/Profiling.h"
+#include <tracy/Tracy.hpp>
 
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -18,7 +18,7 @@ ImGuiLayer::~ImGuiLayer() {}
 
 void ImGuiLayer::OnAttach()
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -53,7 +53,7 @@ void ImGuiLayer::OnAttach()
 
 void ImGuiLayer::OnDetach()
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     if (m_Renderer)
         m_Renderer->Shutdown();
@@ -65,7 +65,7 @@ void ImGuiLayer::OnDetach()
 
 void ImGuiLayer::Begin()
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     // Delegate NewFrame to the renderer (handles backend specific updates)
     if (m_Renderer)
@@ -77,7 +77,7 @@ void ImGuiLayer::Begin()
 
 void ImGuiLayer::End()
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     ImGuiIO&     io  = ImGui::GetIO();
     Application& app = Application::Get();

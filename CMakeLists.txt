@@ -52,7 +52,6 @@ endif()
 add_subdirectory(examples)
 
 
-
 # Doxygen documentation ////////////////////////////////////////////////////////
 # Check if Doxygen is installed
 find_package(Doxygen)

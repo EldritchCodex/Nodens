@@ -69,7 +69,7 @@ void AsyncEventLayer::AddResult(const PlanetaryScanEvent& e)
 
 void AsyncEventLayer::OnImGuiRender(Nodens::TimeStep ts)
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     // ---------------------------------------------------------
     // MAIN CONTROL PANEL

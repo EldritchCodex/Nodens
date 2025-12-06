@@ -7,7 +7,6 @@
 #include "Input.h"
 #include "Log.h"
 #include "Platform/OpenGL/OpenGLImGuiRenderer.h"
-#include "Profiling.h"
 #include "ndpch.h"
 
 namespace Nodens
@@ -17,7 +16,7 @@ Application* Application::s_Instance = nullptr;
 
 Application::Application(const WindowProps& props)
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     // Ensure strictly one Application instance exists
     ND_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -43,20 +42,20 @@ Application::Application(const WindowProps& props)
 
 Application::~Application()
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
     // Cleanup logic if necessary (e.g. if LayerStack doesn't own layers)
 }
 
 void Application::PushLayer(Layer* layer)
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
     m_LayerStack.PushLayer(layer);
     layer->OnAttach();
 }
 
 void Application::PushOverlay(Layer* overlay)
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
     m_LayerStack.PushOverlay(overlay);
     overlay->OnAttach();
 }
@@ -65,7 +64,7 @@ void Application::Run()
 {
     while (m_Running)
     {
-        ND_PROFILE_ZONE_SCOPED;
+        ZoneScoped;
 
         float    time     = (float)glfwGetTime();
         TimeStep timestep = time - m_LastFrameTime;
@@ -83,7 +82,7 @@ void Application::Run()
 
         m_Window->OnUpdate();
 
-        ND_PROFILE_FRAME_MARK;
+        FrameMark;
     }
 }
 
@@ -95,7 +94,7 @@ bool Application::OnWindowClose(WindowCloseEvent& e)
 
 void Application::OnEvent(Event& e)
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<WindowCloseEvent>(ND_BIND_EVENT_FN(Application::OnWindowClose));

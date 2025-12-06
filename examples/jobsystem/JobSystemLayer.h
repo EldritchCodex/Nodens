@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Nodens.h>
+#include "nodens.h"
 
 #include <future>
 
@@ -11,7 +11,7 @@ class JobSystemLayer : public Nodens::Layer
 public:
     /// @brief Constructs the JobSystemLayer.
     JobSystemLayer();
-    
+
     /// @brief Destroys the JobSystemLayer.
     virtual ~JobSystemLayer() = default;
 

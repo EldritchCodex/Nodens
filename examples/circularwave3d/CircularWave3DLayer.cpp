@@ -4,7 +4,7 @@
 
 CircularWave3DLayer::CircularWave3DLayer() : Layer("CircularWave3D")
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     // Set ImGui theme
     ImGui::StyleColorsDark();
@@ -22,7 +22,7 @@ CircularWave3DLayer::CircularWave3DLayer() : Layer("CircularWave3D")
 
 void CircularWave3DLayer::OnUpdate(Nodens::TimeStep previous_update_duration)
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     constexpr float kIncrement = 0.001f;
     for (int i = 0; i < kNumberOfPoints; i++)
@@ -35,7 +35,7 @@ void CircularWave3DLayer::OnUpdate(Nodens::TimeStep previous_update_duration)
 
 void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     // Implot
     ImGui::Begin("ImPlot Example");
@@ -62,7 +62,7 @@ void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)
 
 void CircularWave3DLayer::OnEvent(Nodens::Event& event)
 {
-    ND_PROFILE_ZONE_SCOPED;
+    ZoneScoped;
 
     Nodens::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<Nodens::WindowResizeEvent>(ND_BIND_EVENT_FN(CircularWave3DLayer::OnWindowResizeEvent));

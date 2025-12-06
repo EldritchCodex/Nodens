@@ -1,7 +1,7 @@
 #include "JobSystem.h"
 
-#include "Nodens/Profiling.h"
 #include "ndpch.h"
+#include <tracy/Tracy.hpp>
 
 namespace Nodens
 {
@@ -27,7 +27,7 @@ JobSystem::JobSystem()
                 // Profiler hook: Give the thread a name so we can see it when
                 // using Tracy.
                 std::string name = "Worker " + std::to_string(i);
-                ND_PROFILE_SET_THREAD_NAME(name.c_str());
+                tracy::SetThreadName(name.c_str());
 
                 this->WorkerLoop(stoken);
             });
@@ -90,16 +90,16 @@ void JobSystem::WorkerLoop(std::stop_token stoken)
             m_Tasks.pop();
 
             // Visualize queue size decreasing
-            ND_PROFILE_PLOT("Job Queue Size", (int64_t)m_Tasks.size());
+            TracyPlot("Job Queue Size", (int64_t)m_Tasks.size());
 
             // Mark that this thread is currently holding the lock (Optional, for high contention debug)
-            ND_PROFILE_LOCK_MARK(m_QueueMutex);
+            LockMark(m_QueueMutex);
         }
 
         // Execute the task outside the lock to avoid holding the lock unnecessarily
         // and to allow other threads to queue up tasks.
         {
-            ND_PROFILE_ZONE_SCOPED;
+            ZoneScoped;
             if (task)
                 task();
         }
