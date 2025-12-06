@@ -14,7 +14,7 @@ struct WindowProps
     unsigned int Height;
     bool         VSync;
 
-    WindowProps(const std::string& title  = "Nodens Engine",
+    WindowProps(const std::string& title  = "[Nodens]",
                 unsigned int       width  = 1280,
                 unsigned int       height = 720,
                 bool               vsync  = true)
