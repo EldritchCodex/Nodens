@@ -1,4 +1,5 @@
 ![nodens-banner3](https://github.com/user-attachments/assets/1a0e2932-e99d-4432-8e26-88a350368cd7)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # Introduction
 
@@ -98,3 +99,7 @@ https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 [3] Horton, I. and Van Weert, P. (2023) Beginning C++23: From Beginner to Pro. Berkeley, CA: Apress. Available at: https://doi.org/10.1007/978-1-4842-9343-0.
 
 [4] Angel, E. and Shreiner, D. (2012) Interactive computer graphics: a top-down approach with shader-based OpenGL. 6th ed. Boston: Addison-Wesley.
+
+# License
+Copyright (c) 2025 EldritchCodex.
+This project and its entire history are licensed under the MIT License.
