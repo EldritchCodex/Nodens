@@ -1,22 +1,18 @@
 #include "ImGuiLayer.h"
+#include "ndpch.h"
 
 #include "Nodens/Application.h"
 #include "Nodens/Profiling.h"
-#include "imgui.h"
-#include "implot.h"
-#include "implot3d.h"
-#include "ndpch.h"
 
-// TEMPORARY
 #include <GLFW/glfw3.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
-#include <glad/glad.h>
+#include <imgui.h>
+#include <implot.h>
+#include <implot3d.h>
 
 namespace Nodens
 {
 
-ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
+ImGuiLayer::ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer) : Layer("ImGuiLayer"), m_Renderer(renderer) {}
 
 ImGuiLayer::~ImGuiLayer() {}
 
@@ -29,6 +25,7 @@ void ImGuiLayer::OnAttach()
     ImGui::CreateContext();
     ImPlot::CreateContext();
     ImPlot3D::CreateContext();
+
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -36,7 +33,6 @@ void ImGuiLayer::OnAttach()
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigFlags |= ImGuiDockNodeFlags_PassthruCentralNode;
 
-    // Set up Dear ImGui style
     ImGui::StyleColorsDark();
 
     ImGuiStyle& style = ImGui::GetStyle();
@@ -46,20 +42,22 @@ void ImGuiLayer::OnAttach()
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
-    Application& app    = Application::Get();
-    GLFWwindow*  window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+    Application& app = Application::Get();
+    // We assume the native window is always GLFW for now, but we cast safely
+    GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
-    // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    // Use the injected renderer to initialize
+    if (m_Renderer)
+        m_Renderer->Init(window);
 }
 
 void ImGuiLayer::OnDetach()
 {
     ND_PROFILE_ZONE_SCOPED;
 
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
+    if (m_Renderer)
+        m_Renderer->Shutdown();
+
     ImPlot3D::DestroyContext();
     ImPlot::DestroyContext();
     ImGui::DestroyContext();
@@ -69,13 +67,13 @@ void ImGuiLayer::Begin()
 {
     ND_PROFILE_ZONE_SCOPED;
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
+    // Delegate NewFrame to the renderer (handles backend specific updates)
+    if (m_Renderer)
+        m_Renderer->NewFrame();
+
     ImGui::NewFrame();
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 }
-
-void ImGuiLayer::OnImGuiRender(TimeStep ts) {}
 
 void ImGuiLayer::End()
 {
@@ -87,15 +85,20 @@ void ImGuiLayer::End()
 
     // Rendering
     ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    GLFWwindow* backup_current_context = glfwGetCurrentContext();
+    if (m_Renderer)
+        m_Renderer->RenderDrawData(ImGui::GetDrawData());
+
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
+        // Note: UpdatePlatformWindows is generic ImGui logic
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
     }
-    glfwMakeContextCurrent(backup_current_context);
 }
+
+void ImGuiLayer::OnImGuiRender(TimeStep ts) {}
 
 } // namespace Nodens

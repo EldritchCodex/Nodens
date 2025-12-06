@@ -1,17 +1,20 @@
 #pragma once
 
-#include <Nodens/Events/KeyEvent.h>
-#include <Nodens/Events/MouseEvent.h>
-
 #include "Nodens/Events/ApplicationEvent.h"
+#include "Nodens/Events/KeyEvent.h"
+#include "Nodens/Events/MouseEvent.h"
 #include "Nodens/Layer.h"
+
+#include "Nodens/imgui/ImGuiRenderer.h" // Include the interface
 
 namespace Nodens
 {
+
 class ImGuiLayer : public Layer
 {
 public:
-    ImGuiLayer();
+    // Inject the renderer via constructor
+    ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer);
     ~ImGuiLayer();
 
     virtual void OnAttach() override;
@@ -21,8 +24,13 @@ public:
     void Begin();
     void End();
 
+    void BlockEvents(bool block) { m_BlockEvents = block; }
+
+    void SetDarkThemeColors();
+
 private:
-    float m_Time = 0.0f;
-    //
+    bool                           m_BlockEvents = true;
+    std::shared_ptr<ImGuiRenderer> m_Renderer; // Polymorphic renderer
 };
+
 } // namespace Nodens
