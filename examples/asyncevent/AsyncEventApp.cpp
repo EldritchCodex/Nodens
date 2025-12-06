@@ -1,7 +1,7 @@
-#include <Nodens.h>
-#include <Nodens/EntryPoint.h>
+#define MAIN_APPLICATION_FILE
 
 #include "AsyncEventLayer.h"
+#include "nodens.h"
 
 class AsyncEventApp : public Nodens::Application
 {

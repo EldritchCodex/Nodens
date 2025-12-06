@@ -3,11 +3,17 @@
 #include <concepts>
 #include <memory>
 
-// Platform detection logic remains the same...
 #ifdef _WIN32
-#define ND_PLATFORM_WINDOWS
+    #define ND_PLATFORM_WINDOWS
+    #ifdef _WIN64
+        #define ND_PLATFORM_WINDOWS_X64
+    #else
+        #define ND_PLATFORM_WINDOWS_X86
+    #endif
+#elif defined(__linux__)
+    #define ND_PLATFORM_LINUX
 #else
-#error "Unsupported platform!"
+    #error "Unsupported platform!"
 #endif
 
 #define ND_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)

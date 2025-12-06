@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core.h"
-#include "Nodens/Core/TimeStep.h"
+#include "Nodens/TimeStep.h"
 #include "Nodens/Events/ApplicationEvent.h"
 #include "Nodens/Events/Event.h"
 #include "Nodens/JobSystem.h"

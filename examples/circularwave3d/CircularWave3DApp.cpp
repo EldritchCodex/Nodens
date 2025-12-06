@@ -1,11 +1,8 @@
-/*	Set this file as the Startup Item for CMakeLists.txt
- */
 #define MAIN_APPLICATION_FILE
 
 #include "CircularWave3DLayer.h"
 #include "nodens.h"
 
-// Main application layer
 class CircularWave3DApp : public Nodens::Application
 {
 public:
