@@ -43,6 +43,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ImPlot3d
 )
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+    $<$<CONFIG:Debug>:ND_DEBUG>
+    $<$<CONFIG:Release>:ND_RELEASE>
+    $<$<BOOL:${WIN32}>:ND_PLATFORM_WINDOWS>
+)
+
 if(ND_ENABLE_PROFILING)
     target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
 endif()

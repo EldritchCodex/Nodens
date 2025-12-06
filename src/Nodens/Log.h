@@ -33,7 +33,7 @@ private:
 #define ND_CORE_TRACE(...) ::Nodens::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define ND_CORE_FATAL(...) ::Nodens::Log::GetCoreLogger()->fatal(__VA_ARGS__)
 
-// Core Log Macros
+// App Log Macros
 #define ND_ERROR(...) ::Nodens::Log::GetClientLogger()->error(__VA_ARGS__)
 #define ND_WARN(...) ::Nodens::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define ND_INFO(...) ::Nodens::Log::GetClientLogger()->info(__VA_ARGS__)
@@ -48,7 +48,7 @@ private:
 #define ND_CORE_TRACE(...)
 #define ND_CORE_FATAL(...)
 
-// Core Log Macros
+// App Log Macros
 #define ND_ERROR(...)
 #define ND_WARN(...)
 #define ND_INFO(...)
