@@ -3,7 +3,7 @@
 
 # Introduction
 
-**Nodens** is a simple, modern C++ framework designed for quickly developing interactive desktop applications with a immediate mode graphical user interface.
+**Nodens** aims to be a simple, modern C++ framework designed for quickly developing interactive desktop applications with a immediate mode graphical user interface.
 
 Built upon **C++23** standards, the framework unifies amazing third-party libraries, like [ImGui](https://github.com/ocornut/imgui) and [Tracy](https://github.com/wolfpld/tracy), with a custom, multithreaded core, providing a robust foundation for rapid development/prototyping of interactive applications ranging from simple tools to game engines.
 
