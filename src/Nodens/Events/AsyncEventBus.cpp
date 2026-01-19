@@ -16,7 +16,7 @@ AsyncEventBus& AsyncEventBus::Get()
 void AsyncEventBus::SubscribeInternal(std::type_index type, EventHandler handler)
 {
     // Lock just long enough to add the handler to the list
-    std::scoped_lock lock(m_Mutex);
+    std::lock_guard lock(m_Mutex);
     m_Subscribers[type].push_back(handler);
 }
 
@@ -35,8 +35,8 @@ void AsyncEventBus::PublishInternal(std::shared_ptr<Event> event)
 
             std::vector<EventHandler> handlers;
             {
-                std::scoped_lock lock(m_Mutex);
-                auto             it = m_Subscribers.find(typeid(*event));
+                std::lock_guard lock(m_Mutex);
+                auto            it = m_Subscribers.find(typeid(*event));
                 if (it != m_Subscribers.end())
                 {
                     handlers = it->second;
