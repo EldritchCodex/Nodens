@@ -11,21 +11,22 @@ Built upon **C++23** standards, the framework unifies amazing third-party librar
 # Key Features
 
 ### 🖥️ Core Architecture
-* **Modern C++ Standard:** Built using C++20/23 features (e.g. `std::jthread`, `std::stop_token`, concepts and `std::to_underlying`).
-* **Layer Stack System:** Flexible application flow control allowing for modular updates and rendering layers (e.g., overlay, game world, UI).
-* **Window Management:** cross-platform windowing and input polling via [GLFW](https://www.glfw.org/).
+- **Modern C++ Standard:** Built using C++20/23 features (e.g. `std::jthread`, `std::stop_token`, concepts and `std::to_underlying`).
+- **Layer Stack System:** Flexible application flow control allowing for modular updates and rendering layers (e.g., overlay, game world, UI).
+- **Window Management:** cross-platform windowing and input polling via [GLFW](https://www.glfw.org/).
 
 ### ⚡ Concurrency & Events
-* **Multithreaded Job System:** A custom thread pool implementation utilizing C++20 `std::jthread` for automatic joining and `std::future` for asynchronous task management.
-* **Asynchronous Event Bus:** A thread-safe Publish/Subscribe system allowing decoupled communication between subsystems. Supports generic event types and lambda listeners.
+- **Multithreaded Job System:** A custom thread pool implementation utilizing C++20 `std::jthread` for automatic joining and `std::future` for asynchronous task management.
+- **Asynchronous Event Bus:** A thread-safe Publish/Subscribe system allowing decoupled communication between subsystems. Supports generic event types and lambda listeners.
 
 ### 🎨 Graphics & GUI
-* **Immediate Mode GUI:** Fully integrated [ImGui](https://github.com/ocornut/imgui) with Docking and Viewport support enabled by default.
-* **Data Visualization:** Native support for high-performance 2D and 3D plotting via [ImPlot](https://github.com/epezent/implot) and [ImPlot3D](https://github.com/brenocq/implot3d).
-* **Rendering Backend:** OpenGL context management initialized via [GLAD](https://glad.dav1d.de/).
+- **Immediate Mode GUI:** Fully integrated [ImGui](https://github.com/ocornut/imgui) with Docking and Viewport support enabled by default.
+- **Data Visualization:** Native support for high-performance 2D and 3D plotting via [ImPlot](https://github.com/epezent/implot) and [ImPlot3D](https://github.com/brenocq/implot3d).
+- **Rendering Backend:** OpenGL context management initialized via [GLAD](https://glad.dav1d.de/).
 
 ### 🛠️ Profiling & Debugging
-* **Integrated Frame Profiling:** Built-in support for [Tracy Profiler](https://github.com/wolfpld/tracy) (v0.13.0) to analyze frame time, memory usage, and lock contention in real-time.
+- **Integrated Frame Profiling:** Built-in support for [Tracy Profiler](https://github.com/wolfpld/tracy) (v0.13.0) to analyze frame time, memory usage, and lock contention in real-time.
+- **Logging:** Integrated [SPDLog](https://github.com/gabime/spdlog) logging system.
 
 
 # Getting Started
@@ -75,9 +76,7 @@ https://github.com/user-attachments/assets/3025146c-d49b-4a10-84ea-3dcfa74ac59e
 https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 
 
-# References
-
-### Dependencies
+# Dependencies
 
 | Library                                             | Role / Domain      | Description                                               | Integration Method   | Version/Branch/Tag |
 | :-------------------------------------------------- | :----------------- | :-------------------------------------------------------- | :------------------- | :----------------- |
@@ -90,7 +89,7 @@ https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 | **[SPDLog](https://github.com/gabime/spdlog)**      | **Utilities**      | Fast, header-only/compiled logging library.               | **Git Submodule**    | v1.16.0            |
 | **[Tracy](https://github.com/wolfpld/tracy)**       | **Profiling**      | Real-time frame profiler.                                 | **Git Submodule**    | v0.13.0            |
 
-### Literature
+# References
 
 [1] The Cherno (no date) Game Engine Series, YouTube. Available at: http://www.youtube.com/playlist?list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT.
 
