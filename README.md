@@ -3,15 +3,15 @@
 
 # Introduction
 
-**Nodens** aims to be a simple, modern C++ framework designed for quickly developing interactive desktop applications with a immediate mode graphical user interface.
+**Nodens** aims to be a simple, C++23 framework designed for quickly developing interactive desktop applications with a immediate mode graphical user interface.
 
-Built upon **C++23** standards, the framework unifies amazing third-party libraries, like [ImGui](https://github.com/ocornut/imgui) and [Tracy](https://github.com/wolfpld/tracy), with a custom, multithreaded core, providing a robust foundation for rapid development/prototyping of interactive applications ranging from simple tools to game engines.
+Built upon C++23 standards, the framework unifies amazing third-party libraries, like [ImGui](https://github.com/ocornut/imgui) and [Tracy](https://github.com/wolfpld/tracy), with a custom, multithreaded core, providing a robust foundation for rapid development/prototyping of interactive applications ranging from simple tools to game engines.
 
 
 # Key Features
 
 ### 🖥️ Core Architecture
-- **Modern C++ Standard:** Built using C++20/23 features (e.g. `std::jthread`, `std::stop_token`, concepts and `std::to_underlying`).
+- **C++23 Standard:** Built using C++23 features (e.g. `std::jthread`, `std::stop_token`, concepts and `std::to_underlying`).
 - **Layer Stack System:** Flexible application flow control allowing for modular updates and rendering layers (e.g., overlay, game world, UI).
 - **Window Management:** cross-platform windowing and input polling via [GLFW](https://www.glfw.org/).
 
