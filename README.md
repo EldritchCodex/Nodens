@@ -7,7 +7,7 @@
 
 Built upon C++23 standards, the framework unifies amazing third-party libraries, like [ImGui](https://github.com/ocornut/imgui) and [Tracy](https://github.com/wolfpld/tracy), with a custom, multithreaded core, providing a robust foundation for rapid development/prototyping of interactive applications ranging from simple tools to game engines.
 
-The framework compiles into a single static library that is linked to the application to **generate a single executable file for easier distribution and deployment**.
+The framework compiles into a single **static library** that is linked to the application to generate a **single executable file to ensure applications remain portable** and to **streamline distribution.**
 
 
 # Key Features
