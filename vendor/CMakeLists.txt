@@ -4,7 +4,7 @@
 add_subdirectory(glad)
 
 # GLFW
-add_subdirectory(glfw)
+add_subdirectory(GLFW)
 
 # Spdlog
 add_subdirectory(spdlog)
@@ -52,6 +52,17 @@ target_include_directories(ImGui PUBLIC
 )
 target_compile_definitions(ImGui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD GLFW_INCLUDE_NONE)
 target_link_libraries(ImGui PUBLIC glfw glad)
+
+if(UNIX AND NOT APPLE)
+    find_package(X11 REQUIRED)
+
+    if(TARGET X11::X11)
+        target_link_libraries(ImGui PUBLIC X11::X11)
+    else()
+        target_include_directories(ImGui PUBLIC ${X11_INCLUDE_DIR})
+        target_link_libraries(ImGui PUBLIC ${X11_LIBRARIES})
+    endif()
+endif()
 
 
 # --- ImPlot ---

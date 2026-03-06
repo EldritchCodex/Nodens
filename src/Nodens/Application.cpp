@@ -1,6 +1,6 @@
 #include "Application.h"
 
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <ranges>
 
 #include "Events/ApplicationEvent.h"

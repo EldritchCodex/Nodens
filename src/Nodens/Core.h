@@ -16,6 +16,15 @@
     #error "Unsupported platform!"
 #endif
 
+#if defined(_MSC_VER)
+    #define ND_DEBUGBREAK() __debugbreak()
+#elif defined(__clang__) || defined(__GNUC__)
+    #define ND_DEBUGBREAK() __builtin_trap()
+#else
+    #include <cstdlib>
+    #define ND_DEBUGBREAK() std::abort()
+#endif
+
 #define ND_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 namespace Nodens
@@ -40,7 +49,7 @@ template <std::integral T = int> consteval T Bit(T x)
         if (!(x))                                                                                                      \
         {                                                                                                              \
             ND_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                            \
-            __debugbreak();                                                                                            \
+            ND_DEBUGBREAK();                                                                                            \
         }                                                                                                              \
     }
 #define ND_CORE_ASSERT(x, ...)                                                                                         \
@@ -48,7 +57,7 @@ template <std::integral T = int> consteval T Bit(T x)
         if (!(x))                                                                                                      \
         {                                                                                                              \
             ND_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                       \
-            __debugbreak();                                                                                            \
+            ND_DEBUGBREAK();                                                                                            \
         }                                                                                                              \
     }
 
