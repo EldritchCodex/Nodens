@@ -102,5 +102,5 @@ https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 [4] Angel, E. and Shreiner, D. (2012) Interactive computer graphics: a top-down approach with shader-based OpenGL. 6th ed. Boston: Addison-Wesley.
 
 # License
-Copyright (c) 2025 EldritchCodex.
+Copyright (c) 2026 EldritchCodex.
 This project and its entire history are licensed under the MIT License.
