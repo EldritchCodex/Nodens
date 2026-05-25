@@ -88,7 +88,7 @@ https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 | **[ImGui](https://github.com/ocornut/imgui)**       | **UI / Tools**     | Bloat-free Immediate Mode GUI.                            | **Git Submodule**    | v1.92.8-docking    |
 | **[ImPlot](https://github.com/epezent/implot)**     | **Visualization**  | 2D data plotting extension for ImGui.                     | **Git Submodule**    | v1.0             |
 | **[ImPlot3D](https://github.com/brenocq/implot3d)** | **Visualization**  | 3D data plotting extension for ImGui.                     | **Git Submodule**    | v0.4              |
-| **[SPDLog](https://github.com/gabime/spdlog)**      | **Utilities**      | Fast, header-only/compiled logging library.               | **Git Submodule**    | v1.16.0            |
+| **[SPDLog](https://github.com/gabime/spdlog)**      | **Utilities**      | Fast, header-only/compiled logging library.               | **Git Submodule**    | v1.17.0            |
 | **[Tracy](https://github.com/wolfpld/tracy)**       | **Profiling**      | Real-time frame profiler.                                 | **Git Submodule**    | v0.13.0            |
 
 # References
