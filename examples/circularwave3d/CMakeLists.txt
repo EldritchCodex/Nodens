@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.8)
+﻿cmake_minimum_required(VERSION 3.26)
 project(circularwave3d LANGUAGES CXX)
 
 # Set Nodens options
