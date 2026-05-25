@@ -6,9 +6,6 @@ CircularWave3DLayer::CircularWave3DLayer() : Layer("CircularWave3D")
 {
     ZoneScoped;
 
-    // Set ImGui theme
-    ImGui::StyleColorsDark();
-
     constexpr float kIncrement = 0.001f;
 
     // Generate data for ImPlot
@@ -31,6 +28,8 @@ void CircularWave3DLayer::OnUpdate(Nodens::TimeStep previous_update_duration)
         xs[i] = std::sin(kFrequency * t[i]);
         ys[i] = std::cos(kFrequency * t[i]);
     }
+
+    ND_INFO("Updated CircularWave3DLayer with timestep: {0:.3f} ms", previous_update_duration.GetMilliseconds());
 } // CircularWave3DLayer::OnUpdate
 
 void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)

@@ -3,7 +3,8 @@
 #if defined(ND_PLATFORM_WINDOWS) || defined(ND_PLATFORM_LINUX)
 #pragma message("Including entry point")
 extern Nodens::Application* Nodens::CreateApplication();
-int                         main(int argc, char** argv)
+
+int main(int argc, char** argv)
 {
     (void)argc;
     (void)argv;
@@ -17,5 +18,5 @@ int                         main(int argc, char** argv)
     return 0;
 }
 #else
-#error Nodens platform not supported for entry point!
+#error "Only Windows and Linux platforms are supported!"
 #endif

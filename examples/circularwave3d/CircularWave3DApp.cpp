@@ -6,14 +6,21 @@
 class CircularWave3DApp : public Nodens::Application
 {
 public:
-    CircularWave3DApp() { PushLayer(new CircularWave3DLayer()); }
-
-    CircularWave3DApp(const Nodens::WindowProps props) : Application(props) { PushLayer(new CircularWave3DLayer()); }
+    CircularWave3DApp(const Nodens::ApplicationSpecification& specification) : Application(specification)
+    {
+        PushLayer(new CircularWave3DLayer());
+    }
 
     ~CircularWave3DApp() {}
 };
 
 Nodens::Application* Nodens::CreateApplication()
 {
-    return new CircularWave3DApp(Nodens::WindowProps("[NodensApp Example] CircularWave3D", 800, 600, false));
+    return new CircularWave3DApp({
+        .Name         = "[NodensApp Example] CircularWave3D",
+        .WindowWidth  = 800,
+        .WindowHeight = 600,
+        .EnableGUI    = true,
+        .IsHeadless   = false,
+    });
 }
