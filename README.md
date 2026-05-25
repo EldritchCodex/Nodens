@@ -35,7 +35,7 @@ The framework compiles into a single **static library** that is linked to the ap
 
 ### Prerequisites
 * **C++ Compiler:** A compiler with C++23 support.
-* **CMake:** Version 3.8 or higher.
+* **CMake:** Version 3.26 or higher.
 
 ### Cloning
 To clone the repository run the command
