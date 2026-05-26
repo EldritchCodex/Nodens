@@ -7,9 +7,10 @@
 
 namespace Nodens
 {
+
 OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
 {
-    ND_CORE_ASSERT(windowHandle, "Window hadnle is null!")
+    ND_CORE_ASSERT(windowHandle, "Window handle is null!")
 }
 
 void OpenGLContext::Init()
@@ -31,8 +32,10 @@ void OpenGLContext::Init()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
+
 void OpenGLContext::SwapBuffers()
 {
     glfwSwapBuffers(m_WindowHandle);
 }
+
 } // namespace Nodens

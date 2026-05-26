@@ -24,4 +24,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${NODENS_DIR}/include)
 
 # Link nodens lib
 link_directories()
-target_link_libraries(${PROJECT_NAME} PRIVATE nodens)
+target_link_libraries(${PROJECT_NAME} PRIVATE Nodens)
