@@ -5,7 +5,6 @@
 #include <spdlog/spdlog.h>
 
 #include "Core.h"
-#include "ndpch.h"
 
 namespace Nodens
 {
@@ -26,17 +25,17 @@ private:
 } // namespace Nodens
 
 #define ND_CORE_ERROR(...) ::Nodens::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define ND_CORE_WARN(...)  ::Nodens::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define ND_CORE_INFO(...)  ::Nodens::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define ND_CORE_WARN(...) ::Nodens::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define ND_CORE_INFO(...) ::Nodens::Log::GetCoreLogger()->info(__VA_ARGS__)
 
-#define ND_ERROR(...)      ::Nodens::Log::GetClientLogger()->error(__VA_ARGS__)
-#define ND_WARN(...)       ::Nodens::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define ND_INFO(...)       ::Nodens::Log::GetClientLogger()->info(__VA_ARGS__)
+#define ND_ERROR(...) ::Nodens::Log::GetClientLogger()->error(__VA_ARGS__)
+#define ND_WARN(...) ::Nodens::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define ND_INFO(...) ::Nodens::Log::GetClientLogger()->info(__VA_ARGS__)
 
 #ifdef ND_DEBUG
-    #define ND_CORE_TRACE(...) ::Nodens::Log::GetCoreLogger()->trace(__VA_ARGS__)
-    #define ND_TRACE(...)      ::Nodens::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define ND_CORE_TRACE(...) ::Nodens::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define ND_TRACE(...) ::Nodens::Log::GetClientLogger()->trace(__VA_ARGS__)
 #else
-    #define ND_CORE_TRACE(...)
-    #define ND_TRACE(...)
+#define ND_CORE_TRACE(...)
+#define ND_TRACE(...)
 #endif

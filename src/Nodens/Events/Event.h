@@ -6,7 +6,6 @@
 #include <string>
 
 #include "Nodens/Core.h"
-#include "ndpch.h"
 
 namespace Nodens
 {

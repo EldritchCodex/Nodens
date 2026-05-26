@@ -2,7 +2,7 @@
 
 #include "Core.h"
 #include "Events/Event.h"
-#include "ndpch.h"
+#include <string>
 
 namespace Nodens
 {

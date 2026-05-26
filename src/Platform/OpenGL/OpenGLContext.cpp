@@ -1,9 +1,8 @@
 #include "OpenGLContext.h"
+#include "ndpch.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
-
-#include "ndpch.h"
 
 namespace Nodens
 {

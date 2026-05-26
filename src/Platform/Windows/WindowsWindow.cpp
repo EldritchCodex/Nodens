@@ -1,11 +1,11 @@
 #include "WindowsWindow.h"
+#include "ndpch.h"
 
 #include "Nodens/Events/ApplicationEvent.h"
 #include "Nodens/Events/KeyEvent.h"
 #include "Nodens/Events/MouseEvent.h"
 #include "Nodens/Log.h"
 #include "Platform/OpenGL/OpenGLContext.h"
-#include "ndpch.h"
 #include <tracy/Tracy.hpp>
 
 namespace Nodens

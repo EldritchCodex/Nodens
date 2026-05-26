@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "ndpch.h"
 
 #include <chrono>
 #include <ranges>
@@ -7,7 +8,6 @@
 #include "Input.h"
 #include "Log.h"
 #include "Platform/OpenGL/OpenGLImGuiRenderer.h"
-#include "ndpch.h"
 
 namespace Nodens
 {

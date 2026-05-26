@@ -1,7 +1,7 @@
 #include "WindowsInput.h"
+#include "ndpch.h"
 
 #include "Nodens/Application.h"
-#include "ndpch.h"
 
 #include <GLFW/glfw3.h>
 #include <utility> // Required for std::to_underlying (C++23)

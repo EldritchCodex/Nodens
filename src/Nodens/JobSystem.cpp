@@ -1,6 +1,6 @@
 #include "JobSystem.h"
-
 #include "ndpch.h"
+
 #include <tracy/Tracy.hpp>
 
 namespace Nodens

@@ -1,7 +1,7 @@
 #include "AsyncEventBus.h"
+#include "ndpch.h"
 
 #include "Nodens/Application.h"
-#include "ndpch.h"
 #include <tracy/Tracy.hpp>
 
 namespace Nodens
