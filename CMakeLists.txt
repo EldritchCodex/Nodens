@@ -1,39 +1,79 @@
 ﻿cmake_minimum_required(VERSION 3.26)
+project(Nodens VERSION 0.1.0 LANGUAGES CXX)
 
-# Project setup ////////////////////////////////////////////////////////////////
+
+# Setup ////////////////////////////////////////////////////////////////////////
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-project(Nodens VERSION 0.0.1 LANGUAGES CXX)
 
+
+# Options //////////////////////////////////////////////////////////////////////
 option(ND_ENABLE_PROFILING "Enable profiling using Tracy" ON)
+
 
 # Dependencies /////////////////////////////////////////////////////////////////
 add_subdirectory(vendor)
 
 
 # Engine Core //////////////////////////////////////////////////////////////////
-set(NODENS_SRC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(NODENS_INC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_library(Nodens STATIC
+    src/Nodens/Events/ApplicationEvent.h
+    src/Nodens/Events/AsyncEventBus.cpp
+    src/Nodens/Events/AsyncEventBus.h
+    src/Nodens/Events/Event.h
+    src/Nodens/Events/KeyEvent.h
+    src/Nodens/Events/MouseEvent.h
 
-file(GLOB_RECURSE NODENS_SOURCE_FILES ${NODENS_SRC_PATH}/*.cpp)
-file(GLOB_RECURSE NODENS_HEADER_FILES ${NODENS_INC_PATH}/*.h)
+    src/Nodens/imgui/ImGuiLayer.cpp
+    src/Nodens/imgui/ImGuiLayer.h
+    src/Nodens/imgui/ImGuiRenderer.h
 
-add_library(${PROJECT_NAME} STATIC
-    ${NODENS_SOURCE_FILES}
-    ${NODENS_HEADER_FILES}
+    src/Nodens/Application.cpp
+    src/Nodens/Application.h
+    src/Nodens/Core.h
+    src/Nodens/EntryPoint.h
+    src/Nodens/GraphicsContext.h
+    src/Nodens/Input.h
+    src/Nodens/JobSystem.cpp
+    src/Nodens/JobSystem.h
+    src/Nodens/KeyCodes.h
+    src/Nodens/Layer.cpp
+    src/Nodens/Layer.h
+    src/Nodens/LayerStack.cpp
+    src/Nodens/LayerStack.h
+    src/Nodens/Log.cpp
+    src/Nodens/Log.h
+    src/Nodens/MouseButtonCodes.h
+    src/Nodens/TimeStep.h
+    src/Nodens/Window.h
+
+    src/Platform/OpenGL/OpenGLContext.cpp
+    src/Platform/OpenGL/OpenGLContext.h
+    src/Platform/OpenGL/OpenGLImGuiRenderer.cpp
+    src/Platform/OpenGL/OpenGLImGuiRenderer.h
+
+    src/Platform/Windows/WindowsInput.cpp
+    src/Platform/Windows/WindowsInput.h
+    src/Platform/Windows/WindowsWindow.cpp
+    src/Platform/Windows/WindowsWindow.h
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC
-    ${NODENS_SRC_PATH}
-    ${NODENS_INC_PATH}
-)
 
-target_precompile_headers(${PROJECT_NAME} PUBLIC ${NODENS_SRC_PATH}/ndpch.h)
+# Include Directories & Precompiled Headers ////////////////////////////////////
+target_include_directories(Nodens PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+target_precompile_headers(Nodens PUBLIC src/ndpch.h)
+
+
+# Alias ////////////////////////////////////////////////////////////////////////
+add_library(Nodens::Nodens ALIAS Nodens)
 
 
 # Linking //////////////////////////////////////////////////////////////////////
-target_link_libraries(${PROJECT_NAME} PUBLIC
+target_link_libraries(Nodens PUBLIC
     glad
     glfw
     glm
@@ -43,14 +83,14 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ImPlot3d
 )
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC
+target_compile_definitions(Nodens PUBLIC
     $<$<CONFIG:Debug>:ND_DEBUG>
     $<$<CONFIG:Release>:ND_RELEASE>
     $<$<BOOL:${WIN32}>:ND_PLATFORM_WINDOWS>
 )
 
 if(ND_ENABLE_PROFILING)
-    target_link_libraries(${PROJECT_NAME} PUBLIC TracyClient)
+    target_link_libraries(Nodens PUBLIC TracyClient)
 endif()
 
 
@@ -59,7 +99,6 @@ add_subdirectory(examples)
 
 
 # Doxygen documentation ////////////////////////////////////////////////////////
-# Check if Doxygen is installed
 find_package(Doxygen)
 
 if (DOXYGEN_FOUND)
