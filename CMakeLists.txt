@@ -43,7 +43,7 @@ add_library(Nodens STATIC
     src/Platform/Windows/WindowsWindow.cpp
     src/Platform/Windows/WindowsWindow.h
 
-    include/nodens.h
+    include/Nodens.h
     include/Nodens/Application.h
     include/Nodens/Core.h
     include/Nodens/EntryPoint.h

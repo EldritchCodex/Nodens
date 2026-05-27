@@ -1,7 +1,7 @@
 #define MAIN_APPLICATION_FILE
 
 #include "CircularWave3DLayer.h"
-#include "nodens.h"
+#include "Nodens.h"
 
 class CircularWave3DApp : public Nodens::Application
 {

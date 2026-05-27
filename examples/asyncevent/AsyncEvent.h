@@ -1,5 +1,5 @@
 #pragma once
-#include "nodens.h"
+#include "Nodens.h"
 
 /// @brief Event for a planetary scan.
 /// This event is dispatched when a planetary scan is requested.
