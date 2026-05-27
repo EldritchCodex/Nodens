@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AsyncEvent.h"
-#include "Nodens.h"
+#include "nodens.h"
 #include <Nodens/Events/AsyncEventBus.h>
 #include <implot.h>
 

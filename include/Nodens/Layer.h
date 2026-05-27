@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Nodens/Core.h"
-#include "Nodens/TimeStep.h"
 #include "Nodens/Events/Event.h"
+
+#include "Nodens/TimeStep.h"
+
+#include <string>
 
 namespace Nodens
 {

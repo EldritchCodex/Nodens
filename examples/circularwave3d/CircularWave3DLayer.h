@@ -4,7 +4,7 @@
 #include <list>
 #include <numbers>
 
-#include "Nodens.h" // Nodens Engine lib
+#include "nodens.h" // Nodens Engine lib
 
 /// @brief Layer for the CircularWave3D example.
 /// This layer demonstrates how to use ImPlot and ImPlot3D to visualize a 3D circular wave.

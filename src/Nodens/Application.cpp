@@ -1,12 +1,14 @@
-#include "Application.h"
+#include "Nodens/Application.h"
 #include "ndpch.h"
 
 #include <chrono>
 #include <ranges>
 
-#include "Events/ApplicationEvent.h"
-#include "Input.h"
-#include "Log.h"
+#include "Nodens/Events/ApplicationEvent.h"
+#include "Nodens/Input.h"
+#include "Nodens/LayerStack.h"
+#include "Nodens/Log.h"
+#include "Nodens/imgui/ImGuiLayer.h"
 #include "Platform/OpenGL/OpenGLImGuiRenderer.h"
 
 namespace Nodens
@@ -22,7 +24,8 @@ Application::Application(const ApplicationSpecification& specification) : m_Spec
     ND_CORE_ASSERT(!s_Instance, "Application already exists!");
     s_Instance = this;
 
-    m_JobSystem = std::make_unique<JobSystem>();
+    m_JobSystem  = std::make_unique<JobSystem>();
+    m_LayerStack = std::make_unique<LayerStack>();
 
     if (!m_Specification.IsHeadless)
     {
@@ -34,8 +37,8 @@ Application::Application(const ApplicationSpecification& specification) : m_Spec
     if (m_Specification.EnableGUI && !m_Specification.IsHeadless)
     {
         std::shared_ptr<ImGuiRenderer> imguiRenderer = std::make_shared<OpenGLImGuiRenderer>();
-        m_ImGuiLayer                                 = new ImGuiLayer(imguiRenderer);
-        PushOverlay(m_ImGuiLayer);
+        m_ImGuiLayer                                 = std::make_unique<ImGuiLayer>(imguiRenderer);
+        PushOverlay(m_ImGuiLayer.get());
     }
 }
 
@@ -48,14 +51,14 @@ Application::~Application()
 void Application::PushLayer(Layer* layer)
 {
     ZoneScoped;
-    m_LayerStack.PushLayer(layer);
+    m_LayerStack->PushLayer(layer);
     layer->OnAttach();
 }
 
 void Application::PushOverlay(Layer* overlay)
 {
     ZoneScoped;
-    m_LayerStack.PushOverlay(overlay);
+    m_LayerStack->PushOverlay(overlay);
     overlay->OnAttach();
 }
 
@@ -73,13 +76,13 @@ void Application::Run()
         m_LastFrameTime        = time;
 
         // Update each layer
-        for (Layer* layer : m_LayerStack)
+        for (Layer* layer : *m_LayerStack)
             layer->OnUpdate(timestep);
 
         if (m_ImGuiLayer)
         {
             m_ImGuiLayer->Begin();
-            for (Layer* layer : m_LayerStack)
+            for (Layer* layer : *m_LayerStack)
                 layer->OnImGuiRender(timestep);
             m_ImGuiLayer->End();
         }
@@ -105,7 +108,7 @@ void Application::OnEvent(Event& e)
     dispatcher.Dispatch<WindowCloseEvent>(ND_BIND_EVENT_FN(Application::OnWindowClose));
 
     // Run through LayerStack from last to first
-    for (auto layer : m_LayerStack | std::views::reverse)
+    for (auto layer : *m_LayerStack | std::views::reverse)
     {
         layer->OnEvent(e);
         if (e.Handled)

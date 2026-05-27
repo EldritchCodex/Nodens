@@ -2,6 +2,8 @@
 
 #include "Core.h"
 #include "Events/Event.h"
+
+#include <functional>
 #include <string>
 
 namespace Nodens

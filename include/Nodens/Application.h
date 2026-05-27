@@ -4,9 +4,8 @@
 #include "Nodens/Events/ApplicationEvent.h"
 #include "Nodens/Events/Event.h"
 #include "Nodens/JobSystem.h"
-#include "Nodens/LayerStack.h"
+#include "Nodens/Layer.h"
 #include "Nodens/TimeStep.h"
-#include "Nodens/imgui/ImGuiLayer.h"
 #include "Window.h"
 
 #include <cstdint>
@@ -15,6 +14,9 @@
 
 namespace Nodens
 {
+
+class LayerStack;
+class ImGuiLayer;
 
 struct ApplicationSpecification
 {
@@ -54,9 +56,9 @@ private:
     ApplicationSpecification m_Specification;
     bool                     m_Running = true;
 
-    std::unique_ptr<Window> m_Window;
-    ImGuiLayer*             m_ImGuiLayer = nullptr;
-    LayerStack              m_LayerStack;
+    std::unique_ptr<Window>     m_Window;
+    std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
+    std::unique_ptr<LayerStack> m_LayerStack;
 
     std::unique_ptr<JobSystem> m_JobSystem;
 

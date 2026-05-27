@@ -1,7 +1,7 @@
 #define MAIN_APPLICATION_FILE
 
 #include "JobSystemLayer.h"
-#include "Nodens.h"
+#include "nodens.h"
 
 class JobSystemApp : public Nodens::Application
 {

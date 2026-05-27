@@ -10,6 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Options //////////////////////////////////////////////////////////////////////
 option(ND_ENABLE_PROFILING "Enable profiling using Tracy" ON)
+option(ND_BUILD_EXAMPLES "Build the Nodens example applications" ON)
 
 
 # Dependencies /////////////////////////////////////////////////////////////////
@@ -18,35 +19,19 @@ add_subdirectory(vendor)
 
 # Engine Core //////////////////////////////////////////////////////////////////
 add_library(Nodens STATIC
-    src/Nodens/Events/ApplicationEvent.h
     src/Nodens/Events/AsyncEventBus.cpp
-    src/Nodens/Events/AsyncEventBus.h
-    src/Nodens/Events/Event.h
-    src/Nodens/Events/KeyEvent.h
-    src/Nodens/Events/MouseEvent.h
 
     src/Nodens/imgui/ImGuiLayer.cpp
     src/Nodens/imgui/ImGuiLayer.h
     src/Nodens/imgui/ImGuiRenderer.h
 
     src/Nodens/Application.cpp
-    src/Nodens/Application.h
-    src/Nodens/Core.h
-    src/Nodens/EntryPoint.h
     src/Nodens/GraphicsContext.h
-    src/Nodens/Input.h
     src/Nodens/JobSystem.cpp
-    src/Nodens/JobSystem.h
-    src/Nodens/KeyCodes.h
     src/Nodens/Layer.cpp
-    src/Nodens/Layer.h
     src/Nodens/LayerStack.cpp
     src/Nodens/LayerStack.h
     src/Nodens/Log.cpp
-    src/Nodens/Log.h
-    src/Nodens/MouseButtonCodes.h
-    src/Nodens/TimeStep.h
-    src/Nodens/Window.h
 
     src/Platform/OpenGL/OpenGLContext.cpp
     src/Platform/OpenGL/OpenGLContext.h
@@ -57,15 +42,37 @@ add_library(Nodens STATIC
     src/Platform/Windows/WindowsInput.h
     src/Platform/Windows/WindowsWindow.cpp
     src/Platform/Windows/WindowsWindow.h
+
+    include/nodens.h
+    include/Nodens/Application.h
+    include/Nodens/Core.h
+    include/Nodens/EntryPoint.h
+    include/Nodens/Input.h
+    include/Nodens/JobSystem.h
+    include/Nodens/KeyCodes.h
+    include/Nodens/Layer.h
+    include/Nodens/Log.h
+    include/Nodens/MouseButtonCodes.h
+    include/Nodens/TimeStep.h
+    include/Nodens/Window.h
+    include/Nodens/Events/ApplicationEvent.h
+    include/Nodens/Events/AsyncEventBus.h
+    include/Nodens/Events/Event.h
+    include/Nodens/Events/KeyEvent.h
+    include/Nodens/Events/MouseEvent.h
 )
 
 
 # Include Directories & Precompiled Headers ////////////////////////////////////
-target_include_directories(Nodens PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+target_include_directories(Nodens
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
-target_precompile_headers(Nodens PUBLIC src/ndpch.h)
+
+target_precompile_headers(Nodens PRIVATE src/ndpch.h)
 
 
 # Alias ////////////////////////////////////////////////////////////////////////
@@ -73,14 +80,15 @@ add_library(Nodens::Nodens ALIAS Nodens)
 
 
 # Linking //////////////////////////////////////////////////////////////////////
-target_link_libraries(Nodens PUBLIC
-    glad
-    glfw
-    glm
-    spdlog::spdlog
-    ImGui
-    ImPlot
-    ImPlot3d
+target_link_libraries(Nodens
+    PUBLIC
+        glm
+        spdlog::spdlog
+        glad
+        glfw
+        ImGui
+        ImPlot
+        ImPlot3d
 )
 
 target_compile_definitions(Nodens PUBLIC
@@ -95,7 +103,11 @@ endif()
 
 
 # Examples /////////////////////////////////////////////////////////////////////
-add_subdirectory(examples)
+if(ND_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+# Installation & Exporting
 
 
 # Doxygen documentation ////////////////////////////////////////////////////////

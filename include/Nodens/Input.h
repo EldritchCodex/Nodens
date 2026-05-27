@@ -4,6 +4,8 @@
 #include "Nodens/KeyCodes.h"
 #include "Nodens/MouseButtonCodes.h"
 
+#include <utility>
+
 namespace Nodens
 {
 /// @brief      A singleton-based class for handling keyboard and mouse input.

@@ -2,6 +2,7 @@
 
 #include <concepts> // C++20: Required for 'concept' keyword
 #include <functional>
+#include <ostream>
 #include <sstream>
 #include <string>
 
