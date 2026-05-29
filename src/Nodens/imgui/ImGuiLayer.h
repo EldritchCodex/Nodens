@@ -5,6 +5,8 @@
 #include "Nodens/Events/MouseEvent.h"
 #include "Nodens/Layer.h"
 
+#include <memory>
+
 #include "Nodens/imgui/ImGuiRenderer.h" // Include the interface
 
 namespace Nodens

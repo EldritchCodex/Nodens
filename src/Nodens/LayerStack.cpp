@@ -1,5 +1,6 @@
 #include "LayerStack.h"
-#include "ndpch.h"
+
+#include <algorithm>
 
 namespace Nodens
 {

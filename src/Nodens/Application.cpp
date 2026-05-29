@@ -1,7 +1,7 @@
 #include "Nodens/Application.h"
-#include "ndpch.h"
 
 #include <chrono>
+#include <functional>
 #include <ranges>
 
 #include "Nodens/Events/ApplicationEvent.h"

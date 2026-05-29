@@ -2,6 +2,8 @@
 
 #include "Nodens/Input.h"
 
+#include <utility>
+
 namespace Nodens
 {
 /// @brief Windows specific implementation of the Input interface.

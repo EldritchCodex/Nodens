@@ -1,5 +1,4 @@
 #include "Nodens/Layer.h"
-#include "ndpch.h"
 
 namespace Nodens
 {

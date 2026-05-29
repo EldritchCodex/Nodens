@@ -1,5 +1,4 @@
 #include "Nodens/Log.h"
-#include "ndpch.h"
 
 namespace Nodens
 {

@@ -1,5 +1,6 @@
 #include "Nodens/Events/AsyncEventBus.h"
-#include "ndpch.h"
+
+#include <cstring>
 
 #include "Nodens/Application.h"
 #include <tracy/Tracy.hpp>

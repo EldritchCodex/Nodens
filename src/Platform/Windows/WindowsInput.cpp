@@ -1,11 +1,9 @@
 #include "WindowsInput.h"
-#include "ndpch.h"
 
 #include "Nodens/Application.h"
 
 #include <GLFW/glfw3.h>
-#include <utility> // Required for std::to_underlying (C++23)
-                   // converts the strongly typed enum to uint16_t/int
+#include <utility>
 
 namespace Nodens
 {

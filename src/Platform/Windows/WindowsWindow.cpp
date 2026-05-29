@@ -1,5 +1,4 @@
 #include "WindowsWindow.h"
-#include "ndpch.h"
 
 #include "Nodens/Events/ApplicationEvent.h"
 #include "Nodens/Events/KeyEvent.h"

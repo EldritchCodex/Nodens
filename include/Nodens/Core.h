@@ -1,28 +1,29 @@
 #pragma once
 
 #include <concepts>
+#include <functional>
 #include <memory>
 
 #ifdef _WIN32
-    #define ND_PLATFORM_WINDOWS
-    #ifdef _WIN64
-        #define ND_PLATFORM_WINDOWS_X64
-    #else
-        #define ND_PLATFORM_WINDOWS_X86
-    #endif
-#elif defined(__linux__)
-    #define ND_PLATFORM_LINUX
+#define ND_PLATFORM_WINDOWS
+#ifdef _WIN64
+#define ND_PLATFORM_WINDOWS_X64
 #else
-    #error "Unsupported platform!"
+#define ND_PLATFORM_WINDOWS_X86
+#endif
+#elif defined(__linux__)
+#define ND_PLATFORM_LINUX
+#else
+#error "Unsupported platform!"
 #endif
 
 #if defined(_MSC_VER)
-    #define ND_DEBUGBREAK() __debugbreak()
+#define ND_DEBUGBREAK() __debugbreak()
 #elif defined(__clang__) || defined(__GNUC__)
-    #define ND_DEBUGBREAK() __builtin_trap()
+#define ND_DEBUGBREAK() __builtin_trap()
 #else
-    #include <cstdlib>
-    #define ND_DEBUGBREAK() std::abort()
+#include <cstdlib>
+#define ND_DEBUGBREAK() std::abort()
 #endif
 
 #define ND_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
@@ -49,7 +50,7 @@ template <std::integral T = int> consteval T Bit(T x)
         if (!(x))                                                                                                      \
         {                                                                                                              \
             ND_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                            \
-            ND_DEBUGBREAK();                                                                                            \
+            ND_DEBUGBREAK();                                                                                           \
         }                                                                                                              \
     }
 #define ND_CORE_ASSERT(x, ...)                                                                                         \
@@ -57,7 +58,7 @@ template <std::integral T = int> consteval T Bit(T x)
         if (!(x))                                                                                                      \
         {                                                                                                              \
             ND_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);                                                       \
-            ND_DEBUGBREAK();                                                                                            \
+            ND_DEBUGBREAK();                                                                                           \
         }                                                                                                              \
     }
 
