@@ -1,4 +1,5 @@
 #include "Nodens/JobSystem.h"
+#include "Nodens/Log.h"
 #include "ndpch.h"
 
 #include <tracy/Tracy.hpp>

@@ -1,4 +1,5 @@
 #include "OpenGLContext.h"
+#include "Nodens/Log.h"
 #include "ndpch.h"
 
 #include <GLFW/glfw3.h>
