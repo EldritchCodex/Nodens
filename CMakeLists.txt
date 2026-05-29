@@ -82,7 +82,6 @@ add_library(Nodens::Nodens ALIAS Nodens)
 # Linking //////////////////////////////////////////////////////////////////////
 target_link_libraries(Nodens
     PUBLIC
-        glm
         spdlog::spdlog
         glad
         glfw
@@ -106,8 +105,6 @@ endif()
 if(ND_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
-
-# Installation & Exporting
 
 
 # Doxygen documentation ////////////////////////////////////////////////////////
