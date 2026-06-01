@@ -188,8 +188,11 @@ All dependencies are resolved automatically at configure time via CMake `FetchCo
 # References
 
 [1] The Cherno (no date) Game Engine Series, YouTube. Available at: http://www.youtube.com/playlist?list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT.
+
 [2] Gregory, J. (2019) *Game Engine Architecture*. Third edition. CRC Press.
+
 [3] Horton, I. and Van Weert, P. (2023) Beginning C++23: From Beginner to Pro. Berkeley, CA: Apress. Available at: https://doi.org/10.1007/978-1-4842-9343-0.
+
 [4] Angel, E. and Shreiner, D. (2012) Interactive computer graphics: a top-down approach with shader-based OpenGL. 6th ed. Boston: Addison-Wesley.
 
 # License
