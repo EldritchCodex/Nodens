@@ -3,17 +3,30 @@
 
 # Introduction
 
-**Nodens** aims to be a simple, C++23 framework designed for quickly developing interactive desktop applications with a immediate mode graphical user interface.
+**Nodens** aims to be a simple, C++23 framework designed for quickly developing interactive desktop applications with an immediate mode graphical user interface.
 
 Built upon C++23 standards, the framework unifies amazing third-party libraries, like [ImGui](https://github.com/ocornut/imgui) and [Tracy](https://github.com/wolfpld/tracy), with a custom, multithreaded core, providing a robust foundation for rapid development/prototyping of interactive applications ranging from simple tools to game engines.
 
 The framework compiles into a single **static library** that is linked to the application to generate a **single executable file to ensure applications remain portable** and to **streamline distribution.**
 
 
+# Architecture
+
+Nodens now follows a **module-first architecture** across the framework and examples.
+
+- Public interfaces are authored as C++ module interface units (`.cppm`) using `export module`.
+- Implementations live in module implementation units (`.cpp`) using `module ...`.
+- Internal framework APIs are consumed through explicit imports (e.g. `import Nodens.Application;`) instead of local header includes.
+- C++ standard library usage in module units is based on `import std;`.
+- Third-party ecosystems (GLFW, ImGui, ImPlot, Tracy, etc.) remain include-based where needed, typically isolated in module global fragments or implementation units.
+
+This keeps ownership boundaries explicit and makes dependencies easier to reason about as the codebase grows.
+
+
 # Key Features
 
 ### 🖥️ Core Architecture
-- **C++23 Standard:** Built using C++23 features (e.g. `std::jthread`, `std::stop_token`, concepts and `std::to_underlying`).
+- **C++23 + Modules:** Built with C++23 features (e.g. `std::jthread`, `std::stop_token`, concepts and `std::to_underlying`) and a module-first design (`export module`, `import std;`, `import Nodens.*`).
 - **Layer Stack System:** Flexible application flow control allowing for modular updates and rendering layers (e.g., overlay, game world, UI).
 - **Window Management:** cross-platform windowing and input polling via [GLFW](https://www.glfw.org/).
 
@@ -27,21 +40,54 @@ The framework compiles into a single **static library** that is linked to the ap
 - **Rendering Backend:** OpenGL context management initialized via [GLAD](https://glad.dav1d.de/).
 
 ### 🛠️ Profiling & Debugging
-- **Integrated Frame Profiling:** Built-in support for [Tracy Profiler](https://github.com/wolfpld/tracy) (v0.13.0) to analyze frame time, memory usage, and lock contention in real-time.
+- **Integrated Frame Profiling:** Built-in support for [Tracy Profiler](https://github.com/wolfpld/tracy) to analyze frame time, memory usage, and lock contention in real-time.
 - **Logging:** Integrated [SPDLog](https://github.com/gabime/spdlog) logging system.
 
 
 # Getting Started
 
 ### Prerequisites
-* **C++ Compiler:** A compiler with C++23 support.
-* **CMake:** Version 3.26 or higher.
+* **C++ Compiler:** A compiler with strong C++23 modules support (development is being done with Clang 22.1.6).
+* **CMake:** Version **3.30** or higher.
+
+### Toolchain Notes (Modules)
+- Nodens uses CMake module file sets (`FILE_SET ... TYPE CXX_MODULES`) for exported module interfaces.
+- Build configuration enables C++ standard library module imports (`import std;`) through CMake's module settings.
+- If you use an older or partially supported compiler/CMake combination, module discovery or BMI generation may fail during configuration/build.
 
 ### Cloning
 To clone the repository run the command
 ```shell
 git clone https://github.com/EldritchCodex/Nodens.git --recursive
 ```
+
+### Using Nodens Modules in Applications
+Applications consume Nodens through module imports. A typical entry unit imports framework modules directly:
+
+```cpp
+import Nodens.Application;
+import Nodens.Log;
+```
+
+Example applications in `examples/` follow the same model and also define their own local modules via `.cppm` files.
+
+### Optional Framework-Provided Entry Point
+If you prefer not to write a `main()` for simple example applications, Nodens provides an optional framework-supplied entry point. Link your executable against the `Nodens::DefaultMain` target and omit your own `main()` implementation. The default `main()` performs the minimal, correct startup sequence:
+
+- Calls `Nodens::InitializeLogging()`
+- Calls the application factory `Nodens::CreateApplication()` (must be implemented by the application)
+- Runs the application (`Application::Run()`)
+- Destroys the application instance and returns
+
+Usage (CMake):
+
+```cmake
+target_link_libraries(yourapp PRIVATE Nodens::DefaultMain)
+```
+
+Notes:
+- If your executable defines `main()` already, keep it — do not link `Nodens::DefaultMain` to avoid duplicate `main` symbols.
+- The `Nodens::CreateApplication()` factory must be present in your code (examples define this in their module interface units).
 
 ### Example Applications
 Examples of application codes are provided in the `examples/` folder.

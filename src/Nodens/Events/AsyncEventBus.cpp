@@ -1,9 +1,12 @@
-#include "Nodens/Events/AsyncEventBus.h"
+module;
 
-#include <cstring>
-
-#include "Nodens/Application.h"
 #include <tracy/Tracy.hpp>
+
+module Nodens.AsyncEventBus;
+
+import Nodens.Application;
+import Nodens.Events;
+import std;
 
 namespace Nodens
 {
@@ -32,7 +35,7 @@ void AsyncEventBus::PublishInternal(std::shared_ptr<Event> event)
             // Profile the asynchronous execution (the actual work)
             ZoneScoped;
             const char* name = event->GetName();
-            ZoneName(name, strlen(name));
+            ZoneName(name, std::strlen(name));
 
             std::vector<EventHandler> handlers;
             {

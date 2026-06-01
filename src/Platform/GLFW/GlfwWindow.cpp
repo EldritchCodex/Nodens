@@ -1,34 +1,93 @@
-#include "WindowsWindow.h"
+module;
 
-#include "Nodens/Events/ApplicationEvent.h"
-#include "Nodens/Events/KeyEvent.h"
-#include "Nodens/Events/MouseEvent.h"
-#include "Nodens/Log.h"
-#include "Platform/OpenGL/OpenGLContext.h"
+#include <GLFW/glfw3.h>
+
 #include <tracy/Tracy.hpp>
+
+module Nodens.Window;
+
+import Nodens.Events;
+import Nodens.GraphicsContext;
+import Nodens.Log;
+import Nodens.OpenGLContext;
+import std;
 
 namespace Nodens
 {
+
+class GlfwWindow : public Window
+{
+public:
+    GlfwWindow(const WindowProps& props)
+    {
+        Init(props);
+    }
+
+    ~GlfwWindow() override {}
+
+    void OnUpdate() override
+    {
+        ZoneScoped;
+
+        glfwPollEvents();
+        m_Context->SwapBuffers();
+    }
+
+    unsigned int GetWidth() const override { return m_Data.Width; }
+    unsigned int GetHeight() const override { return m_Data.Height; }
+
+    void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+    void SetVSync(bool enabled) override
+    {
+        if (enabled)
+            glfwSwapInterval(1);
+        else
+            glfwSwapInterval(0);
+
+        m_Data.VSync = enabled;
+    }
+
+    bool IsVSync() const override
+    {
+        return m_Data.VSync;
+    }
+
+    void* GetNativeWindow() const override { return m_Window; }
+
+private:
+    void Init(const WindowProps& props);
+    void Shutdown();
+
+private:
+    GLFWwindow*      m_Window = nullptr;
+    GraphicsContext* m_Context = nullptr;
+
+    struct WindowData
+    {
+        std::string  Title;
+        unsigned int Width;
+        unsigned int Height;
+        bool         VSync;
+
+        EventCallbackFn EventCallback;
+    };
+
+    WindowData m_Data;
+};
+
 static bool s_GLFWInitialized = false;
 
 static void GLFWErrorCallback(int error, const char* description)
 {
-    ND_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+    CoreLogger().error("GLFW Error ({}): {}", error, description);
 }
 
 Window* Window::Create(const WindowProps& props)
 {
-    return new WindowsWindow(props);
+    return new GlfwWindow(props);
 }
 
-WindowsWindow::WindowsWindow(const WindowProps& props)
-{
-    Init(props);
-}
-
-WindowsWindow::~WindowsWindow() {}
-
-void WindowsWindow::Init(const WindowProps& props)
+void GlfwWindow::Init(const WindowProps& props)
 {
     ZoneScoped;
 
@@ -37,13 +96,14 @@ void WindowsWindow::Init(const WindowProps& props)
     m_Data.Height = props.Height;
     m_Data.VSync  = props.VSync;
 
-    ND_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+    CoreLogger().info("Creating window {} ({}, {})", props.Title, props.Width, props.Height);
 
     if (!s_GLFWInitialized)
     {
         // TODO: glfwTerminate on system shutdown
         int succes = glfwInit();
-        ND_CORE_ASSERT(succes, "Could not initialize GLFW!");
+        if (!succes)
+            FatalCore("Could not initialize GLFW!");
         glfwSetErrorCallback(GLFWErrorCallback);
 
         // Set OpenGL version to 4.6
@@ -160,31 +220,8 @@ void WindowsWindow::Init(const WindowProps& props)
                              });
 }
 
-void WindowsWindow::Shutdown()
+void GlfwWindow::Shutdown()
 {
     glfwDestroyWindow(m_Window);
-}
-
-void WindowsWindow::OnUpdate()
-{
-    ZoneScoped;
-
-    glfwPollEvents();
-    m_Context->SwapBuffers();
-}
-
-void WindowsWindow::SetVSync(bool enabled)
-{
-    if (enabled)
-        glfwSwapInterval(1);
-    else
-        glfwSwapInterval(0);
-
-    m_Data.VSync = enabled;
-}
-
-bool WindowsWindow::IsVSync() const
-{
-    return m_Data.VSync;
 }
 } // namespace Nodens

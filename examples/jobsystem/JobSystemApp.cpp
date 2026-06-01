@@ -1,7 +1,6 @@
-#define MAIN_APPLICATION_FILE
-
-#include "JobSystemLayer.h"
-#include "Nodens.h"
+import Nodens.Application;
+import Nodens.Log;
+import Example.JobSystemLayer;
 
 class JobSystemApp : public Nodens::Application
 {
@@ -14,7 +13,9 @@ public:
     ~JobSystemApp() {}
 };
 
-Nodens::Application* Nodens::CreateApplication()
+namespace Nodens
+{
+Application* CreateApplication()
 {
     return new JobSystemApp({
         .Name         = "[NodensApp Example] JobSystem",
@@ -24,3 +25,20 @@ Nodens::Application* Nodens::CreateApplication()
         .IsHeadless   = false,
     });
 }
+} // namespace Nodens
+
+#ifndef ND_EXCLUDE_APP_MAIN
+int main(int argc, char** argv)
+{
+    (void)argc;
+    (void)argv;
+
+    Nodens::InitializeLogging();
+
+    auto app = Nodens::CreateApplication();
+    app->Run();
+    delete app;
+
+    return 0;
+}
+#endif

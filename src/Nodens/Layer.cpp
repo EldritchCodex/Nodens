@@ -1,4 +1,6 @@
-#include "Nodens/Layer.h"
+module Nodens.Layer;
+
+import std;
 
 namespace Nodens
 {

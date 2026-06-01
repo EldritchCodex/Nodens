@@ -1,6 +1,14 @@
-#include "CircularWave3DLayer.h"
+module;
 
-#include <cmath>
+#include <imgui.h>
+#include <implot.h>
+#include <implot3d.h>
+#include <tracy/Tracy.hpp>
+
+module Example.CircularWave3DLayer;
+
+import Nodens.Log;
+import std;
 
 CircularWave3DLayer::CircularWave3DLayer() : Layer("CircularWave3D")
 {
@@ -29,7 +37,8 @@ void CircularWave3DLayer::OnUpdate(Nodens::TimeStep previous_update_duration)
         ys[i] = std::cos(kFrequency * t[i]);
     }
 
-    ND_INFO("Updated CircularWave3DLayer with timestep: {0:.3f} ms", previous_update_duration.GetMilliseconds());
+    Nodens::ClientLogger().info(
+        "Updated CircularWave3DLayer with timestep: {:.3f} ms", previous_update_duration.GetMilliseconds());
 } // CircularWave3DLayer::OnUpdate
 
 void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)
@@ -64,10 +73,5 @@ void CircularWave3DLayer::OnEvent(Nodens::Event& event)
     ZoneScoped;
 
     Nodens::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<Nodens::WindowResizeEvent>(ND_BIND_EVENT_FN(CircularWave3DLayer::OnWindowResizeEvent));
+    dispatcher.Dispatch<Nodens::WindowResizeEvent>([](Nodens::WindowResizeEvent&) { return true; });
 } // CircularWave3DLayer::OnEvent
-
-bool CircularWave3DLayer::OnWindowResizeEvent(Nodens::WindowResizeEvent& event)
-{
-    return true;
-} // CircularWave3DLayer::OnMouseMovedEvent

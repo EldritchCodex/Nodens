@@ -1,12 +1,10 @@
-#pragma once
+export module Nodens.LayerStack;
 
-#include "Nodens/Layer.h"
+import Nodens.Layer;
+import std;
 
-#include <vector>
-
-namespace Nodens
+export namespace Nodens
 {
-/* Owned by Application */
 class LayerStack
 {
 public:

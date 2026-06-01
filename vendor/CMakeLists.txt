@@ -10,21 +10,8 @@ add_subdirectory(GLFW)
 add_subdirectory(spdlog)
 
 # Tracy
-if(ND_ENABLE_PROFILING)
-    add_subdirectory(tracy)
-endif()
-
-# GLM (Header Only)
-add_library(glm INTERFACE)
-target_include_directories(glm INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glm)
-target_compile_definitions(glm INTERFACE
-    GLM_FORCE_RADIANS
-    GLM_FORCE_DEPTH_ZERO_TO_ONE
-    # Enable SIMD optimizations explicitly
-    GLM_FORCE_INTRINSICS
-    # Optional: Enforce alignment (use with care regarding struct padding)
-    # GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
-)
+set(TRACY_ENABLE ${ND_ENABLE_PROFILING})
+add_subdirectory(tracy)
 
 
 # Manual Builds ////////////////////////////////////////////////////////////////
@@ -32,15 +19,15 @@ target_compile_definitions(glm INTERFACE
 set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/imgui")
 
 add_library(ImGui STATIC
-# Core
-${IMGUI_DIR}/imgui.cpp
-${IMGUI_DIR}/imgui_draw.cpp
-${IMGUI_DIR}/imgui_tables.cpp
-${IMGUI_DIR}/imgui_widgets.cpp
+    # Core
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
 
-# Backends
-${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
-${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+    # Backends
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
 # Define include paths explicitly to ensure they are found
@@ -68,8 +55,8 @@ endif()
 # --- ImPlot ---
 set(IMPLOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/implot")
 add_library(ImPlot STATIC
-${IMPLOT_DIR}/implot.cpp
-${IMPLOT_DIR}/implot_items.cpp
+    ${IMPLOT_DIR}/implot.cpp
+    ${IMPLOT_DIR}/implot_items.cpp
 )
 target_include_directories(ImPlot PUBLIC ${IMPLOT_DIR})
 target_link_libraries(ImPlot PUBLIC ImGui)
@@ -77,8 +64,8 @@ target_link_libraries(ImPlot PUBLIC ImGui)
 # --- ImPlot3d ---
 set(IMPLOT3D_DIR "${CMAKE_CURRENT_SOURCE_DIR}/implot3d")
 add_library(ImPlot3d STATIC
-${IMPLOT3D_DIR}/implot3d.cpp
-${IMPLOT3D_DIR}/implot3d_items.cpp
+    ${IMPLOT3D_DIR}/implot3d.cpp
+    ${IMPLOT3D_DIR}/implot3d_items.cpp
 )
 target_include_directories(ImPlot3d PUBLIC ${IMPLOT3D_DIR})
 target_link_libraries(ImPlot3d PUBLIC ImGui)

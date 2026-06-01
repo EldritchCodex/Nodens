@@ -1,14 +1,12 @@
-#pragma once
+export module Nodens.KeyCodes;
 
-#include <cstdint>
-#include <ostream>
-#include <utility>
+import std;
 
-namespace Nodens
+export namespace Nodens
 {
 /// @brief      Key codes for keyboard keys.
 ///             These key codes are based on the key codes from glfw3.h.
-enum class KeyboardKey : uint16_t
+enum class KeyboardKey : std::uint16_t
 {
     // From glfw3.h
     Space      = 32, ///< The Space key.

@@ -1,6 +1,6 @@
-#include "LayerStack.h"
+module Nodens.LayerStack;
 
-#include <algorithm>
+import std;
 
 namespace Nodens
 {

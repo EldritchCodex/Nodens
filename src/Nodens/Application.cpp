@@ -1,15 +1,17 @@
-#include "Nodens/Application.h"
+module;
 
-#include <chrono>
-#include <functional>
-#include <ranges>
+#include <tracy/Tracy.hpp>
 
-#include "Nodens/Events/ApplicationEvent.h"
-#include "Nodens/Input.h"
-#include "Nodens/LayerStack.h"
-#include "Nodens/Log.h"
-#include "Nodens/imgui/ImGuiLayer.h"
-#include "Platform/OpenGL/OpenGLImGuiRenderer.h"
+module Nodens.Application;
+
+import Nodens.TimeStep;
+import Nodens.Events;
+import Nodens.LayerStack;
+import Nodens.Log;
+import Nodens.ImGuiRenderer;
+import Nodens.ImGuiLayer;
+import Nodens.OpenGLImGuiRenderer;
+import std;
 
 namespace Nodens
 {
@@ -21,7 +23,8 @@ Application::Application(const ApplicationSpecification& specification) : m_Spec
     ZoneScoped;
 
     // Ensure strictly one Application instance exists
-    ND_CORE_ASSERT(!s_Instance, "Application already exists!");
+    if (s_Instance)
+        FatalCore("Application already exists!");
     s_Instance = this;
 
     m_JobSystem  = std::make_unique<JobSystem>();
@@ -31,7 +34,7 @@ Application::Application(const ApplicationSpecification& specification) : m_Spec
     {
         WindowProps props(m_Specification.Name, m_Specification.WindowWidth, m_Specification.WindowHeight);
         m_Window = std::unique_ptr<Window>(Window::Create(props));
-        m_Window->SetEventCallback(ND_BIND_EVENT_FN(Application::OnEvent));
+        m_Window->SetEventCallback([this](Event& event) { OnEvent(event); });
     }
 
     if (m_Specification.EnableGUI && !m_Specification.IsHeadless)
@@ -60,6 +63,28 @@ void Application::PushOverlay(Layer* overlay)
     ZoneScoped;
     m_LayerStack->PushOverlay(overlay);
     overlay->OnAttach();
+}
+
+Window& Application::GetWindow()
+{
+    if (!m_Window)
+        FatalCore("Attempted to access Window in a headless application!");
+    return *m_Window;
+}
+
+JobSystem& Application::GetJobSystem()
+{
+    return *m_JobSystem;
+}
+
+const ApplicationSpecification& Application::GetSpecification() const
+{
+    return m_Specification;
+}
+
+Application& Application::Get()
+{
+    return *s_Instance;
 }
 
 void Application::Run()
@@ -105,7 +130,7 @@ void Application::OnEvent(Event& e)
     ZoneScoped;
 
     EventDispatcher dispatcher(e);
-    dispatcher.Dispatch<WindowCloseEvent>(ND_BIND_EVENT_FN(Application::OnWindowClose));
+    dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& event) { return OnWindowClose(event); });
 
     // Run through LayerStack from last to first
     for (auto layer : *m_LayerStack | std::views::reverse)

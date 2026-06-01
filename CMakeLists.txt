@@ -1,83 +1,84 @@
-﻿cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.30)
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
 project(Nodens VERSION 0.1.0 LANGUAGES CXX)
 
+# -----------------------------------------------------------------------------
+# Core Build Settings
+# -----------------------------------------------------------------------------
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_MODULE_STD ON)
+set(SPDLOG_ENABLE_PCH OFF CACHE BOOL "" FORCE)
 
-# Setup ////////////////////////////////////////////////////////////////////////
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-
-# Options //////////////////////////////////////////////////////////////////////
+# -----------------------------------------------------------------------------
+# Developer Options (primary touchpoints)
+# -----------------------------------------------------------------------------
 option(ND_ENABLE_PROFILING "Enable profiling using Tracy" ON)
-option(ND_BUILD_EXAMPLES "Build the Nodens example applications" ON)
 
+# Default to building examples only when Nodens is the top-level project,
+# not when consumed via add_subdirectory().
+if(PROJECT_IS_TOP_LEVEL)
+    option(ND_BUILD_EXAMPLES "Build the Nodens example applications" ON)
+else()
+    option(ND_BUILD_EXAMPLES "Build the Nodens example applications" OFF)
+endif()
 
-# Dependencies /////////////////////////////////////////////////////////////////
+# -----------------------------------------------------------------------------
+# Dependencies
+# -----------------------------------------------------------------------------
 add_subdirectory(vendor)
 
-
-# Engine Core //////////////////////////////////////////////////////////////////
-add_library(Nodens STATIC
+# -----------------------------------------------------------------------------
+# Developer Touchpoint: Framework Source Lists
+# -----------------------------------------------------------------------------
+set(ND_FRAMEWORK_IMPLEMENTATION_UNITS
     src/Nodens/Events/AsyncEventBus.cpp
-
     src/Nodens/imgui/ImGuiLayer.cpp
-    src/Nodens/imgui/ImGuiLayer.h
-    src/Nodens/imgui/ImGuiRenderer.h
-
     src/Nodens/Application.cpp
-    src/Nodens/GraphicsContext.h
     src/Nodens/JobSystem.cpp
     src/Nodens/Layer.cpp
     src/Nodens/LayerStack.cpp
-    src/Nodens/LayerStack.h
-    src/Nodens/Log.cpp
-
     src/Platform/OpenGL/OpenGLContext.cpp
-    src/Platform/OpenGL/OpenGLContext.h
     src/Platform/OpenGL/OpenGLImGuiRenderer.cpp
-    src/Platform/OpenGL/OpenGLImGuiRenderer.h
-
-    src/Platform/Windows/WindowsInput.cpp
-    src/Platform/Windows/WindowsInput.h
-    src/Platform/Windows/WindowsWindow.cpp
-    src/Platform/Windows/WindowsWindow.h
-
-    include/Nodens.h
-    include/Nodens/Application.h
-    include/Nodens/Core.h
-    include/Nodens/EntryPoint.h
-    include/Nodens/Input.h
-    include/Nodens/JobSystem.h
-    include/Nodens/KeyCodes.h
-    include/Nodens/Layer.h
-    include/Nodens/Log.h
-    include/Nodens/MouseButtonCodes.h
-    include/Nodens/TimeStep.h
-    include/Nodens/Window.h
-    include/Nodens/Events/ApplicationEvent.h
-    include/Nodens/Events/AsyncEventBus.h
-    include/Nodens/Events/Event.h
-    include/Nodens/Events/KeyEvent.h
-    include/Nodens/Events/MouseEvent.h
+    src/Platform/GLFW/GlfwInput.cpp
+    src/Platform/GLFW/GlfwWindow.cpp
 )
 
-
-# Include Directories & Precompiled Headers ////////////////////////////////////
-target_include_directories(Nodens
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-    PRIVATE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+set(ND_FRAMEWORK_MODULE_INTERFACES
+    src/Nodens/Application.cppm
+    src/Nodens/GraphicsContext.cppm
+    src/Nodens/Input.cppm
+    src/Nodens/TimeStep.cppm
+    src/Nodens/JobSystem.cppm
+    src/Nodens/KeyCodes.cppm
+    src/Nodens/Layer.cppm
+    src/Nodens/LayerStack.cppm
+    src/Nodens/Log.cppm
+    src/Nodens/MouseButtonCodes.cppm
+    src/Nodens/imgui/ImGuiRenderer.cppm
+    src/Nodens/imgui/ImGuiLayer.cppm
+    src/Nodens/Window.cppm
+    src/Platform/OpenGL/OpenGLContext.cppm
+    src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
+    src/Nodens/Events/Event.cppm
+    src/Nodens/Events/AsyncEventBus.cppm
 )
 
-
-# Alias ////////////////////////////////////////////////////////////////////////
+# -----------------------------------------------------------------------------
+# Framework Target
+# -----------------------------------------------------------------------------
+add_library(Nodens STATIC ${ND_FRAMEWORK_IMPLEMENTATION_UNITS})
 add_library(Nodens::Nodens ALIAS Nodens)
 
+target_sources(Nodens
+    PUBLIC
+        FILE_SET nodens_modules TYPE CXX_MODULES
+        FILES ${ND_FRAMEWORK_MODULE_INTERFACES}
+)
 
-# Linking //////////////////////////////////////////////////////////////////////
 target_link_libraries(Nodens
     PUBLIC
         spdlog::spdlog
@@ -86,34 +87,45 @@ target_link_libraries(Nodens
         ImGui
         ImPlot
         ImPlot3d
+        TracyClient
 )
 
 target_compile_definitions(Nodens PUBLIC
     $<$<CONFIG:Debug>:ND_DEBUG>
     $<$<CONFIG:Release>:ND_RELEASE>
-    $<$<BOOL:${WIN32}>:ND_PLATFORM_WINDOWS>
+    $<$<BOOL:${ND_ENABLE_PROFILING}>:ND_PROFILING_ENABLED>
 )
 
-if(ND_ENABLE_PROFILING)
-    target_link_libraries(Nodens PUBLIC TracyClient)
-endif()
+# -----------------------------------------------------------------------------
+# Optional Framework-Provided main()
+# -----------------------------------------------------------------------------
+add_library(NodensDefaultMain STATIC
+    src/Nodens/DefaultMain.cpp
+)
 
+target_link_libraries(NodensDefaultMain
+    PUBLIC
+        Nodens::Nodens
+)
 
-# Examples /////////////////////////////////////////////////////////////////////
+add_library(Nodens::DefaultMain ALIAS NodensDefaultMain)
+
+# -----------------------------------------------------------------------------
+# Examples
+# -----------------------------------------------------------------------------
 if(ND_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
+# -----------------------------------------------------------------------------
+# Documentation
+# -----------------------------------------------------------------------------
+find_package(Doxygen QUIET)
 
-# Doxygen documentation ////////////////////////////////////////////////////////
-find_package(Doxygen)
-
-if (DOXYGEN_FOUND)
-    # Set input and output files
+if(DOXYGEN_FOUND)
     set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-    # Define the Doxygen target
     add_custom_target(nodens-docs
         COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -121,10 +133,5 @@ if (DOXYGEN_FOUND)
         VERBATIM
     )
 
-    # Auto-configure the Doxyfile
     configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-
-    message(STATUS "Doxygen found. Target 'nodens-docs' created.")
-else()
-    message(WARNING "Doxygen not found. Documentation target will not be created.")
 endif()

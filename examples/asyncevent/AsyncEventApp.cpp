@@ -1,7 +1,6 @@
-#define MAIN_APPLICATION_FILE
-
-#include "AsyncEventLayer.h"
-#include "Nodens.h"
+import Nodens.Application;
+import Nodens.Log;
+import Example.AsyncEventLayer;
 
 class AsyncEventApp : public Nodens::Application
 {
@@ -14,7 +13,9 @@ public:
     ~AsyncEventApp() {}
 };
 
-Nodens::Application* Nodens::CreateApplication()
+namespace Nodens
+{
+Application* CreateApplication()
 {
     return new AsyncEventApp({
         .Name         = "[NodensApp Example] AsyncEvents",
@@ -24,3 +25,20 @@ Nodens::Application* Nodens::CreateApplication()
         .IsHeadless   = false,
     });
 }
+} // namespace Nodens
+
+#ifndef ND_EXCLUDE_APP_MAIN
+int main(int argc, char** argv)
+{
+    (void)argc;
+    (void)argv;
+
+    Nodens::InitializeLogging();
+
+    auto app = Nodens::CreateApplication();
+    app->Run();
+    delete app;
+
+    return 0;
+}
+#endif

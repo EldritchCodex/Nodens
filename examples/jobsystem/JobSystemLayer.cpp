@@ -1,9 +1,14 @@
-#include "JobSystemLayer.h"
+module;
 
 #include <imgui.h>
 
 #include <chrono>
 #include <thread>
+#include <tracy/Tracy.hpp>
+
+module Example.JobSystemLayer;
+
+import Nodens.Log;
 
 JobSystemLayer::JobSystemLayer() : Layer("JobSystemLayer") {}
 
@@ -25,7 +30,7 @@ void JobSystemLayer::OnUpdate(Nodens::TimeStep ts)
 
             // 2. Mark as done
             m_IsJobRunning = false;
-            ND_INFO("Background job finished! Result: {0}", m_JobResult);
+            Nodens::ClientLogger().info("Background job finished! Result: {}", m_JobResult);
         }
     }
 }
@@ -59,9 +64,9 @@ void JobSystemLayer::OnImGuiRender(Nodens::TimeStep ts)
                 {
                     ZoneScopedN("Heavy Calculation");
 
-                    ND_INFO("Thread: Job started...");
+                    Nodens::ClientLogger().info("Thread: Job started...");
                     std::this_thread::sleep_for(std::chrono::seconds(2));
-                    ND_INFO("Thread: Job finished!");
+                    Nodens::ClientLogger().info("Thread: Job finished!");
 
                     return 42;
                 });

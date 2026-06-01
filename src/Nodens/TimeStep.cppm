@@ -1,6 +1,6 @@
-#pragma once
+export module Nodens.TimeStep;
 
-namespace Nodens
+export namespace Nodens
 {
 class TimeStep
 {

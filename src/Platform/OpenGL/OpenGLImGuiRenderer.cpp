@@ -1,4 +1,4 @@
-#include "OpenGLImGuiRenderer.h"
+module;
 
 #include <imgui.h>
 // These headers are now isolated to this file
@@ -6,6 +6,8 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <glad/glad.h>
+
+module Nodens.OpenGLImGuiRenderer;
 
 namespace Nodens
 {

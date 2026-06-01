@@ -1,13 +1,16 @@
-#include "ImGuiLayer.h"
+module;
 
-#include "Nodens/Application.h"
-#include <memory>
 #include <tracy/Tracy.hpp>
 
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <implot.h>
 #include <implot3d.h>
+
+module Nodens.ImGuiLayer;
+
+import Nodens.Application;
+import std;
 
 namespace Nodens
 {

@@ -1,15 +1,19 @@
-#include "OpenGLContext.h"
-#include "Nodens/Log.h"
+module;
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+
+module Nodens.OpenGLContext;
+
+import Nodens.Log;
 
 namespace Nodens
 {
 
 OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
 {
-    ND_CORE_ASSERT(windowHandle, "Window handle is null!")
+    if (!windowHandle)
+        FatalCore("Window handle is null!");
 }
 
 void OpenGLContext::Init()
@@ -19,11 +23,12 @@ void OpenGLContext::Init()
 
     // Initialize GLAD
     int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    ND_CORE_ASSERT(status, "Failed to initialize glad!");
+    if (!status)
+        FatalCore("Failed to initialize glad!");
 
-    ND_CORE_INFO("OpenGL Info:");
-    ND_CORE_INFO("  Version: {0}", (const char*)glGetString(GL_VERSION));
-    ND_CORE_INFO("  GPU Used: {0}", (const char*)glGetString(GL_RENDERER));
+    CoreLogger().info("OpenGL Info:");
+    CoreLogger().info("  Version: {}", (const char*)glGetString(GL_VERSION));
+    CoreLogger().info("  GPU Used: {}", (const char*)glGetString(GL_RENDERER));
 
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);

@@ -1,10 +1,14 @@
-#include "AsyncEventLayer.h"
+module;
 
 #include <imgui.h>
+#include <implot.h>
 
 #include <chrono>
 #include <random>
 #include <thread>
+#include <tracy/Tracy.hpp>
+
+module Example.AsyncEventLayer;
 
 AsyncEventLayer::AsyncEventLayer() : Layer("AsyncEventLayer") {}
 

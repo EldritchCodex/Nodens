@@ -1,15 +1,11 @@
-#pragma once
+export module Nodens.Layer;
 
-#include "Nodens/Core.h"
-#include "Nodens/Events/Event.h"
+import Nodens.TimeStep;
+import Nodens.Events;
+import std;
 
-#include "Nodens/TimeStep.h"
-
-#include <string>
-
-namespace Nodens
+export namespace Nodens
 {
-
 class Layer
 {
 public:

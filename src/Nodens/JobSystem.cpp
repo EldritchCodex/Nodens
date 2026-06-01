@@ -1,9 +1,11 @@
-#include "Nodens/JobSystem.h"
-#include "Nodens/Log.h"
-
-#include <string>
+module;
 
 #include <tracy/Tracy.hpp>
+
+module Nodens.JobSystem;
+
+import Nodens.Log;
+import std;
 
 namespace Nodens
 {
@@ -26,8 +28,6 @@ JobSystem::JobSystem()
         m_Threads.emplace_back(
             [this, i](std::stop_token stoken)
             {
-                // Profiler hook: Give the thread a name so we can see it when
-                // using Tracy.
                 std::string name = "Worker " + std::to_string(i);
                 tracy::SetThreadName(name.c_str());
 
@@ -35,7 +35,7 @@ JobSystem::JobSystem()
             });
     }
 
-    ND_CORE_INFO("JobSystem initialized with {0} worker threads.", threadCount);
+    CoreLogger().info("JobSystem initialized with {} worker threads.", threadCount);
 }
 
 JobSystem::~JobSystem()

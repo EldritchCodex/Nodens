@@ -31,4 +31,3 @@ ColumnLimit:     120
 BinPackArguments: false
 BinPackParameters: false
 AllowShortFunctionsOnASingleLine: Inline
-...
