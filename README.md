@@ -11,35 +11,26 @@ It unifies excellent third-party libraries (e.g. [ImGui](https://github.com/ocor
 
 Nodens compiles into a single **static library** that is linked to your application, ensuring the final product is a single portable executable to streamline distribution.
 
-# Architecture
+# Architecture & Key Features
 
-Nodens strictly follows a **module-first architecture** across both the framework core and its examples:
-
-- Public interfaces are authored as C++ module interface units (`.cppm`) using `export module`.
-- Implementations live in module implementation units (`.cpp`) using `module ...`.
-- Internal framework APIs are consumed through explicit imports (e.g., `import Nodens.Application;`) rather than local header includes.
-- C++ standard library usage heavily relies on `import std;`.
-- Third-party ecosystems (GLFW, ImGui, ImPlot, Tracy, etc.) remain `#include`-based where necessary, typically isolated within module global fragments or internal implementation units to avoid leaking legacy headers to consumers.
-
-This approach keeps ownership boundaries explicit and makes dependencies easier to reason about as the codebase grows.
-
-# Key Features
-
-### 🖥️ Core Architecture
-- **C++23:** Built entirely around C++23 features and a strict module-first design.
+### Core Architecture
+Nodens strictly follows a **module-first architecture** across both the framework core and its examples. This keeps ownership boundaries explicit and makes dependencies easier to reason about as the codebase grows:
+- **C++20 Modules:** Public interfaces are authored as C++ module interface units (`.cppm`) using `export module`, and implementations live in `.cpp` units. Internal framework APIs are consumed through explicit imports (e.g., `import Nodens.Application;`).
+- **C++23 Standard Library:** C++ standard library usage heavily relies on `import std;`.
+- **Dependency Isolation:** Third-party ecosystems (GLFW, ImGui, ImPlot, Tracy, etc.) remain `#include`-based where necessary, typically isolated within module global fragments or internal implementation units to avoid leaking legacy headers to consumers.
 - **Layer Stack System:** Flexible application flow control allowing for modular updates and rendering layers (e.g., UI overlay, game world rendering).
 - **Window Management:** Cross-platform windowing and input polling powered by [GLFW](https://www.glfw.org/).
 
-### ⚡ Concurrency & Events
+### Concurrency & Events
 - **Multithreaded Job System:** A custom thread pool implementation utilizing C++20 `std::jthread` for automatic joining and `std::future` for asynchronous task management.
 - **Asynchronous Event Bus:** A thread-safe Publish/Subscribe system allowing decoupled communication between subsystems. Supports generic event types and lambda listeners.
 
-### 🎨 Graphics & GUI
+### Graphics & GUI
 - **Immediate Mode GUI:** Fully integrated [ImGui](https://github.com/ocornut/imgui) with Docking and Viewports enabled by default.
 - **Data Visualization:** Native support for high-performance 2D and 3D plotting via [ImPlot](https://github.com/epezent/implot) and [ImPlot3D](https://github.com/brenocq/implot3d).
 - **Rendering Backend:** Currently using OpenGL context management initialized via [GLAD](https://glad.dav1d.de/). A Vulkan backend is currently being developed.
 
-### 🛠️ Profiling & Debugging
+### Profiling & Debugging
 - **Integrated Frame Profiling:** Deep integration with [Tracy Profiler](https://github.com/wolfpld/tracy) to analyze frame times, memory usage, and lock contention in real-time.
 - **Logging:** Fast, color-coded console logging using [spdlog](https://github.com/gabime/spdlog).
 
