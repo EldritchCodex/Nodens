@@ -40,7 +40,8 @@ void AsyncEventBus::PublishInternal(std::shared_ptr<Event> event)
             std::vector<EventHandler> handlers;
             {
                 std::lock_guard lock(m_Mutex);
-                auto            it = m_Subscribers.find(typeid(*event));
+                Event* rawEvent = event.get();
+                auto   it       = m_Subscribers.find(typeid(*rawEvent));
                 if (it != m_Subscribers.end())
                 {
                     handlers = it->second;
