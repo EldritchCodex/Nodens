@@ -28,11 +28,8 @@ Application* CreateApplication()
 } // namespace Nodens
 
 #ifndef ND_EXCLUDE_APP_MAIN
-int main(int argc, char** argv)
+int main()
 {
-    (void)argc;
-    (void)argv;
-
     Nodens::InitializeLogging();
 
     auto app = Nodens::CreateApplication();

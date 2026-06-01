@@ -9,11 +9,8 @@ Application* CreateApplication();
 
 // Optional default entry point for applications that prefer not to write their own main().
 // Link an executable against the Nodens::DefaultMain target to use this implementation.
-int main(int argc, char** argv)
+int main()
 {
-    (void)argc;
-    (void)argv;
-
     Nodens::InitializeLogging();
 
     auto app = Nodens::CreateApplication();

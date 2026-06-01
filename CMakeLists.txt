@@ -7,7 +7,6 @@ project(Nodens VERSION 0.1.0 LANGUAGES CXX)
 # -----------------------------------------------------------------------------
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_MODULE_STD ON)
-set(SPDLOG_ENABLE_PCH OFF CACHE BOOL "" FORCE)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -15,8 +14,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # -----------------------------------------------------------------------------
 # Developer Options (primary touchpoints)
-# -----------------------------------------------------------------------------
-option(ND_ENABLE_PROFILING "Enable profiling using Tracy" ON)
+
 
 # Default to building examples only when Nodens is the top-level project,
 # not when consumed via add_subdirectory().
@@ -29,7 +27,11 @@ endif()
 # -----------------------------------------------------------------------------
 # Dependencies
 # -----------------------------------------------------------------------------
-add_subdirectory(vendor)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+add_subdirectory(vendor/glad)
+include(NodensDependencies)
+include(NodensImGui)
 
 # -----------------------------------------------------------------------------
 # Developer Touchpoint: Framework Source Lists
@@ -93,7 +95,6 @@ target_link_libraries(Nodens
 target_compile_definitions(Nodens PUBLIC
     $<$<CONFIG:Debug>:ND_DEBUG>
     $<$<CONFIG:Release>:ND_RELEASE>
-    $<$<BOOL:${ND_ENABLE_PROFILING}>:ND_PROFILING_ENABLED>
 )
 
 # -----------------------------------------------------------------------------
@@ -102,13 +103,12 @@ target_compile_definitions(Nodens PUBLIC
 add_library(NodensDefaultMain STATIC
     src/Nodens/DefaultMain.cpp
 )
+add_library(Nodens::DefaultMain ALIAS NodensDefaultMain)
 
 target_link_libraries(NodensDefaultMain
     PUBLIC
         Nodens::Nodens
 )
-
-add_library(Nodens::DefaultMain ALIAS NodensDefaultMain)
 
 # -----------------------------------------------------------------------------
 # Examples
