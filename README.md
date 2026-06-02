@@ -1,7 +1,7 @@
 ![nodens-banner3](https://github.com/user-attachments/assets/1a0e2932-e99d-4432-8e26-88a350368cd7)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> ⚠️ **Development Status:** Nodens is currently in **active, experimental development** with no stable release. It serves primarily as a learning ground and playground for exploring game engine architecture and modern C++23 features (specifically C++23 Modules and `std::jthread`/`std::future` concurrency). APIs are highly subject to change.
+> ⚠️ **Development Status:** Nodens is currently in **active, experimental development** with no stable release. It serves primarily as a learning ground and playground for exploring game engine architecture and modern C++ features (specifically C++20 Modules and C++23 `std::jthread`/`std::future` concurrency). APIs are highly subject to change.
 
 # Introduction
 
