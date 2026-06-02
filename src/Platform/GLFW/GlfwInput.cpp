@@ -18,14 +18,14 @@ protected:
     bool IsKeyPressedImpl(KeyboardKey keycode) override
     {
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-        auto state  = glfwGetKey(window, std::to_underlying(keycode));
+        int  state{glfwGetKey(window, std::to_underlying(keycode))};
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
     bool IsMouseButtonPressedImpl(MouseButton buttoncode) override
     {
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-        auto state  = glfwGetMouseButton(window, std::to_underlying(buttoncode));
+        int  state{glfwGetMouseButton(window, std::to_underlying(buttoncode))};
         return state == GLFW_PRESS;
     }
 
@@ -37,15 +37,9 @@ protected:
         return {(float)xPos, (float)yPos};
     }
 
-    float GetMouseXImpl() override
-    {
-        return GetMousePositionImpl().first;
-    }
+    float GetMouseXImpl() override { return GetMousePositionImpl().first; }
 
-    float GetMouseYImpl() override
-    {
-        return GetMousePositionImpl().second;
-    }
+    float GetMouseYImpl() override { return GetMousePositionImpl().second; }
 };
 
 Input* Input::s_Instance = new GlfwInput();

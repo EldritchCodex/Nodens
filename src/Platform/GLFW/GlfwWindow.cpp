@@ -18,10 +18,7 @@ namespace Nodens
 class GlfwWindow : public Window
 {
 public:
-    GlfwWindow(const WindowProps& props)
-    {
-        Init(props);
-    }
+    GlfwWindow(const WindowProps& props) { Init(props); }
 
     ~GlfwWindow() override {}
 
@@ -47,10 +44,7 @@ public:
         m_Data.VSync = enabled;
     }
 
-    bool IsVSync() const override
-    {
-        return m_Data.VSync;
-    }
+    bool IsVSync() const override { return m_Data.VSync; }
 
     void* GetNativeWindow() const override { return m_Window; }
 
@@ -59,7 +53,7 @@ private:
     void Shutdown();
 
 private:
-    GLFWwindow*      m_Window = nullptr;
+    GLFWwindow*      m_Window  = nullptr;
     GraphicsContext* m_Context = nullptr;
 
     struct WindowData

@@ -1,41 +1,33 @@
-import Nodens.Application;
-import Nodens.Log;
+import Nodens;
 import Example.JobSystemLayer;
+
+// -----------------------------------------------------------------------------
+// Step 2: Define the Application class, the root object in charge of the
+// application, managing the window, layers, and the main event loop.
+// -----------------------------------------------------------------------------
 
 class JobSystemApp : public Nodens::Application
 {
 public:
-    JobSystemApp(const Nodens::ApplicationSpecification& specification) : Application(specification)
-    {
-        PushLayer(new JobSystemLayer());
-    }
-
-    ~JobSystemApp() {}
-};
-
-namespace Nodens
-{
-Application* CreateApplication()
-{
-    return new JobSystemApp({
+    static inline const Nodens::ApplicationSpecification appSpecifications = {
         .Name         = "[NodensApp Example] JobSystem",
         .WindowWidth  = 800,
         .WindowHeight = 600,
         .EnableGUI    = true,
         .IsHeadless   = false,
-    });
-}
-} // namespace Nodens
+    };
 
-#ifndef ND_EXCLUDE_APP_MAIN
+    JobSystemApp() : Application(appSpecifications) { PushLayer(new JobSystemLayer()); }
+
+    ~JobSystemApp() = default;
+};
+
 int main()
 {
-    Nodens::InitializeLogging();
+    Nodens::InitializeLoggers();
 
-    auto app = Nodens::CreateApplication();
-    app->Run();
-    delete app;
+    auto app = JobSystemApp();
+    app.Run();
 
     return 0;
 }
-#endif

@@ -7,21 +7,21 @@ module;
 
 module Example.CircularWave3DLayer;
 
-import Nodens.Log;
+import Nodens;
 import std;
 
 CircularWave3DLayer::CircularWave3DLayer() : Layer("CircularWave3D")
 {
     ZoneScoped;
 
-    constexpr float kIncrement = 0.001f;
+    constexpr float kIncrement{0.001f};
 
     // Generate data for ImPlot
     for (int i = 0; i < kNumberOfPoints; i++)
     {
         t[i]  = i * kIncrement;
-        xs[i] = std::sin(kFrequency * t[i]);
-        ys[i] = std::cos(kFrequency * t[i]);
+        xs[i] = std::sin(m_Frequency * t[i]);
+        ys[i] = std::cos(m_Frequency * t[i]);
     }
 } // CircularWave3DLayer::CircularWave3DLayer
 
@@ -29,16 +29,16 @@ void CircularWave3DLayer::OnUpdate(Nodens::TimeStep previous_update_duration)
 {
     ZoneScoped;
 
-    constexpr float kIncrement = 0.001f;
+    constexpr float kIncrement{0.001f};
     for (int i = 0; i < kNumberOfPoints; i++)
     {
         t[i] += kIncrement;
-        xs[i] = std::sin(kFrequency * t[i]);
-        ys[i] = std::cos(kFrequency * t[i]);
+        xs[i] = std::sin(m_Frequency * t[i]);
+        ys[i] = std::cos(m_Frequency * t[i]);
     }
 
-    Nodens::ClientLogger().info(
-        "Updated CircularWave3DLayer with timestep: {:.3f} ms", previous_update_duration.GetMilliseconds());
+    Nodens::ClientLogger().info("Updated CircularWave3DLayer with timestep: {:.3f} ms",
+                                previous_update_duration.GetMilliseconds());
 } // CircularWave3DLayer::OnUpdate
 
 void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)

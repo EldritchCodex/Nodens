@@ -10,4 +10,4 @@ target_sources(example-jobsystem
             JobSystemLayer.cppm
 )
 
-target_link_libraries(example-jobsystem PRIVATE Nodens::Nodens Nodens::ExamplesEntry)
+target_link_libraries(example-jobsystem PRIVATE Nodens::Nodens)

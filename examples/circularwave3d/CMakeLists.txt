@@ -1,4 +1,4 @@
-﻿add_executable(example-circularwave3d
+add_executable(example-circularwave3d
     CircularWave3DApp.cpp
     CircularWave3DLayer.cpp
 )
@@ -10,4 +10,4 @@ target_sources(example-circularwave3d
             CircularWave3DLayer.cppm
 )
 
-target_link_libraries(example-circularwave3d PRIVATE Nodens::Nodens Nodens::ExamplesEntry)
+target_link_libraries(example-circularwave3d PRIVATE Nodens::Nodens)

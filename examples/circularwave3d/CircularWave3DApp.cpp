@@ -1,41 +1,34 @@
-import Nodens.Application;
-import Nodens.Log;
+import Nodens;
 import Example.CircularWave3DLayer;
+import std;
+
+// -----------------------------------------------------------------------------
+// Step 2: Define the Application class, the root object in charge of the
+// application, managing the window, layers, and the main event loop.
+// -----------------------------------------------------------------------------
 
 class CircularWave3DApp : public Nodens::Application
 {
 public:
-    CircularWave3DApp(const Nodens::ApplicationSpecification& specification) : Application(specification)
-    {
-        PushLayer(new CircularWave3DLayer());
-    }
-
-    ~CircularWave3DApp() {}
-};
-
-namespace Nodens
-{
-Application* CreateApplication()
-{
-    return new CircularWave3DApp({
+    static inline const Nodens::ApplicationSpecification appSpecifications = {
         .Name         = "[NodensApp Example] CircularWave3D",
         .WindowWidth  = 800,
         .WindowHeight = 600,
         .EnableGUI    = true,
         .IsHeadless   = false,
-    });
-}
-} // namespace Nodens
+    };
 
-#ifndef ND_EXCLUDE_APP_MAIN
+    CircularWave3DApp() : Application(appSpecifications) { PushLayer(new CircularWave3DLayer()); }
+
+    ~CircularWave3DApp() = default;
+};
+
 int main()
 {
-    Nodens::InitializeLogging();
+    Nodens::InitializeLoggers();
 
-    auto app = Nodens::CreateApplication();
-    app->Run();
-    delete app;
+    auto app = CircularWave3DApp();
+    app.Run();
 
     return 0;
 }
-#endif

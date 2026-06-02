@@ -13,11 +13,11 @@ export namespace Nodens
 
 struct ApplicationSpecification
 {
-    std::string   Name         = "Nodens Application";
-    std::uint32_t WindowWidth  = 1280;
-    std::uint32_t WindowHeight = 720;
-    bool          EnableGUI    = true;
-    bool          IsHeadless   = false;
+    std::string   Name{"Nodens Application"};
+    std::uint32_t WindowWidth{1280};
+    std::uint32_t WindowHeight{720};
+    bool          EnableGUI{true};
+    bool          IsHeadless{false};
 };
 
 class Application
@@ -50,7 +50,7 @@ private:
 
     std::unique_ptr<JobSystem> m_JobSystem;
 
-    float m_LastFrameTime = 0.0f;
+    float m_LastFrameTime{0.0f};
 
 private:
     static Application* s_Instance;

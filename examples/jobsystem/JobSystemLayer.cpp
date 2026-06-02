@@ -8,7 +8,7 @@ module;
 
 module Example.JobSystemLayer;
 
-import Nodens.Log;
+import Nodens;
 
 JobSystemLayer::JobSystemLayer() : Layer("JobSystemLayer") {}
 

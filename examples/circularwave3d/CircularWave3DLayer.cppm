@@ -1,9 +1,13 @@
 export module Example.CircularWave3DLayer;
 
-import Nodens.Events;
-import Nodens.Layer;
-import Nodens.TimeStep;
+import Nodens;
 import std;
+
+// -----------------------------------------------------------------------------
+// Step 1: Define the Layer class. This layer will be responsible for
+// managing the state of the circular wave and rendering it using ImPlot
+// and the Nodens GUI infrastructure.
+// -----------------------------------------------------------------------------
 
 export class CircularWave3DLayer : public Nodens::Layer
 {
@@ -15,8 +19,8 @@ public:
     void OnEvent(Nodens::Event& event) override;
 
 private:
-    static constexpr std::size_t kNumberOfPoints = 1000;
+    static constexpr std::size_t kNumberOfPoints{1000};
 
-    float kFrequency = 5.f * std::numbers::pi_v<float>;
+    float m_Frequency = 5.f * std::numbers::pi_v<float>;
     float t[kNumberOfPoints], xs[kNumberOfPoints], ys[kNumberOfPoints];
 };

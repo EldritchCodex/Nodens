@@ -1,10 +1,13 @@
 export module Example.JobSystemLayer;
 
-import Nodens.Application;
-import Nodens.Events;
-import Nodens.Layer;
-import Nodens.TimeStep;
+import Nodens;
 import std;
+
+// -----------------------------------------------------------------------------
+// Step 1: Define the Layer class. This layer will be responsible for
+// managing the state of the job system and rendering it using ImPlot
+// and the Nodens GUI infrastructure.
+// -----------------------------------------------------------------------------
 
 export class JobSystemLayer : public Nodens::Layer
 {
@@ -19,7 +22,7 @@ public:
 private:
     std::future<int> m_JobFuture;
 
-    bool  m_IsJobRunning = false;
-    int   m_JobResult    = 0;
-    float m_TimePassed   = 0.0f;
+    bool  m_IsJobRunning{};
+    int   m_JobResult{};
+    float m_TimePassed{};
 };

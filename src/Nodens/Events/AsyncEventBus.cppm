@@ -15,10 +15,7 @@ public:
 
     template <typename T> void Subscribe(const std::function<void(T&)>& handler)
     {
-        auto wrapper = [handler](Event& e)
-        {
-            handler(static_cast<T&>(e));
-        };
+        auto wrapper = [handler](Event& e) { handler(static_cast<T&>(e)); };
 
         SubscribeInternal(typeid(T), wrapper);
     }
@@ -36,7 +33,7 @@ private:
 
 private:
     std::unordered_map<std::type_index, std::vector<EventHandler>> m_Subscribers;
-    std::mutex m_Mutex;
+    std::mutex                                                     m_Mutex;
 };
 
 } // namespace Nodens

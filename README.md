@@ -70,45 +70,42 @@ target_link_libraries(myapp PRIVATE Nodens::Nodens)
 
 #### Writing a Nodens Application
 
-Applications consume Nodens through module imports. A typical entry unit imports framework modules directly rather than including headers:
+Applications consume Nodens through C++20 module imports. Rather than including headers, a typical entry unit imports the main framework module directly, defines the application specification, and runs the application in `main()`:
 
 ```cpp
-import Nodens.Application;
-import Nodens.Log;
+import Nodens;
 
 class MyApp : public Nodens::Application {
-   // ...
-};
+public:
+    static inline const Nodens::ApplicationSpecification appSpecifications = {
+        .Name         = "My Nodens Application",
+        .WindowWidth  = 1280,
+        .WindowHeight = 720,
+        .EnableGUI    = true,
+        .IsHeadless   = false,
+    };
 
-namespace Nodens {
-   Application* CreateApplication() {
-      return new MyApp({...});
-   }
-}
+    MyApp() : Application(appSpecifications) {
+        // Add layers here, e.g., PushLayer(new MyLayer());
+    }
+};
 
 int main()
 {
-   Nodens::InitializeLogging();
+    // Initialize the core logging system
+    Nodens::InitializeLoggers();
 
-   auto app = Nodens::CreateApplication();
-   app->Run();
-   delete app;
+    // Run the application (instantiated on the stack)
+    auto app = MyApp();
+    app.Run();
 
-   return 0;
+    return 0;
 }
 ```
 
-#### Optional Framework-Provided Entry Point
-If you prefer not to write a `main()` function for simple applications, Nodens provides an optional framework-supplied entry point. Link your executable against the `Nodens::DefaultMain` target and omit your own `main()`. 
-
-The default `main()` performs a correct, minimal startup sequence:
-1. Initializes the core logging system.
-2. Calls the application factory `Nodens::CreateApplication()` (which **you** must implement).
-3. Runs the application loop (`Application::Run()`).
-4. Safely destroys the application instance and returns.
-
+In your `CMakeLists.txt`, link against the core Nodens library target:
 ```cmake
-target_link_libraries(myapp PRIVATE Nodens::DefaultMain)
+target_link_libraries(myapp PRIVATE Nodens::Nodens)
 ```
 
 ---

@@ -15,7 +15,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # -----------------------------------------------------------------------------
 # Developer Options (primary touchpoints)
 
-
 # Default to building examples only when Nodens is the top-level project,
 # not when consumed via add_subdirectory().
 if(PROJECT_IS_TOP_LEVEL)
@@ -67,6 +66,7 @@ set(ND_FRAMEWORK_MODULE_INTERFACES
     src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
     src/Nodens/Events/Event.cppm
     src/Nodens/Events/AsyncEventBus.cppm
+    src/Nodens/Nodens.cppm
 )
 
 # -----------------------------------------------------------------------------
@@ -95,19 +95,6 @@ target_link_libraries(Nodens
 target_compile_definitions(Nodens PUBLIC
     $<$<CONFIG:Debug>:ND_DEBUG>
     $<$<CONFIG:Release>:ND_RELEASE>
-)
-
-# -----------------------------------------------------------------------------
-# Optional Framework-Provided main()
-# -----------------------------------------------------------------------------
-add_library(NodensDefaultMain STATIC
-    src/Nodens/DefaultMain.cpp
-)
-add_library(Nodens::DefaultMain ALIAS NodensDefaultMain)
-
-target_link_libraries(NodensDefaultMain
-    PUBLIC
-        Nodens::Nodens
 )
 
 # -----------------------------------------------------------------------------
