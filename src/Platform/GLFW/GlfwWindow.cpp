@@ -1,7 +1,6 @@
 module;
 
 #include <GLFW/glfw3.h>
-
 #include <tracy/Tracy.hpp>
 
 module Nodens.Window;
