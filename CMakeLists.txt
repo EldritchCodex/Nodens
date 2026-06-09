@@ -36,12 +36,17 @@ include(NodensImGui)
 # Developer Touchpoint: Framework Source Lists
 # -----------------------------------------------------------------------------
 set(ND_FRAMEWORK_IMPLEMENTATION_UNITS
+    # Core
+    src/Nodens/Core/Application.cpp
+    src/Nodens/Core/Layer.cpp
+    src/Nodens/Core/LayerStack.cpp
+    # Concurrency
+    src/Nodens/Concurrency/JobSystem.cpp
+    # Events
     src/Nodens/Events/AsyncEventBus.cpp
-    src/Nodens/imgui/ImGuiLayer.cpp
-    src/Nodens/Application.cpp
-    src/Nodens/JobSystem.cpp
-    src/Nodens/Layer.cpp
-    src/Nodens/LayerStack.cpp
+    # ImGui
+    src/Nodens/ImGui/ImGuiLayer.cpp
+    # Platform
     src/Platform/OpenGL/OpenGLContext.cpp
     src/Platform/OpenGL/OpenGLImGuiRenderer.cpp
     src/Platform/GLFW/GlfwInput.cpp
@@ -49,23 +54,31 @@ set(ND_FRAMEWORK_IMPLEMENTATION_UNITS
 )
 
 set(ND_FRAMEWORK_MODULE_INTERFACES
-    src/Nodens/Application.cppm
-    src/Nodens/GraphicsContext.cppm
-    src/Nodens/Input.cppm
-    src/Nodens/TimeStep.cppm
-    src/Nodens/JobSystem.cppm
-    src/Nodens/KeyCodes.cppm
-    src/Nodens/Layer.cppm
-    src/Nodens/LayerStack.cppm
-    src/Nodens/Log.cppm
-    src/Nodens/MouseButtonCodes.cppm
-    src/Nodens/imgui/ImGuiRenderer.cppm
-    src/Nodens/imgui/ImGuiLayer.cppm
-    src/Nodens/Window.cppm
-    src/Platform/OpenGL/OpenGLContext.cppm
-    src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
+    # Core
+    src/Nodens/Core/Application.cppm
+    src/Nodens/Core/Layer.cppm
+    src/Nodens/Core/LayerStack.cppm
+    src/Nodens/Core/Log.cppm
+    src/Nodens/Core/TimeStep.cppm
+    # Concurrency
+    src/Nodens/Concurrency/JobSystem.cppm
+    # Events
     src/Nodens/Events/Event.cppm
     src/Nodens/Events/AsyncEventBus.cppm
+    # ImGui
+    src/Nodens/ImGui/ImGuiRenderer.cppm
+    src/Nodens/ImGui/ImGuiLayer.cppm
+    # Input
+    src/Nodens/Input/Input.cppm
+    src/Nodens/Input/KeyCodes.cppm
+    src/Nodens/Input/MouseButtonCodes.cppm
+    # Rendering
+    src/Nodens/Rendering/GraphicsContext.cppm
+    src/Nodens/Rendering/Window.cppm
+    # Platform
+    src/Platform/OpenGL/OpenGLContext.cppm
+    src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
+    # Umbrella module
     src/Nodens/Nodens.cppm
 )
 
