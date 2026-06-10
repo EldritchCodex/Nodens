@@ -8,7 +8,7 @@ module;
 
 module Nodens.DefaultTheme;
 
-namespace Nodens::DefaultTheme
+namespace Nodens
 {
 
 // =============================================================================
@@ -333,16 +333,16 @@ static void ApplyLightThemeImpl()
 // Public API
 // =============================================================================
 
-void ApplyDarkTheme()
+void ApplyDefaultDarkTheme()
 {
     ApplySharedGeometry();
     ApplyDarkThemeImpl();
 }
 
-void ApplyLightTheme()
+void ApplyDefaultLightTheme()
 {
     ApplySharedGeometry();
     ApplyLightThemeImpl();
 }
 
-} // namespace Nodens::DefaultTheme
+} // namespace Nodens

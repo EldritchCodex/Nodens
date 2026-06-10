@@ -12,7 +12,7 @@ export namespace Nodens
 class ImGuiLayer : public Layer
 {
 public:
-    ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer, DefaultThemeType theme);
+    ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer, DefaultTheme theme);
     ~ImGuiLayer();
 
     void OnAttach() override;
@@ -27,7 +27,7 @@ public:
 
 private:
     bool                           m_BlockEvents = true;
-    DefaultThemeType               m_Theme       = DefaultThemeType::Dark;
+    DefaultTheme                   m_Theme       = DefaultTheme::Dark;
     std::shared_ptr<ImGuiRenderer> m_Renderer;
 };
 } // namespace Nodens

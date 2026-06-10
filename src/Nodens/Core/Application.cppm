@@ -14,12 +14,12 @@ export namespace Nodens
 
 struct ApplicationSpecification
 {
-    std::string      Name{"Nodens Application"};
-    std::uint32_t    WindowWidth{1280};
-    std::uint32_t    WindowHeight{720};
-    bool             EnableGUI{true};
-    bool             IsHeadless{false};
-    DefaultThemeType Theme{DefaultThemeType::Dark};
+    std::string   Name{"Nodens Application"};
+    std::uint32_t WindowWidth{1280};
+    std::uint32_t WindowHeight{720};
+    bool          EnableGUI{true};
+    bool          IsHeadless{false};
+    DefaultTheme  DefaultTheme{DefaultTheme::Dark};
 };
 
 class Application

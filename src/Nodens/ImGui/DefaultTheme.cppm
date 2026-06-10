@@ -10,23 +10,19 @@ export module Nodens.DefaultTheme;
 
 export namespace Nodens
 {
-enum class DefaultThemeType
+enum class DefaultTheme
 {
     None, ///< Do not apply any Nodens styling (fallback to ImGui defaults).
     Dark, ///< The dark mode professional theme with teal accents.
     Light ///< The bright professional theme with deep teal accents.
 };
-}
-
-export namespace Nodens::DefaultTheme
-{
 
 /// @brief Applies the full Nodens dark theme to the current ImGui and ImPlot contexts.
 /// This configures both the shared UI geometry and the dark color palette.
-void ApplyDarkTheme();
+void ApplyDefaultDarkTheme();
 
 /// @brief Applies the full Nodens light theme to the current ImGui and ImPlot contexts.
 /// This configures both the shared UI geometry and the light color palette.
-void ApplyLightTheme();
+void ApplyDefaultLightTheme();
 
-} // namespace Nodens::DefaultTheme
+} // namespace Nodens
