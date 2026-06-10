@@ -1,9 +1,6 @@
 module;
 
 #include <imgui.h>
-
-#include <chrono>
-#include <thread>
 #include <tracy/Tracy.hpp>
 
 module Example.JobSystemLayer;
