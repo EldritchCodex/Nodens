@@ -18,46 +18,26 @@ Nodens compiles into a single **static library** that is linked to your applicat
 | **[Wiki](https://github.com/EldritchCodex/Nodens/wiki)** | Tutorials, architecture guides, and how-to articles |
 | **API Reference** | Doxygen-generated class and function documentation — *not yet hosted; build locally with `cmake --build build --target nodens-docs`* |
 
-# Architecture & Key Features
+# Key Features
 
-### Core Architecture
-Nodens strictly follows a **module-first architecture** across both the framework core and its examples. This keeps ownership boundaries explicit and makes dependencies easier to reason about as the codebase grows:
-- **C++20 Modules:** Public interfaces are authored as C++ module interface units (`.cppm`) using `export module`, and implementations live in `.cpp` units. Internal framework APIs are consumed through explicit imports (e.g., `import Nodens.Application;`).
-- **C++23 Standard Library:** C++ standard library usage heavily relies on `import std;`.
-- **Dependency Isolation:** Third-party ecosystems (GLFW, ImGui, ImPlot, Tracy, etc.) remain `#include`-based where necessary, typically isolated within module global fragments or internal implementation units to avoid leaking legacy headers to consumers.
-- **Layer Stack System:** Flexible application flow control allowing for modular updates and rendering layers (e.g., UI overlay, game world rendering).
-- **Window Management:** Cross-platform windowing and input polling powered by [GLFW](https://www.glfw.org/).
+Nodens follows a **module-first architecture** — public APIs are C++20 module interfaces (`.cppm`), third-party headers are isolated, and consumers simply `import Nodens;`.
 
-### Concurrency & Events
-- **Multithreaded Job System:** A custom thread pool implementation utilizing C++20 `std::jthread` for automatic joining and `std::future` for asynchronous task management.
-- **Asynchronous Event Bus:** A thread-safe Publish/Subscribe system allowing decoupled communication between subsystems. Supports generic event types and lambda listeners.
+| Area | Highlights |
+|------|-----------|
+| **Core** | Layer stack system, cross-platform windowing ([GLFW](https://www.glfw.org/)), `import std;` throughout |
+| **Concurrency** | `std::jthread` thread pool with `std::future` results, thread-safe Pub/Sub event bus |
+| **GUI & Visualization** | [ImGui](https://github.com/ocornut/imgui) (Docking + Viewports), [ImPlot](https://github.com/epezent/implot), [ImPlot3D](https://github.com/brenocq/implot3d) |
+| **Rendering** | OpenGL via [GLAD](https://glad.dav1d.de/) (Vulkan in progress) |
+| **Profiling** | [Tracy](https://github.com/wolfpld/tracy) integration, [spdlog](https://github.com/gabime/spdlog) logging |
 
-### Graphics & GUI
-- **Immediate Mode GUI:** Fully integrated [ImGui](https://github.com/ocornut/imgui) with Docking and Viewports enabled by default.
-- **Data Visualization:** Native support for high-performance 2D and 3D plotting via [ImPlot](https://github.com/epezent/implot) and [ImPlot3D](https://github.com/brenocq/implot3d).
-- **Rendering Backend:** Currently using OpenGL context management initialized via [GLAD](https://glad.dav1d.de/). A Vulkan backend is currently being developed.
+> 📖 For architecture deep-dives, see the **[Wiki](https://github.com/EldritchCodex/Nodens/wiki)**.
 
-### Profiling & Debugging
-- **Integrated Frame Profiling:** Deep integration with [Tracy Profiler](https://github.com/wolfpld/tracy) to analyze frame times, memory usage, and lock contention in real-time.
-- **Logging:** Fast, color-coded console logging using [spdlog](https://github.com/gabime/spdlog).
-
-> 📖 For in-depth architecture walkthroughs, see the **[Architecture Overview](https://github.com/EldritchCodex/Nodens/wiki/Architecture-Overview)** wiki page.
 
 # Getting Started
 
-### Prerequisites
-* **C++ Compiler:** A compiler with robust C++23 modules support (Currently developed and tested with Clang 22.1.6).
-* **CMake:** Version **3.30** or higher.
-* **Build Generator:** [Ninja](https://ninja-build.org/) is **required**. Standard Unix Makefiles do not natively support C++20 module dependency scanning.
-
-### Toolchain Notes (Modules)
-Nodens relies on CMake's C++20 module support (`FILE_SET ... TYPE CXX_MODULES`) and experimental `import std;`. Builds will fail if your compiler or CMake version lacks full module support. See the **[Building and Toolchain](https://github.com/EldritchCodex/Nodens/wiki/Building-and-Toolchain)** wiki page for detailed compatibility notes and troubleshooting.
-
----
+**Requirements:** Clang 22+ (C++23 modules), CMake 3.30+, [Ninja](https://ninja-build.org/). See the **[Building and Toolchain](https://github.com/EldritchCodex/Nodens/wiki/Building-and-Toolchain)** wiki page for compatibility details.
 
 ### Using Nodens in Your Project
-
-Because Nodens does not yet have stable releases, the recommended way to integrate it is by pointing CMake's `FetchContent` directly to the `dev` branch.
 
 ```cmake
 include(FetchContent)
@@ -72,11 +52,7 @@ add_executable(myapp main.cpp)
 target_link_libraries(myapp PRIVATE Nodens::Nodens)
 ```
 
-> **Note on Dependencies:** Dependencies like spdlog, GLFW, and Tracy are resolved transparently. If they are already installed on your system (e.g. via `vcpkg`, `Conan`, or `apt`), those installations are preferred via `find_package`. Otherwise, they are downloaded and built from source automatically alongside Nodens.
-
-#### Writing a Nodens Application
-
-Applications consume Nodens through C++20 module imports. Rather than including headers, a typical entry unit imports the main framework module directly, defines the application specification, and runs the application in `main()`:
+### Minimal Application
 
 ```cpp
 import Nodens;
@@ -98,27 +74,14 @@ public:
 
 int main()
 {
-    // Initialize the core logging system
     Nodens::InitializeLoggers();
-
-    // Run the application (instantiated on the stack)
     auto app = MyApp();
     app.Run();
-
     return 0;
 }
 ```
 
-In your `CMakeLists.txt`, link against the core Nodens library target:
-```cmake
-target_link_libraries(myapp PRIVATE Nodens::Nodens)
-```
-
----
-
 ### Cloning & Building Locally
-
-If you want to contribute to Nodens or run the examples locally:
 
 ```shell
 git clone https://github.com/EldritchCodex/Nodens.git
@@ -127,12 +90,7 @@ cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ```
 
-**CMake Options:**
-| Option | Default | Description |
-|--------|---------|-------------|
-| `ND_BUILD_EXAMPLES` | `ON` (if top-level) / `OFF` (if consumed) | Build the example applications located in `examples/`. Automatically disabled when Nodens is consumed as a dependency via `FetchContent`. |
-
-> 📖 For a deeper getting started tutorial, custom layer creation, and toolchain troubleshooting, see the **[Getting Started](https://github.com/EldritchCodex/Nodens/wiki/Getting-Started)** wiki page.
+> 📖 For a full walkthrough, see the **[Getting Started](https://github.com/EldritchCodex/Nodens/wiki/Getting-Started)** wiki page.
 
 # Example Applications
 
