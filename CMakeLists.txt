@@ -46,6 +46,7 @@ set(ND_FRAMEWORK_IMPLEMENTATION_UNITS
     src/Nodens/Events/AsyncEventBus.cpp
     # ImGui
     src/Nodens/ImGui/ImGuiLayer.cpp
+    src/Nodens/ImGui/DefaultTheme.cpp
     # Platform
     src/Platform/OpenGL/OpenGLContext.cpp
     src/Platform/OpenGL/OpenGLImGuiRenderer.cpp
@@ -68,6 +69,7 @@ set(ND_FRAMEWORK_MODULE_INTERFACES
     # ImGui
     src/Nodens/ImGui/ImGuiRenderer.cppm
     src/Nodens/ImGui/ImGuiLayer.cppm
+    src/Nodens/ImGui/DefaultTheme.cppm
     # Input
     src/Nodens/Input/Input.cppm
     src/Nodens/Input/KeyCodes.cppm

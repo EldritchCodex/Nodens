@@ -43,11 +43,11 @@ void JobSystemLayer::OnImGuiRender(Nodens::TimeStep ts)
 
     if (m_IsJobRunning)
     {
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "STATUS: Processing Heavy Job...");
+        ImGui::Text("STATUS: Processing Heavy Job...");
     }
     else
     {
-        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "STATUS: Idle");
+        ImGui::Text("STATUS: Idle");
 
         if (ImGui::Button("Start Heavy Calculation (2s sleep)"))
         {

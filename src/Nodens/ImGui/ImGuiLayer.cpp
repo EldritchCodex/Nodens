@@ -1,21 +1,25 @@
 module;
 
-#include <tracy/Tracy.hpp>
-
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <implot.h>
 #include <implot3d.h>
+#include <tracy/Tracy.hpp>
 
 module Nodens.ImGuiLayer;
 
 import Nodens.Application;
+import Nodens.DefaultTheme;
+import Nodens.Events;
 import std;
 
 namespace Nodens
 {
 
-ImGuiLayer::ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer) : Layer("ImGuiLayer"), m_Renderer(renderer) {}
+ImGuiLayer::ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer, DefaultThemeType theme)
+    : Layer("ImGuiLayer"), m_Renderer(renderer), m_Theme(theme)
+{
+}
 
 ImGuiLayer::~ImGuiLayer() {}
 
@@ -36,7 +40,18 @@ void ImGuiLayer::OnAttach()
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigFlags |= ImGuiDockNodeFlags_PassthruCentralNode;
 
-    ImGui::StyleColorsDark();
+    switch (m_Theme)
+    {
+    case DefaultThemeType::Dark:
+        Nodens::DefaultTheme::ApplyDarkTheme();
+        break;
+    case DefaultThemeType::Light:
+        Nodens::DefaultTheme::ApplyLightTheme();
+        break;
+    case DefaultThemeType::None:
+        ImGui::StyleColorsDark();
+        break;
+    }
 
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -103,5 +118,15 @@ void ImGuiLayer::End()
 }
 
 void ImGuiLayer::OnImGuiRender(TimeStep ts) {}
+
+void ImGuiLayer::OnEvent(Event& e)
+{
+    if (m_BlockEvents)
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+        e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+    }
+}
 
 } // namespace Nodens

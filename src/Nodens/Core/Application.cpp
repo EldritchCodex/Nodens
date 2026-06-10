@@ -40,7 +40,7 @@ Application::Application(const ApplicationSpecification& specification) : m_Spec
     if (m_Specification.EnableGUI && !m_Specification.IsHeadless)
     {
         std::shared_ptr<ImGuiRenderer> imguiRenderer = std::make_shared<OpenGLImGuiRenderer>();
-        m_ImGuiLayer                                 = std::make_unique<ImGuiLayer>(imguiRenderer);
+        m_ImGuiLayer                                 = std::make_unique<ImGuiLayer>(imguiRenderer, m_Specification.Theme);
         PushOverlay(m_ImGuiLayer.get());
     }
 }

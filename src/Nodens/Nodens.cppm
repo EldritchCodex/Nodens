@@ -14,4 +14,5 @@ export import Nodens.LayerStack;
 export import Nodens.Log;
 export import Nodens.MouseButtonCodes;
 export import Nodens.TimeStep;
+export import Nodens.DefaultTheme;
 export import Nodens.Window;

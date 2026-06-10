@@ -6,6 +6,7 @@ import Nodens.Layer;
 import Nodens.LayerStack;
 import Nodens.ImGuiLayer;
 import Nodens.Window;
+import Nodens.DefaultTheme;
 import std;
 
 export namespace Nodens
@@ -13,11 +14,12 @@ export namespace Nodens
 
 struct ApplicationSpecification
 {
-    std::string   Name{"Nodens Application"};
-    std::uint32_t WindowWidth{1280};
-    std::uint32_t WindowHeight{720};
-    bool          EnableGUI{true};
-    bool          IsHeadless{false};
+    std::string      Name{"Nodens Application"};
+    std::uint32_t    WindowWidth{1280};
+    std::uint32_t    WindowHeight{720};
+    bool             EnableGUI{true};
+    bool             IsHeadless{false};
+    DefaultThemeType Theme{DefaultThemeType::Dark};
 };
 
 class Application
