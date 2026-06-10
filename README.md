@@ -11,6 +11,13 @@ It unifies excellent third-party libraries (e.g. [ImGui](https://github.com/ocor
 
 Nodens compiles into a single **static library** that is linked to your application, ensuring the final product is a single portable executable to streamline distribution.
 
+# Documentation
+
+| Resource | Description |
+|----------|-------------|
+| **[Wiki](https://github.com/EldritchCodex/Nodens/wiki)** | Tutorials, architecture guides, and how-to articles |
+| **API Reference** | Doxygen-generated class and function documentation — *not yet hosted; build locally with `cmake --build build --target nodens-docs`* |
+
 # Architecture & Key Features
 
 ### Core Architecture
@@ -34,6 +41,7 @@ Nodens strictly follows a **module-first architecture** across both the framewor
 - **Integrated Frame Profiling:** Deep integration with [Tracy Profiler](https://github.com/wolfpld/tracy) to analyze frame times, memory usage, and lock contention in real-time.
 - **Logging:** Fast, color-coded console logging using [spdlog](https://github.com/gabime/spdlog).
 
+> 📖 For in-depth architecture walkthroughs, see the **[Architecture Overview](https://github.com/EldritchCodex/Nodens/wiki/Architecture-Overview)** wiki page.
 
 # Getting Started
 
@@ -43,9 +51,7 @@ Nodens strictly follows a **module-first architecture** across both the framewor
 * **Build Generator:** [Ninja](https://ninja-build.org/) is **required**. Standard Unix Makefiles do not natively support C++20 module dependency scanning.
 
 ### Toolchain Notes (Modules)
-- Nodens uses CMake module file sets (`FILE_SET ... TYPE CXX_MODULES`) for exported module interfaces.
-- The build configuration forcefully enables C++ standard library module imports (`import std;`) through CMake's experimental/native module settings.
-- If you use an older or partially supported compiler/CMake combination, module discovery or Built Module Interface (BMI) generation will fail during configuration or build.
+Nodens relies on CMake's C++20 module support (`FILE_SET ... TYPE CXX_MODULES`) and experimental `import std;`. Builds will fail if your compiler or CMake version lacks full module support. See the **[Building and Toolchain](https://github.com/EldritchCodex/Nodens/wiki/Building-and-Toolchain)** wiki page for detailed compatibility notes and troubleshooting.
 
 ---
 
@@ -126,25 +132,19 @@ cmake --build build
 |--------|---------|-------------|
 | `ND_BUILD_EXAMPLES` | `ON` (if top-level) / `OFF` (if consumed) | Build the example applications located in `examples/`. Automatically disabled when Nodens is consumed as a dependency via `FetchContent`. |
 
+> 📖 For a deeper getting started tutorial, custom layer creation, and toolchain troubleshooting, see the **[Getting Started](https://github.com/EldritchCodex/Nodens/wiki/Getting-Started)** wiki page.
 
 # Example Applications
 
-Nodens includes several examples in the `examples/` directory that demonstrate how to use the framework's architecture.
+Nodens includes several examples in the `examples/` directory:
 
-#### `circularwave3d`
-- **Demonstrates:** Immediate Mode GUI Rendering, 2D/3D Plotting, Profiling.
-- **Description:** A visual demo that renders real-time mathematical functions. It calculates sine and cosine waves every frame and visualizes them using **ImPlot** (for 2D graphs) and **ImPlot3D** (for 3D line plots).
+| Example | Demonstrates |
+|---------|-------------|
+| **`circularwave3d`** | Immediate mode GUI, real-time 2D/3D plotting with ImPlot and ImPlot3D |
+| **`jobsystem`** | Thread pool submission, `std::future` polling, non-blocking UI updates |
+| **`asyncevent`** | Pub/Sub event bus, thread-safe data collection, live scatter plot visualization |
 
-#### `jobsystem`
-- **Demonstrates:** Multithreading, `std::future` integration, Non-blocking UI.
-- **Description:** A control panel for the internal thread pool. It allows the user to submit a "Heavy Calculation" (simulated by a 2-second thread sleep) to a background worker. The main thread polls the `std::future` status each frame to check for completion without freezing the GUI, updating the status text from "Processing..." to "Idle" once finished.
-
-#### `asyncevent`
-- **Demonstrates:** Pub/Sub Architecture, Thread-safe Data Gathering, Live Analytics.
-- **Description:** A simulation of a "Deep Space Analytics" tool. It uses the event bus to decouple the UI from the logic:
-   - **Publisher:** UI buttons publish `PlanetaryScanEvent`s.
-   - **Subscriber:** A background worker listens for these events, simulates a randomized workload, generates "scientific data" (distance/atmosphere density), and reports the results back.
-   - **Visualization:** The main thread safely locks the data mutex to render incoming results on a scatter plot and a latency graph in real-time.
+> 📖 For detailed walkthroughs of each example, see the **[Examples Guide](https://github.com/EldritchCodex/Nodens/wiki/Examples-Guide)** on the wiki.
 
 ##### Multithreaded Workload Profiling Showcase
 https://github.com/user-attachments/assets/4d345eb7-46c5-4360-a7f0-55466ec753ff
