@@ -1,3 +1,7 @@
+/// @file MouseButtonCodes.cppm
+/// @brief Mouse button code enumeration (GLFW-based) and stream operator.
+/// @ingroup Input
+
 export module Nodens.MouseButtonCodes;
 
 import std;
@@ -24,14 +28,4 @@ enum class MouseButton : std::uint16_t
     Middle     = Button2  ///< The middle mouse button.
 };
 
-/// @brief      Overload of the << operator for the Mouse enum.
-///             This allows printing Mouse codes directly to output streams (e.g., for logging).
-/// @param      os  The output stream.
-/// @param[in]  mouseCode The mouse button code to print.
-/// @return     The output stream.
-inline std::ostream& operator<<(std::ostream& os, MouseButton mouseCode)
-{
-    os << std::to_underlying(mouseCode);
-    return os;
-}
 } // namespace Nodens

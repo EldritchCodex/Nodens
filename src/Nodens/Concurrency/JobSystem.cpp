@@ -1,3 +1,7 @@
+/// @file JobSystem.cpp
+/// @brief Implementation of the JobSystem: thread spawning, shutdown, and worker loop.
+/// @ingroup Concurrency
+
 module;
 
 #include <tracy/Tracy.hpp>

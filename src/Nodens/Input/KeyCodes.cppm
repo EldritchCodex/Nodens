@@ -1,3 +1,7 @@
+/// @file KeyCodes.cppm
+/// @brief Keyboard key code enumeration (GLFW-based) and stream operator.
+/// @ingroup Input
+
 export module Nodens.KeyCodes;
 
 import std;

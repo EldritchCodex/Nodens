@@ -1,3 +1,7 @@
+/// @file LayerStack.cpp
+/// @brief Implementation of LayerStack push/pop operations.
+/// @ingroup Core
+
 module Nodens.LayerStack;
 
 import std;

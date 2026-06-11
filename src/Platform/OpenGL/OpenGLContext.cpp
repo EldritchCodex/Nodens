@@ -1,3 +1,7 @@
+/// @file OpenGLContext.cpp
+/// @brief Implementation of OpenGLContext: GLAD initialization, GL state setup, and buffer swap.
+/// @ingroup Platform
+
 module;
 
 #include <GLFW/glfw3.h>

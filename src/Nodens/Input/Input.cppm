@@ -1,3 +1,7 @@
+/// @file Input.cppm
+/// @brief Platform-agnostic singleton interface for polling keyboard and mouse state.
+/// @ingroup Input
+
 export module Nodens.Input;
 
 import Nodens.KeyCodes;
@@ -6,7 +10,7 @@ import std;
 
 export namespace Nodens
 {
-/// @brief      A singleton-based class for handling keyboard and mouse input.
+/// @brief      A singleton-based abstract base class for handling keyboard and mouse input.
 ///             This class provides a platform-agnostic interface for querying the state of input devices.
 ///             It is meant to be subclassed and implemented for a specific windowing system or platform API (e.g.,
 ///             GLFW).

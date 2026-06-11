@@ -1,3 +1,7 @@
+/// @file JobSystem.cppm
+/// @brief Multithreaded job system built on C++20 jthreads with future-based task submission.
+/// @ingroup Concurrency
+
 module;
 
 #include <tracy/Tracy.hpp>

@@ -1,3 +1,7 @@
+/// @file Log.cppm
+/// @brief Logging utilities: core logger, client logger, and fatal error handler.
+/// @ingroup Core
+
 module;
 
 #include <spdlog/fmt/ostr.h>

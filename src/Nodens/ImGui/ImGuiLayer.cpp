@@ -1,3 +1,7 @@
+/// @file ImGuiLayer.cpp
+/// @brief Implementation of ImGuiLayer: context creation, frame bracketing, and event filtering.
+/// @ingroup ImGui
+
 module;
 
 #include <GLFW/glfw3.h>

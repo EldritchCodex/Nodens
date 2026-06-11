@@ -1,3 +1,10 @@
+/// @file GlfwWindow.cpp
+/// @brief GLFW implementation of the Window interface.
+/// @details Contains the GlfwWindow class which manages GLFW window creation, event
+///          callback registration, and per-frame update. Also provides the factory
+///          implementation for Window::Create().
+/// @ingroup Platform
+
 module;
 
 #include <GLFW/glfw3.h>
@@ -14,13 +21,21 @@ import std;
 namespace Nodens
 {
 
-class GlfwWindow : public Window
+/// @brief Concrete GLFW-backed Window implementation.
+/// @details Owns the GLFWwindow handle, an OpenGLContext, and a WindowData struct that
+///          stores dimensions, VSync state, and the event callback. GLFW callbacks are
+///          registered during Init() and dispatch Nodens Event objects to the application.
+/// @ingroup Platform
+class GLFWWindow : public Window
 {
 public:
-    GlfwWindow(const WindowProps& props) { Init(props); }
+    /// @brief Constructs and initializes a GLFW window with the given properties.
+    /// @param props Window configuration (title, dimensions, VSync).
+    GLFWWindow(const WindowProps& props) { Init(props); }
 
-    ~GlfwWindow() override {}
+    ~GLFWWindow() override {}
 
+    /// @brief Polls GLFW events and swaps the OpenGL buffers.
     void OnUpdate() override
     {
         ZoneScoped;
@@ -30,9 +45,15 @@ public:
     }
 
     unsigned int GetWidth() const override { return m_Data.Width; }
+
     unsigned int GetHeight() const override { return m_Data.Height; }
 
+    /// @brief Sets the event callback function invoked on window/input events.
+    /// @param callback The function to receive Event references.
     void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+
+    /// @brief Enables or disables VSync via glfwSwapInterval.
+    /// @param enabled True to enable VSync (swap interval 1), false to disable (swap interval 0).
     void SetVSync(bool enabled) override
     {
         if (enabled)
@@ -43,44 +64,62 @@ public:
         m_Data.VSync = enabled;
     }
 
-    bool IsVSync() const override { return m_Data.VSync; }
+    bool IsVSyncOn() const override { return m_Data.VSync; }
 
+    /// @brief Returns the raw GLFWwindow pointer.
+    /// @return Opaque pointer (cast to `GLFWwindow*` by the caller).
     void* GetNativeWindow() const override { return m_Window; }
 
 private:
+    /// @brief Initializes GLFW (if needed), creates the window, and registers all callbacks.
+    /// @param props Window configuration.
     void Init(const WindowProps& props);
+
+    /// @brief Destroys the GLFW window.
     void Shutdown();
 
 private:
-    GLFWwindow*      m_Window  = nullptr;
-    GraphicsContext* m_Context = nullptr;
+    GLFWwindow*      m_Window  = nullptr; ///< The native GLFW window handle.
+    GraphicsContext* m_Context = nullptr; ///< The OpenGL rendering context bound to this window.
 
+    /// @brief Internal data bundle attached to the GLFW window via glfwSetWindowUserPointer.
+    /// @details GLFW callbacks retrieve this struct to dispatch Nodens events and update
+    ///          cached dimensions.
     struct WindowData
     {
-        std::string  Title;
-        unsigned int Width;
-        unsigned int Height;
-        bool         VSync;
+        std::string  Title;  ///< Current window title.
+        unsigned int Width;  ///< Current width in pixels.
+        unsigned int Height; ///< Current height in pixels.
+        bool         VSync;  ///< Whether VSync is enabled.
 
-        EventCallbackFn EventCallback;
+        EventCallbackFn EventCallback; ///< The application's event callback.
     };
 
-    WindowData m_Data;
+    WindowData m_Data; ///< Cached window state accessible from GLFW callbacks.
 };
 
+/// @brief Tracks whether GLFW has been initialized (ensures glfwInit is called only once).
 static bool s_GLFWInitialized = false;
 
+/// @brief GLFW error callback that logs errors through the Nodens core logger.
+/// @param error GLFW error code.
+/// @param description Human-readable error description.
 static void GLFWErrorCallback(int error, const char* description)
 {
     CoreLogger().error("GLFW Error ({}): {}", error, description);
 }
 
+/// @brief Factory implementation: creates a GlfwWindow.
+/// @param props Window configuration.
+/// @return A new GlfwWindow (caller takes ownership).
 Window* Window::Create(const WindowProps& props)
 {
-    return new GlfwWindow(props);
+    return new GLFWWindow(props);
 }
 
-void GlfwWindow::Init(const WindowProps& props)
+/// @brief Initializes GLFW, creates the window, sets up the OpenGL context, and registers
+///        all GLFW event callbacks (resize, close, key, mouse button, scroll, cursor).
+void GLFWWindow::Init(const WindowProps& props)
 {
     ZoneScoped;
 
@@ -213,7 +252,8 @@ void GlfwWindow::Init(const WindowProps& props)
                              });
 }
 
-void GlfwWindow::Shutdown()
+/// @brief Destroys the underlying GLFW window.
+void GLFWWindow::Shutdown()
 {
     glfwDestroyWindow(m_Window);
 }

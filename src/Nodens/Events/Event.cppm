@@ -1,3 +1,10 @@
+/// @file Event.cppm
+/// @brief Complete event type hierarchy, CRTP helpers, and type-safe dispatcher.
+/// @details Defines the base Event class, all concrete event types (key, mouse, window,
+///          application), the C++20 CRTP base classes that replace macros, and the
+///          EventDispatcher utility.
+/// @ingroup Events
+
 module;
 
 export module Nodens.Events;

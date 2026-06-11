@@ -1,3 +1,7 @@
+/// @file Application.cpp
+/// @brief Implementation of the Application class — construction, main loop, and event dispatch.
+/// @ingroup Core
+
 module;
 
 #include <tracy/Tracy.hpp>
