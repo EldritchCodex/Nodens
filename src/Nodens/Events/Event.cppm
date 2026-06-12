@@ -78,7 +78,6 @@ public:
 
 // -------------------------------------------------------------------------
 // C++20 CRTP BASE CLASS
-// Replaces the old EVENT_CLASS_TYPE and EVENT_CLASS_CATEGORY macros
 // -------------------------------------------------------------------------
 
 /// @brief A Helper class to automate the implementation of virtual functions.
