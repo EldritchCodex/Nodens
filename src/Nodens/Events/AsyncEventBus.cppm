@@ -37,23 +37,24 @@ public:
     static AsyncEventBus& Get();
 
     /// @brief Subscribes a strongly-typed handler for events of type T.
-    /// @tparam T The concrete Event type to listen for (must derive from Event).
-    /// @param handler A callback that receives a reference to the event.
+    /// @tparam T The concrete Event type to listen for.
+    /// @tparam F The callable type of the handler.
+    /// @param handler A callback (invocable with T&) that receives a reference to the event.
     /// @details The handler is wrapped in a type-erased EventHandler and stored
     ///          internally, keyed by `typeid(T)`.
-    template <typename T> void Subscribe(const std::function<void(T&)>& handler)
+    template <IsEvent T, std::invocable<T&> F> void Subscribe(F&& handler)
     {
-        auto wrapper = [handler](Event& e) { handler(static_cast<T&>(e)); };
+        auto wrapper = [handler = std::forward<F>(handler)](Event& e) { handler(static_cast<T&>(e)); };
 
         SubscribeInternal(typeid(T), wrapper);
     }
 
     /// @brief Publishes an event asynchronously to all registered subscribers.
-    /// @tparam T The concrete Event type to publish (must derive from Event).
+    /// @tparam T The concrete Event type to publish.
     /// @param event The event value to broadcast. It is copied into a shared_ptr.
     /// @details The event is submitted to the JobSystem and handlers are invoked
     ///          on a worker thread. This call returns immediately.
-    template <typename T> void Publish(T event)
+    template <IsEvent T> void Publish(T event)
     {
         auto eventPtr = std::make_shared<T>(event);
         PublishInternal(eventPtr);

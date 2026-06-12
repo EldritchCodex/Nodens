@@ -30,15 +30,16 @@ public:
 	~JobSystem();
 
 	/// @brief Submits a function (job) to the execution queue.
-	/// @tparam F The type of the function object.
+	/// @tparam F The type of the function object (must be invocable with Args...).
 	/// @tparam Args The types of the arguments to pass to the function.
 	/// @param f The function to execute.
 	/// @param args The arguments to forward to the function.
 	/// @return A std::future containing the result of the function execution.
-	template <class F, class... Args>
-	auto Submit(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>
+	template <typename F, typename... Args>
+		requires std::invocable<F, Args...>
+	auto Submit(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
 	{
-		using return_type = typename std::invoke_result<F, Args...>::type;
+		using return_type = std::invoke_result_t<F, Args...>;
 
 		auto task = std::make_shared<std::packaged_task<return_type()>>(
 			std::bind(std::forward<F>(f), std::forward<Args>(args)...));

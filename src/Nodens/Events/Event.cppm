@@ -116,10 +116,10 @@ public:
 
     /// @brief Dispatches the event to a handler function if the types match.
     /// @tparam T The concrete Event type to match against.
-    /// @tparam F The function type.
-    /// @param func A callback function taking T& and returning bool.
+    /// @tparam F The predicate function type.
+    /// @param func A callback function taking T& and returning a value testable as bool.
     /// @return True if the event types matched and the function was executed.
-    template <IsEvent T, typename F> bool Dispatch(const F& func)
+    template <IsEvent T, std::predicate<T&> F> bool Dispatch(const F& func)
     {
         if (m_Event.GetEventType() == T::GetStaticType())
         {
