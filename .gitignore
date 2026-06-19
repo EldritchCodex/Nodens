@@ -9,8 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
-.vscode/
 **/imgui.ini
+.vscode/
+.zed/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
