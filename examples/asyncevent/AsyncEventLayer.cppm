@@ -10,7 +10,9 @@ import std;
 
 export struct PlanetaryScanEvent : public Nodens::Event
 {
-    PlanetaryScanEvent(int id) : m_ID(id) {}
+    PlanetaryScanEvent(int id) : m_ID(id)
+    {
+    }
 
     int m_ID{};
 
@@ -18,10 +20,22 @@ export struct PlanetaryScanEvent : public Nodens::Event
     float m_AtmosphereDensity{};
     float m_CalculationTime{};
 
-    static Nodens::EventType GetStaticType() { return (Nodens::EventType)0; }
-    Nodens::EventType        GetEventType() const override { return GetStaticType(); }
-    const char*              GetName() const override { return "PlanetaryScanEvent"; }
-    int                      GetCategoryFlags() const override { return 0; }
+    static Nodens::EventType GetStaticType()
+    {
+        return (Nodens::EventType)0;
+    }
+    Nodens::EventType GetEventType() const override
+    {
+        return GetStaticType();
+    }
+    const char* GetName() const override
+    {
+        return "PlanetaryScanEvent";
+    }
+    int GetCategoryFlags() const override
+    {
+        return 0;
+    }
 };
 
 // -----------------------------------------------------------------------------
@@ -46,7 +60,7 @@ private:
 
 private:
     float m_TimePassed{};
-    int   m_ScanCounter{};
+    int m_ScanCounter{};
 
     std::mutex m_DataMutex;
 
@@ -54,5 +68,5 @@ private:
     std::vector<float> m_GalaxyDensities{};
 
     std::vector<float> m_LatencyHistory{};
-    float              m_MaxLatency{};
+    float m_MaxLatency{};
 };

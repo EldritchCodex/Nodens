@@ -20,24 +20,39 @@ public:
     /// @brief      Checks if a specific key is currently pressed.
     /// @param[in]  keycode The key to check.
     /// @return     `true` if the key is pressed, `false` otherwise.
-    inline static bool IsKeyPressed(KeyboardKey keycode) { return s_Instance->IsKeyPressedImpl(keycode); }
+    inline static bool IsKeyPressed(KeyboardKey keycode)
+    {
+        return s_Instance->IsKeyPressedImpl(keycode);
+    }
 
     /// @brief      Checks if a specific mouse button is currently pressed.
     /// @param[in]  button The mouse button to check.
     /// @return     `true` if the mouse button is pressed, `false` otherwise.
-    inline static bool IsMouseButtonPressed(MouseButton button) { return s_Instance->IsMouseButtonPressedImpl(button); }
+    inline static bool IsMouseButtonPressed(MouseButton button)
+    {
+        return s_Instance->IsMouseButtonPressedImpl(button);
+    }
 
     /// @brief      Gets the current position of the mouse cursor.
     /// @return     A pair of floats representing the X and Y coordinates of the mouse cursor.
-    inline static std::pair<float, float> GetMousePosition() { return s_Instance->GetMousePositionImpl(); }
+    inline static std::pair<float, float> GetMousePosition()
+    {
+        return s_Instance->GetMousePositionImpl();
+    }
 
     /// @brief      Gets the current X coordinate of the mouse cursor.
     /// @return     The X coordinate of the mouse cursor.
-    inline static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
+    inline static float GetMouseX()
+    {
+        return s_Instance->GetMouseXImpl();
+    }
 
     /// @brief      Gets the current Y coordinate of the mouse cursor.
     /// @return     The Y coordinate of the mouse cursor.
-    inline static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
+    inline static float GetMouseY()
+    {
+        return s_Instance->GetMouseYImpl();
+    }
 
 protected:
     /// @brief      Platform-specific implementation for checking if a key is pressed.

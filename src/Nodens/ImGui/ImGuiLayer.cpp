@@ -25,7 +25,9 @@ ImGuiLayer::ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer, DefaultTh
 {
 }
 
-ImGuiLayer::~ImGuiLayer() {}
+ImGuiLayer::~ImGuiLayer()
+{
+}
 
 void ImGuiLayer::OnAttach()
 {
@@ -46,21 +48,21 @@ void ImGuiLayer::OnAttach()
 
     switch (m_Theme)
     {
-    case DefaultTheme::Dark:
-        Nodens::ApplyDefaultDarkTheme();
-        break;
-    case DefaultTheme::Light:
-        Nodens::ApplyDefaultLightTheme();
-        break;
-    case DefaultTheme::None:
-        ImGui::StyleColorsDark();
-        break;
+        case DefaultTheme::Dark:
+            Nodens::ApplyDefaultDarkTheme();
+            break;
+        case DefaultTheme::Light:
+            Nodens::ApplyDefaultLightTheme();
+            break;
+        case DefaultTheme::None:
+            ImGui::StyleColorsDark();
+            break;
     }
 
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
-        style.WindowRounding              = 0.0f;
+        style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
@@ -101,9 +103,9 @@ void ImGuiLayer::End()
 {
     ZoneScoped;
 
-    ImGuiIO&     io  = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
     Application& app = Application::Get();
-    io.DisplaySize   = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+    io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
     // Rendering
     ImGui::Render();
@@ -121,7 +123,9 @@ void ImGuiLayer::End()
     }
 }
 
-void ImGuiLayer::OnImGuiRender(TimeStep ts) {}
+void ImGuiLayer::OnImGuiRender(TimeStep ts)
+{
+}
 
 void ImGuiLayer::OnEvent(Event& e)
 {

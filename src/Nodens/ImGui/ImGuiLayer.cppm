@@ -60,11 +60,14 @@ public:
 
     /// @brief Enables or disables event blocking when ImGui has input focus.
     /// @param block If true, mouse and keyboard events are consumed when ImGui wants them.
-    void BlockEvents(bool block) { m_BlockEvents = block; }
+    void BlockEvents(bool block)
+    {
+        m_BlockEvents = block;
+    }
 
 private:
-    bool                           m_BlockEvents = true;               ///< Whether to consume events captured by ImGui.
-    DefaultTheme                   m_Theme       = DefaultTheme::Dark; ///< The visual theme applied during OnAttach().
-    std::shared_ptr<ImGuiRenderer> m_Renderer;                         ///< The injected rendering backend.
+    bool m_BlockEvents = true;                 ///< Whether to consume events captured by ImGui.
+    DefaultTheme m_Theme = DefaultTheme::Dark; ///< The visual theme applied during OnAttach().
+    std::shared_ptr<ImGuiRenderer> m_Renderer; ///< The injected rendering backend.
 };
 } // namespace Nodens

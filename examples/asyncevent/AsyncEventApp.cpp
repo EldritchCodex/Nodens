@@ -10,14 +10,17 @@ class AsyncEventApp : public Nodens::Application
 {
 public:
     static inline const Nodens::ApplicationSpecification appSpecifications = {
-        .Name         = "[NodensApp Example] AsyncEvents",
-        .WindowWidth  = 800,
+        .Name = "[NodensApp Example] AsyncEvents",
+        .WindowWidth = 800,
         .WindowHeight = 600,
-        .EnableGUI    = true,
-        .IsHeadless   = false,
+        .EnableGUI = true,
+        .IsHeadless = false,
     };
 
-    AsyncEventApp() : Application(appSpecifications) { PushLayer(new AsyncEventLayer()); }
+    AsyncEventApp() : Application(appSpecifications)
+    {
+        PushLayer(new AsyncEventLayer());
+    }
 
     ~AsyncEventApp() = default;
 };

@@ -26,14 +26,14 @@ public:
 
     /// @brief Initializes the rendering backend for the given GLFW window.
     /// @param window The native GLFW window handle to bind to.
-    virtual void Init(GLFWwindow* window)             = 0;
+    virtual void Init(GLFWwindow* window) = 0;
 
     /// @brief Tears down the rendering backend and releases GPU resources.
-    virtual void Shutdown()                           = 0;
+    virtual void Shutdown() = 0;
 
     /// @brief Begins a new ImGui frame on the backend side.
     /// @details Called once per frame before ImGui::NewFrame().
-    virtual void NewFrame()                           = 0;
+    virtual void NewFrame() = 0;
 
     /// @brief Submits ImGui draw data to the GPU for rendering.
     /// @param drawData The draw data produced by ImGui::Render().

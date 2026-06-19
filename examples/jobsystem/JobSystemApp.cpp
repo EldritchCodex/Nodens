@@ -10,14 +10,17 @@ class JobSystemApp : public Nodens::Application
 {
 public:
     static inline const Nodens::ApplicationSpecification appSpecifications = {
-        .Name         = "[NodensApp Example] JobSystem",
-        .WindowWidth  = 800,
+        .Name = "[NodensApp Example] JobSystem",
+        .WindowWidth = 800,
         .WindowHeight = 600,
-        .EnableGUI    = true,
-        .IsHeadless   = false,
+        .EnableGUI = true,
+        .IsHeadless = false,
     };
 
-    JobSystemApp() : Application(appSpecifications) { PushLayer(new JobSystemLayer()); }
+    JobSystemApp() : Application(appSpecifications)
+    {
+        PushLayer(new JobSystemLayer());
+    }
 
     ~JobSystemApp() = default;
 };

@@ -42,7 +42,8 @@ public:
     /// @param handler A callback (invocable with T&) that receives a reference to the event.
     /// @details The handler is wrapped in a type-erased EventHandler and stored
     ///          internally, keyed by `typeid(T)`.
-    template <IsEvent T, std::invocable<T&> F> void Subscribe(F&& handler)
+    template <IsEvent T, std::invocable<T&> F>
+    void Subscribe(F&& handler)
     {
         auto wrapper = [handler = std::forward<F>(handler)](Event& e) { handler(static_cast<T&>(e)); };
 
@@ -54,7 +55,8 @@ public:
     /// @param event The event value to broadcast. It is copied into a shared_ptr.
     /// @details The event is submitted to the JobSystem and handlers are invoked
     ///          on a worker thread. This call returns immediately.
-    template <IsEvent T> void Publish(T event)
+    template <IsEvent T>
+    void Publish(T event)
     {
         auto eventPtr = std::make_shared<T>(event);
         PublishInternal(eventPtr);

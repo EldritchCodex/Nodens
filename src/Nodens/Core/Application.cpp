@@ -31,7 +31,7 @@ Application::Application(const ApplicationSpecification& specification) : m_Spec
         FatalCore("Application already exists!");
     s_Instance = this;
 
-    m_JobSystem  = std::make_unique<JobSystem>();
+    m_JobSystem = std::make_unique<JobSystem>();
     m_LayerStack = std::make_unique<LayerStack>();
 
     if (!m_Specification.IsHeadless)
@@ -100,9 +100,9 @@ void Application::Run()
         ZoneScoped;
 
         const auto currentTime = std::chrono::steady_clock::now();
-        float      time        = std::chrono::duration<float>(currentTime - startTime).count();
-        TimeStep   timestep    = time - m_LastFrameTime;
-        m_LastFrameTime        = time;
+        float time = std::chrono::duration<float>(currentTime - startTime).count();
+        TimeStep timestep = time - m_LastFrameTime;
+        m_LastFrameTime = time;
 
         // Update each layer
         for (Layer* layer : *m_LayerStack)

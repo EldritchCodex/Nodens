@@ -19,7 +19,7 @@ CircularWave3DLayer::CircularWave3DLayer() : Layer("CircularWave3D")
     // Generate data for ImPlot
     for (int i = 0; i < kNumberOfPoints; i++)
     {
-        t[i]  = i * kIncrement;
+        t[i] = i * kIncrement;
         xs[i] = std::sin(m_Frequency * t[i]);
         ys[i] = std::cos(m_Frequency * t[i]);
     }
@@ -37,8 +37,8 @@ void CircularWave3DLayer::OnUpdate(Nodens::TimeStep previous_update_duration)
         ys[i] = std::cos(m_Frequency * t[i]);
     }
 
-    Nodens::ClientLogger().info("Updated CircularWave3DLayer with timestep: {:.3f} ms",
-                                previous_update_duration.GetMilliseconds());
+    Nodens::ClientLogger().info(
+        "Updated CircularWave3DLayer with timestep: {:.3f} ms", previous_update_duration.GetMilliseconds());
 } // CircularWave3DLayer::OnUpdate
 
 void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)

@@ -16,20 +16,18 @@ export namespace Nodens
 /// @ingroup Rendering
 struct WindowProps
 {
-    std::string  Title;  ///< The window title displayed in the title bar.
+    std::string Title;   ///< The window title displayed in the title bar.
     unsigned int Width;  ///< Initial window width in pixels.
     unsigned int Height; ///< Initial window height in pixels.
-    bool         VSync;  ///< Whether vertical synchronization is enabled.
+    bool VSync;          ///< Whether vertical synchronization is enabled.
 
     /// @brief Constructs window properties with optional overrides.
     /// @param title  Window title.
     /// @param width  Window width in pixels.
     /// @param height Window height in pixels.
     /// @param vsync  Enable VSync.
-    WindowProps(const std::string& title  = "[Nodens]",
-                unsigned int       width  = 1280,
-                unsigned int       height = 720,
-                bool               vsync  = true)
+    WindowProps(
+        const std::string& title = "[Nodens]", unsigned int width = 1280, unsigned int height = 720, bool vsync = true)
         : Title(title), Width(width), Height(height), VSync(vsync)
     {
     }
@@ -52,12 +50,14 @@ public:
     ///          whenever a platform event (resize, close, key, mouse) occurs.
     using EventCallbackFn = std::function<void(Event&)>;
 
-    virtual ~Window() {}
+    virtual ~Window()
+    {
+    }
 
     /// @brief Polls platform events and swaps buffers. Called once per frame.
     virtual void OnUpdate() = 0;
 
-    virtual unsigned int GetWidth() const  = 0;
+    virtual unsigned int GetWidth() const = 0;
     virtual unsigned int GetHeight() const = 0;
 
     /// @brief Sets the event callback invoked by the window on platform events.

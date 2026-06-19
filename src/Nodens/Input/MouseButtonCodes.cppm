@@ -23,9 +23,9 @@ enum class MouseButton : std::uint16_t
     Button7 = 7, ///< The 7 mouse button.
 
     ButtonLast = Button7, ///< The last mouse button.
-    Left       = Button0, ///< The left mouse button.
-    Right      = Button1, ///< The right mouse button.
-    Middle     = Button2  ///< The middle mouse button.
+    Left = Button0,       ///< The left mouse button.
+    Right = Button1,      ///< The right mouse button.
+    Middle = Button2      ///< The middle mouse button.
 };
 
 } // namespace Nodens

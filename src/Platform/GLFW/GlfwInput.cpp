@@ -32,7 +32,7 @@ protected:
     bool IsKeyPressedImpl(KeyboardKey keycode) override
     {
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-        int  state{glfwGetKey(window, std::to_underlying(keycode))};
+        int state{glfwGetKey(window, std::to_underlying(keycode))};
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
@@ -42,7 +42,7 @@ protected:
     bool IsMouseButtonPressedImpl(MouseButton buttoncode) override
     {
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-        int  state{glfwGetMouseButton(window, std::to_underlying(buttoncode))};
+        int state{glfwGetMouseButton(window, std::to_underlying(buttoncode))};
         return state == GLFW_PRESS;
     }
 
@@ -50,7 +50,7 @@ protected:
     /// @return A pair of (x, y) coordinates in window-relative pixels.
     std::pair<float, float> GetMousePositionImpl() override
     {
-        auto   window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+        auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
         double xPos, yPos;
         glfwGetCursorPos(window, &xPos, &yPos);
         return {(float)xPos, (float)yPos};
@@ -58,11 +58,17 @@ protected:
 
     /// @brief Returns the current mouse X coordinate.
     /// @return The X position in window-relative pixels.
-    float GetMouseXImpl() override { return GetMousePositionImpl().first; }
+    float GetMouseXImpl() override
+    {
+        return GetMousePositionImpl().first;
+    }
 
     /// @brief Returns the current mouse Y coordinate.
     /// @return The Y position in window-relative pixels.
-    float GetMouseYImpl() override { return GetMousePositionImpl().second; }
+    float GetMouseYImpl() override
+    {
+        return GetMousePositionImpl().second;
+    }
 };
 
 /// @brief Static initialization of the Input singleton with the GLFW implementation.

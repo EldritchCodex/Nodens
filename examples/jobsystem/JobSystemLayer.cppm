@@ -17,12 +17,11 @@ public:
 
     void OnUpdate(Nodens::TimeStep ts) override;
     void OnImGuiRender(Nodens::TimeStep ts) override;
-    void OnEvent(Nodens::Event& e) override;
 
 private:
     std::future<int> m_JobFuture;
 
-    bool  m_IsJobRunning{};
-    int   m_JobResult{};
+    bool m_IsJobRunning{};
+    int m_JobResult{};
     float m_TimePassed{};
 };

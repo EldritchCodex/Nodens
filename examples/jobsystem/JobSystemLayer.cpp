@@ -7,7 +7,9 @@ module Example.JobSystemLayer;
 
 import Nodens;
 
-JobSystemLayer::JobSystemLayer() : Layer("JobSystemLayer") {}
+JobSystemLayer::JobSystemLayer() : Layer("JobSystemLayer")
+{
+}
 
 void JobSystemLayer::OnUpdate(Nodens::TimeStep ts)
 {
@@ -31,6 +33,7 @@ void JobSystemLayer::OnUpdate(Nodens::TimeStep ts)
         }
     }
 }
+
 void JobSystemLayer::OnImGuiRender(Nodens::TimeStep ts)
 {
     ZoneScoped;
@@ -52,7 +55,7 @@ void JobSystemLayer::OnImGuiRender(Nodens::TimeStep ts)
         if (ImGui::Button("Start Heavy Calculation (2s sleep)"))
         {
             m_IsJobRunning = true;
-            m_JobResult    = 0;
+            m_JobResult = 0;
 
             auto& jobSystem = Nodens::Application::Get().GetJobSystem();
 
@@ -74,5 +77,3 @@ void JobSystemLayer::OnImGuiRender(Nodens::TimeStep ts)
     ImGui::Text("Result from Thread: %d", m_JobResult);
     ImGui::End();
 }
-
-void JobSystemLayer::OnEvent(Nodens::Event& e) {}

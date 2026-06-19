@@ -11,14 +11,17 @@ class CircularWave3DApp : public Nodens::Application
 {
 public:
     static inline const Nodens::ApplicationSpecification appSpecifications = {
-        .Name         = "[NodensApp Example] CircularWave3D",
-        .WindowWidth  = 800,
+        .Name = "[NodensApp Example] CircularWave3D",
+        .WindowWidth = 800,
         .WindowHeight = 600,
-        .EnableGUI    = true,
-        .IsHeadless   = false,
+        .EnableGUI = true,
+        .IsHeadless = false,
     };
 
-    CircularWave3DApp() : Application(appSpecifications) { PushLayer(new CircularWave3DLayer()); }
+    CircularWave3DApp() : Application(appSpecifications)
+    {
+        PushLayer(new CircularWave3DLayer());
+    }
 
     ~CircularWave3DApp() = default;
 };

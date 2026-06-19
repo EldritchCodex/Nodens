@@ -8,7 +8,9 @@ import std;
 
 namespace Nodens
 {
-LayerStack::LayerStack() {}
+LayerStack::LayerStack()
+{
+}
 
 LayerStack::~LayerStack()
 {

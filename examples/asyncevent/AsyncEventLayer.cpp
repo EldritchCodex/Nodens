@@ -8,7 +8,9 @@ module Example.AsyncEventLayer;
 
 import std;
 
-AsyncEventLayer::AsyncEventLayer() : Layer("AsyncEventLayer") {}
+AsyncEventLayer::AsyncEventLayer() : Layer("AsyncEventLayer")
+{
+}
 
 void AsyncEventLayer::OnAttach()
 {
@@ -30,16 +32,16 @@ void AsyncEventLayer::OnAttach()
             std::this_thread::sleep_for(std::chrono::milliseconds(sleepDist(generator)));
 
             // Generate "Scientific Data"
-            std::uniform_real_distribution<float> distDist(0.1f, 100.0f);   // 0 to 100 Light Years
-            std::normal_distribution<float>       densityDist(0.5f, 0.15f); // Atmosphere density
+            std::uniform_real_distribution<float> distDist(0.1f, 100.0f); // 0 to 100 Light Years
+            std::normal_distribution<float> densityDist(0.5f, 0.15f);     // Atmosphere density
 
-            e.m_Distance          = distDist(generator);
+            e.m_Distance = distDist(generator);
             e.m_AtmosphereDensity = densityDist(generator);
 
             // 3. Calculate Duration
-            auto                         end      = std::chrono::high_resolution_clock::now();
+            auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<float> duration = end - start;
-            e.m_CalculationTime                   = duration.count();
+            e.m_CalculationTime = duration.count();
 
             // 4. Report Back (Thread-Safe)
             AddResult(e);

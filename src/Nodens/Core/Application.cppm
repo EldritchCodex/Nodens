@@ -22,12 +22,12 @@ export namespace Nodens
 /// @ingroup Core
 struct ApplicationSpecification
 {
-    std::string   Name{"Nodens Application"};       ///< Window title and application identifier.
-    std::uint32_t WindowWidth{1280};                ///< Initial window width in pixels.
-    std::uint32_t WindowHeight{720};                ///< Initial window height in pixels.
-    bool          EnableGUI{true};                  ///< Whether to create the ImGui overlay layer.
-    bool          IsHeadless{false};                ///< If true, no window or graphics context is created.
-    DefaultTheme  DefaultTheme{DefaultTheme::Dark}; ///< The visual theme applied to ImGui on startup.
+    std::string Name{"Nodens Application"};        ///< Window title and application identifier.
+    std::uint32_t WindowWidth{1280};               ///< Initial window width in pixels.
+    std::uint32_t WindowHeight{720};               ///< Initial window height in pixels.
+    bool EnableGUI{true};                          ///< Whether to create the ImGui overlay layer.
+    bool IsHeadless{false};                        ///< If true, no window or graphics context is created.
+    DefaultTheme DefaultTheme{DefaultTheme::Dark}; ///< The visual theme applied to ImGui on startup.
 };
 
 /// @brief The central singleton that owns the window, layer stack, job system, and main loop.
@@ -101,10 +101,10 @@ private:
     /// @return Always returns true (event is consumed).
     bool OnWindowClose(WindowCloseEvent& e);
 
-    ApplicationSpecification m_Specification;  ///< Stored copy of the startup configuration.
-    bool                     m_Running = true; ///< Main loop sentinel; false triggers shutdown.
+    ApplicationSpecification m_Specification; ///< Stored copy of the startup configuration.
+    bool m_Running = true;                    ///< Main loop sentinel; false triggers shutdown.
 
-    std::unique_ptr<Window>     m_Window;     ///< The platform window (null in headless mode).
+    std::unique_ptr<Window> m_Window;         ///< The platform window (null in headless mode).
     std::unique_ptr<ImGuiLayer> m_ImGuiLayer; ///< The ImGui overlay (null when GUI is disabled).
     std::unique_ptr<LayerStack> m_LayerStack; ///< Ordered collection of active layers.
 

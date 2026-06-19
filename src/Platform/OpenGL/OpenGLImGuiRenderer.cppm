@@ -22,7 +22,7 @@ export namespace Nodens
 class OpenGLImGuiRenderer : public ImGuiRenderer
 {
 public:
-    OpenGLImGuiRenderer()           = default;
+    OpenGLImGuiRenderer() = default;
     ~OpenGLImGuiRenderer() override = default;
 
     /// @brief Initializes the OpenGL3 and GLFW ImGui backends for the given window.

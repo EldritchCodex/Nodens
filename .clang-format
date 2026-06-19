@@ -1,33 +1,44 @@
 ---
-Language:        Cpp
-Standard:        c++20
-BasedOnStyle:    LLVM
+Language: Cpp
+Standard: Latest
+BasedOnStyle: LLVM
 
-# Indentation
-IndentWidth:     4
-TabWidth:        4
-UseTab:          Never
-AccessModifierOffset: -4
+# Indentation and Tabs
+UseTab: Never
+TabWidth: 4
+IndentWidth: 4
+ContinuationIndentWidth: 4
+IndentCaseLabels: true
+
+# Brace Style (Allman style as per Epic's C++ Coding Standard)
+BreakBeforeBraces: Allman
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+# Line Length
+ColumnLimit: 120
+
+# Pointer and Reference Alignment (e.g. FShaderType* Ptr)
+PointerAlignment: Left
+ReferenceAlignment: Left
+DerivePointerAlignment: false
+
+# Spacing
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpacesInAngles: false
 
 # Alignment
-AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
-AlignOperands:   true
+AlignAfterOpenBracket: DontAlign
+AlignOperands: false
 AlignTrailingComments: true
 
-# Brace Wrapping
-BreakBeforeBraces: Allman
-
-# C++20 Specifics
-SpaceAfterTemplateKeyword: true
-IndentRequiresClause: true
-
-# Pointer Alignment
-PointerAlignment: Left
-
-# Line Breaking
-ColumnLimit:     120
-BinPackArguments: false
-BinPackParameters: false
-AllowShortFunctionsOnASingleLine: Inline
+# Classes, Namespaces, and Templates
+NamespaceIndentation: None
+AlwaysBreakTemplateDeclarations: Yes
+AccessModifierOffset: -4
+...

@@ -42,13 +42,19 @@ public:
     void PopOverlay(Layer* overlay);
 
     /// @brief Returns an iterator to the first layer (front-to-back traversal).
-    std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
+    std::vector<Layer*>::iterator begin()
+    {
+        return m_Layers.begin();
+    }
 
     /// @brief Returns an iterator past the last overlay.
-    std::vector<Layer*>::iterator end() { return m_Layers.end(); }
+    std::vector<Layer*>::iterator end()
+    {
+        return m_Layers.end();
+    }
 
 private:
-    std::vector<Layer*> m_Layers;              ///< Flat list: [layers ... | overlays ...].
-    unsigned int        m_LayerInsertIndex = 0; ///< Boundary index between layers and overlays.
+    std::vector<Layer*> m_Layers;        ///< Flat list: [layers ... | overlays ...].
+    unsigned int m_LayerInsertIndex = 0; ///< Boundary index between layers and overlays.
 };
 } // namespace Nodens

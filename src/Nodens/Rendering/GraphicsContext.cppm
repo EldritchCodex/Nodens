@@ -18,7 +18,7 @@ public:
     virtual ~GraphicsContext() = default;
 
     /// @brief Initializes the graphics context (e.g., loads function pointers, sets GL state).
-    virtual void Init()        = 0;
+    virtual void Init() = 0;
 
     /// @brief Swaps the front and back framebuffers, presenting the rendered frame.
     virtual void SwapBuffers() = 0;

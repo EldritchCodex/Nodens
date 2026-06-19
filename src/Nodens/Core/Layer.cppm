@@ -29,26 +29,39 @@ public:
 
     /// @brief Called once when the layer is pushed onto the LayerStack.
     /// @details Use this to allocate resources, subscribe to events, etc.
-    virtual void OnAttach() {}
+    virtual void OnAttach()
+    {
+    }
 
     /// @brief Called once when the layer is removed from the LayerStack.
     /// @details Use this to release resources, unsubscribe from events, etc.
-    virtual void OnDetach() {}
+    virtual void OnDetach()
+    {
+    }
 
     /// @brief Called every frame with the elapsed time since the last frame.
     /// @param ts The frame delta time.
-    virtual void OnUpdate(TimeStep ts) {}
+    virtual void OnUpdate(TimeStep ts)
+    {
+    }
 
     /// @brief Called every frame between ImGuiLayer::Begin() and ImGuiLayer::End().
     /// @details Override this to issue ImGui draw commands for tooling or debug UI.
     /// @param ts The frame delta time.
-    virtual void OnImGuiRender(TimeStep ts) {}
+    virtual void OnImGuiRender(TimeStep ts)
+    {
+    }
 
     /// @brief Called when an event propagates to this layer (back-to-front order).
     /// @param event The event to handle. Set `event.Handled = true` to consume it.
-    virtual void OnEvent(Event& event) {}
+    virtual void OnEvent(Event& event)
+    {
+    }
 
-    inline const std::string& GetName() const { return m_DebugName; }
+    inline const std::string& GetName() const
+    {
+        return m_DebugName;
+    }
 
 protected:
     std::string m_DebugName; ///< Human-readable name for logging and profiling.
