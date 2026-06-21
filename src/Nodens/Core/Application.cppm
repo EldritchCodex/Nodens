@@ -22,12 +22,12 @@ export namespace Nodens
 /// @ingroup Core
 struct ApplicationSpecification
 {
-    std::string Name{"Nodens Application"};        ///< Window title and application identifier.
-    std::uint32_t WindowWidth{1280};               ///< Initial window width in pixels.
-    std::uint32_t WindowHeight{720};               ///< Initial window height in pixels.
-    bool EnableGUI{true};                          ///< Whether to create the ImGui overlay layer.
-    bool IsHeadless{false};                        ///< If true, no window or graphics context is created.
-    DefaultTheme DefaultTheme{DefaultTheme::Dark}; ///< The visual theme applied to ImGui on startup.
+    std::string Name{"Nodens Application"};          ///< Window title and application identifier.
+    std::uint32_t WindowWidth{1280};                 ///< Initial window width in pixels.
+    std::uint32_t WindowHeight{720};                 ///< Initial window height in pixels.
+    bool EnableGUI{true};                            ///< Whether to create the ImGui overlay layer.
+    bool IsHeadless{false};                          ///< If true, no window or graphics context is created.
+    EDefaultTheme DefaultTheme{EDefaultTheme::Dark}; ///< The visual theme applied to ImGui on startup.
 };
 
 /// @brief The central singleton that owns the window, layer stack, job system, and main loop.

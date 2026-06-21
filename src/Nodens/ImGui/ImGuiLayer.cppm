@@ -31,7 +31,7 @@ public:
     /// @brief Constructs the ImGui layer with a rendering backend and a visual theme.
     /// @param renderer Shared pointer to the concrete ImGuiRenderer implementation.
     /// @param theme    The default visual theme to apply on attach.
-    ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer, DefaultTheme theme);
+    ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer, EDefaultTheme theme);
 
     ~ImGuiLayer();
 
@@ -66,8 +66,8 @@ public:
     }
 
 private:
-    bool m_BlockEvents = true;                 ///< Whether to consume events captured by ImGui.
-    DefaultTheme m_Theme = DefaultTheme::Dark; ///< The visual theme applied during OnAttach().
-    std::shared_ptr<ImGuiRenderer> m_Renderer; ///< The injected rendering backend.
+    bool m_BlockEvents = true;                   ///< Whether to consume events captured by ImGui.
+    EDefaultTheme m_Theme = EDefaultTheme::Dark; ///< The visual theme applied during OnAttach().
+    std::shared_ptr<ImGuiRenderer> m_Renderer;   ///< The injected rendering backend.
 };
 } // namespace Nodens
