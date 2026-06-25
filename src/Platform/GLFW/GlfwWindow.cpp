@@ -152,7 +152,6 @@ void GLFWWindow::Init(const WindowProps& props)
 
     if (!s_GLFWInitialized)
     {
-        // TODO: glfwTerminate on system shutdown
         int succes = glfwInit();
         if (!succes)
             FatalCore("Could not initialize GLFW!");
@@ -276,5 +275,6 @@ void GLFWWindow::Init(const WindowProps& props)
 void GLFWWindow::Shutdown()
 {
     glfwDestroyWindow(m_Window);
+    glfwTerminate();
 }
 } // namespace Nodens
