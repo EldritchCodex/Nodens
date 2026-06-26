@@ -98,7 +98,6 @@ Nodens includes several examples in the `examples/` directory:
 | Example | Demonstrates |
 |---------|-------------|
 | **`circularwave3d`** | Immediate mode GUI, real-time 2D/3D plotting with ImPlot and ImPlot3D |
-| **`jobsystem`** | Thread pool submission, `std::future` polling, non-blocking UI updates |
 | **`asyncevent`** | Pub/Sub event bus, thread-safe data collection, live scatter plot visualization |
 
 > 📖 For detailed walkthroughs of each example, see the **[Examples Guide](https://github.com/EldritchCodex/Nodens/wiki/Examples-Guide)** on the wiki.

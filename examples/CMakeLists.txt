@@ -2,5 +2,4 @@
 # Developer Touchpoint: Enabled Examples
 # -----------------------------------------------------------------------------
 add_subdirectory(circularwave3d)
-add_subdirectory(jobsystem)
 add_subdirectory(asyncevent)
