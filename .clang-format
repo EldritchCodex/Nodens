@@ -3,6 +3,12 @@ Language: Cpp
 Standard: Latest
 BasedOnStyle: LLVM
 
+# Comments
+ReflowComments: true
+AlignTrailingComments:
+  Kind: Always # Always | Never | Leave
+  # OverEmptyLines: 1 # align across this many empty lines
+
 # Indentation and Tabs
 UseTab: Never
 TabWidth: 4
@@ -10,7 +16,7 @@ IndentWidth: 4
 ContinuationIndentWidth: 4
 IndentCaseLabels: true
 
-# Brace Style (Allman style as per Epic's C++ Coding Standard)
+# Brace Style
 BreakBeforeBraces: Allman
 AllowShortBlocksOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
@@ -18,9 +24,9 @@ AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 
 # Line Length
-ColumnLimit: 120
+ColumnLimit: 100
 
-# Pointer and Reference Alignment (e.g. FShaderType* Ptr)
+# Pointer and Reference Alignment
 PointerAlignment: Left
 ReferenceAlignment: Left
 DerivePointerAlignment: false
@@ -30,15 +36,20 @@ SpaceBeforeParens: ControlStatements
 SpaceAfterCStyleCast: false
 SpaceAfterTemplateKeyword: true
 SpaceBeforeAssignmentOperators: true
-SpacesInAngles: false
+SpacesInAngles: Never
 
 # Alignment
-AlignAfterOpenBracket: DontAlign
-AlignOperands: false
-AlignTrailingComments: true
+AlignAfterOpenBracket: Align
+AlignOperands: Align
 
 # Classes, Namespaces, and Templates
 NamespaceIndentation: None
 AlwaysBreakTemplateDeclarations: Yes
 AccessModifierOffset: -4
+
+# Others
+BreakBinaryOperations: RespectPrecedence
+AllowShortCompoundRequirementOnASingleLine: true
+BinPackArguments: false
+BinPackParameters: false
 ...
