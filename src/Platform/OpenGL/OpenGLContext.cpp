@@ -11,6 +11,8 @@ module Nodens.OpenGLContext;
 
 import Nodens.Log;
 
+import Nodens.Log;
+
 namespace Nodens
 {
 

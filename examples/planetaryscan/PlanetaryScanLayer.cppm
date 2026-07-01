@@ -1,5 +1,4 @@
-export module Example.AsyncEventLayer;
-
+export module Example.PlanetaryScanLayer;
 import Nodens;
 import std;
 
@@ -8,34 +7,13 @@ import std;
 // the results of the async task to the main thread.
 // -----------------------------------------------------------------------------
 
-export struct PlanetaryScanEvent : public Nodens::Event
+export struct PlanetaryScanResultEvent
 {
-    PlanetaryScanEvent(int id) : m_ID(id)
-    {
-    }
-
+    static constexpr std::string_view Name = "PlanetaryScanResult";
     int m_ID{};
-
     float m_Distance{};
     float m_AtmosphereDensity{};
     float m_CalculationTime{};
-
-    static Nodens::EventType GetStaticType()
-    {
-        return (Nodens::EventType)0;
-    }
-    Nodens::EventType GetEventType() const override
-    {
-        return GetStaticType();
-    }
-    const char* GetName() const override
-    {
-        return "PlanetaryScanEvent";
-    }
-    int GetCategoryFlags() const override
-    {
-        return 0;
-    }
 };
 
 // -----------------------------------------------------------------------------
@@ -45,18 +23,18 @@ export struct PlanetaryScanEvent : public Nodens::Event
 // and data.
 // -----------------------------------------------------------------------------
 
-export class AsyncEventLayer : public Nodens::Layer
+export class PlanetaryScanLayer : public Nodens::Layer
 {
 public:
-    AsyncEventLayer();
-    ~AsyncEventLayer() override = default;
+    PlanetaryScanLayer();
+    ~PlanetaryScanLayer() override = default;
 
     void OnAttach() override;
     void OnUpdate(Nodens::TimeStep ts) override;
     void OnImGuiRender(Nodens::TimeStep ts) override;
 
 private:
-    void AddResult(const PlanetaryScanEvent& e);
+    void AddResult(const PlanetaryScanResultEvent& e);
 
 private:
     float m_TimePassed{};

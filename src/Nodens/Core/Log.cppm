@@ -4,7 +4,6 @@
 
 module;
 
-#include <spdlog/fmt/ostr.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
@@ -15,9 +14,9 @@ import std;
 export namespace Nodens
 {
 /// @brief Retrieves the framework's core logger instance.
-/// @details This logger is used for internal framework diagnostics and logs under the name "NODENS".
-/// It utilizes a thread-safe Meyers' singleton to ensure the logger is only instantiated once
-/// on its first invocation.
+/// @details This logger is used for internal framework diagnostics and logs under the name
+/// "NODENS". It utilizes a thread-safe Meyers' singleton to ensure the logger is only instantiated
+/// once on its first invocation.
 /// @return A reference to the core spdlog::logger instance.
 inline spdlog::logger& CoreLogger()
 {

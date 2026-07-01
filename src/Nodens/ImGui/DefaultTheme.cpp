@@ -14,8 +14,10 @@ namespace Nodens
 // =============================================================================
 // Shared Geometry
 // =============================================================================
-/// @brief Applies geometry settings (rounding, padding, borders, spacing) shared by all Nodens themes.
-/// @details This configures the structural look-and-feel of ImGui and ImPlot, independently of colors.
+/// @brief Applies geometry settings (rounding, padding, borders, spacing) shared by all Nodens
+/// themes.
+/// @details This configures the structural look-and-feel of ImGui and ImPlot, independently of
+/// colors.
 static void ApplySharedGeometry()
 {
     ImGuiStyle& style = ImGui::GetStyle();
@@ -67,7 +69,7 @@ static void ApplyDarkThemeImpl()
     ImVec4 kBorder = {0.24f, 0.25f, 0.30f, 0.60f};      // #3d404c99
     ImVec4 kBorderLight = {0.30f, 0.31f, 0.36f, 0.40f}; // #4c4f5c66
 
-    // Accent (teal) — primary interactive color
+    // Accent (teal) - primary interactive color
     ImVec4 kAccent = {0.24f, 0.79f, 0.65f, 1.00f};      // #3dc9a6
     ImVec4 kAccentHover = {0.30f, 0.86f, 0.72f, 1.00f}; // #4cdbb8
     ImVec4 kAccentMuted = {0.24f, 0.79f, 0.65f, 0.20f}; // #3dc9a633

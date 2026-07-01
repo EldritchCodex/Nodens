@@ -74,9 +74,10 @@ void JobSystem::WorkerLoop(std::stop_token stoken)
             std::unique_lock lock(m_QueueMutex);
 
             // Wait on the condition variable. The thread will sleep until a new task is added
-            // or a stop is requested. The lambda is a predicate that checks if the queue is not empty.
-            // The wait will only proceed if the predicate is true or if a stop is requested.
-            bool tasksAvailable = m_Condition.wait(lock, stoken, [this] { return !m_Tasks.empty(); });
+            // or a stop is requested. The lambda is a predicate that checks if the queue is not
+            // empty. The wait will only proceed if the predicate is true or if a stop is requested.
+            bool tasksAvailable =
+                m_Condition.wait(lock, stoken, [this] { return !m_Tasks.empty(); });
 
             // If wait returns because a stop was requested and there are no tasks, exit the loop.
             if (!tasksAvailable && stoken.stop_requested())
@@ -84,8 +85,8 @@ void JobSystem::WorkerLoop(std::stop_token stoken)
                 return;
             }
 
-            // Although the predicate should protect against this, a double check ensures thread safety
-            // in case of spurious wakeups.
+            // Although the predicate should protect against this, a double check ensures thread
+            // safety in case of spurious wakeups.
             if (m_Tasks.empty())
             {
                 continue;
@@ -98,7 +99,8 @@ void JobSystem::WorkerLoop(std::stop_token stoken)
             // Visualize queue size decreasing
             TracyPlot("Job Queue Size", (int64_t)m_Tasks.size());
 
-            // Mark that this thread is currently holding the lock (Optional, for high contention debug)
+            // Mark that this thread is currently holding the lock (Optional, for high contention
+            // debug)
             LockMark(m_QueueMutex);
         }
 

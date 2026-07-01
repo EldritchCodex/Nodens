@@ -1,4 +1,4 @@
-# glad — OpenGL loader (generated code)
+# glad - OpenGL loader (generated code)
 project(glad)
 
 add_library(glad STATIC

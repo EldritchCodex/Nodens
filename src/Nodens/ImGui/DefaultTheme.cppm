@@ -10,6 +10,7 @@ export module Nodens.DefaultTheme;
 
 export namespace Nodens
 {
+
 enum class EDefaultTheme
 {
     None, ///< Do not apply any Nodens styling (fallback to ImGui defaults).

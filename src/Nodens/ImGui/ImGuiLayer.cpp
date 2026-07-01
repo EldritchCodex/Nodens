@@ -14,7 +14,7 @@ module Nodens.ImGuiLayer;
 
 import Nodens.Application;
 import Nodens.DefaultTheme;
-import Nodens.Events;
+import Nodens.Log;
 import std;
 
 namespace Nodens
@@ -127,13 +127,13 @@ void ImGuiLayer::OnImGuiRender(TimeStep ts)
 {
 }
 
-void ImGuiLayer::OnEvent(Event& e)
+void ImGuiLayer::OnInputEvent(RoutedInputEvent& e)
 {
-    if (m_BlockEvents)
+    if (m_BlockInputEvents)
     {
         ImGuiIO& io = ImGui::GetIO();
-        e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
-        e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+        e.Handled |= IsMouseEvent(e.Event) && io.WantCaptureMouse;
+        e.Handled |= IsKeyboardEvent(e.Event) && io.WantCaptureKeyboard;
     }
 }
 

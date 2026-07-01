@@ -60,18 +60,14 @@ void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)
     ImGui::Begin("ImPlot3D Example");
     if (ImPlot3D::BeginPlot("3D Circular Wave", ImVec2(-1, -1)))
     {
-        ImPlot3D::SetupAxes(
-            "t", "x", "y", ImPlot3DAxisFlags_AutoFit, ImPlot3DAxisFlags_AutoFit, ImPlot3DAxisFlags_AutoFit);
+        ImPlot3D::SetupAxes("t",
+                            "x",
+                            "y",
+                            ImPlot3DAxisFlags_AutoFit,
+                            ImPlot3DAxisFlags_AutoFit,
+                            ImPlot3DAxisFlags_AutoFit);
         ImPlot3D::PlotLine("Wave", t, xs, ys, kNumberOfPoints);
         ImPlot3D::EndPlot();
     }
     ImGui::End();
 } // CircularWave3DLayer::OnImGuiRender
-
-void CircularWave3DLayer::OnEvent(Nodens::Event& event)
-{
-    ZoneScoped;
-
-    Nodens::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<Nodens::WindowResizeEvent>([](Nodens::WindowResizeEvent&) { return true; });
-} // CircularWave3DLayer::OnEvent

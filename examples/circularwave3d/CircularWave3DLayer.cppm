@@ -16,7 +16,6 @@ public:
 
     void OnUpdate(Nodens::TimeStep ts) override;
     void OnImGuiRender(Nodens::TimeStep ts) override;
-    void OnEvent(Nodens::Event& event) override;
 
 private:
     static constexpr std::size_t kNumberOfPoints{1000};

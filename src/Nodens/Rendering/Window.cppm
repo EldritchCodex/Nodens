@@ -4,7 +4,7 @@
 
 export module Nodens.Window;
 
-import Nodens.Events;
+import Nodens.InputEvents;
 import std;
 
 export namespace Nodens
@@ -26,8 +26,10 @@ struct WindowProps
     /// @param width  Window width in pixels.
     /// @param height Window height in pixels.
     /// @param vsync  Enable VSync.
-    WindowProps(
-        const std::string& title = "[Nodens]", unsigned int width = 1280, unsigned int height = 720, bool vsync = true)
+    WindowProps(const std::string& title = "[Nodens]",
+                unsigned int width = 1280,
+                unsigned int height = 720,
+                bool vsync = true)
         : Title(title), Width(width), Height(height), VSync(vsync)
     {
     }
@@ -48,7 +50,7 @@ public:
     /// @brief Type alias for the event callback function.
     /// @details The Application sets this callback; the window implementation invokes it
     ///          whenever a platform event (resize, close, key, mouse) occurs.
-    using EventCallbackFn = std::function<void(Event&)>;
+    using InputEventCallbackFn = std::function<void(RoutedInputEvent&)>;
 
     virtual ~Window()
     {
@@ -62,7 +64,7 @@ public:
 
     /// @brief Sets the event callback invoked by the window on platform events.
     /// @param callback The function to call with each Event.
-    virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+    virtual void SetInputEventCallback(const InputEventCallbackFn& callback) = 0;
 
     /// @brief Enables or disables vertical synchronization.
     /// @param enabled True to enable VSync, false to disable.

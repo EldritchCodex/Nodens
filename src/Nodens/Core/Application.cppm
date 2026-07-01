@@ -4,7 +4,8 @@
 
 export module Nodens.Application;
 
-import Nodens.Events;
+import Nodens.EventBus;
+import Nodens.InputEvents;
 import Nodens.JobSystem;
 import Nodens.Layer;
 import Nodens.LayerStack;
@@ -22,12 +23,13 @@ export namespace Nodens
 /// @ingroup Core
 struct ApplicationSpecification
 {
-    std::string Name{"Nodens Application"};          ///< Window title and application identifier.
-    std::uint32_t WindowWidth{1280};                 ///< Initial window width in pixels.
-    std::uint32_t WindowHeight{720};                 ///< Initial window height in pixels.
-    bool EnableGUI{true};                            ///< Whether to create the ImGui overlay layer.
-    bool IsHeadless{false};                          ///< If true, no window or graphics context is created.
-    EDefaultTheme DefaultTheme{EDefaultTheme::Dark}; ///< The visual theme applied to ImGui on startup.
+    std::string Name{"Nodens Application"}; ///< Window title and application identifier.
+    std::uint32_t WindowWidth{1280};        ///< Initial window width in pixels.
+    std::uint32_t WindowHeight{720};        ///< Initial window height in pixels.
+    bool EnableGUI{true};                   ///< Whether to create the ImGui overlay layer.
+    bool IsHeadless{false};                 ///< If true, no window or graphics context is created.
+    bool ShouldImGuiBlockInputs{true};
+    EDefaultTheme DefaultTheme{EDefaultTheme::Dark};
 };
 
 /// @brief The central singleton that owns the window, layer stack, job system, and main loop.
@@ -55,7 +57,8 @@ struct ApplicationSpecification
 class Application
 {
 public:
-    /// @brief Constructs the application, creating the window, job system, and optional ImGui layer.
+    /// @brief Constructs the application, creating the window, job system, and optional ImGui
+    /// layer.
     /// @param specification The configuration to use for initialization.
     explicit Application(const ApplicationSpecification& specification);
 
@@ -68,7 +71,7 @@ public:
 
     /// @brief Dispatches an event through the layer stack (back-to-front).
     /// @param e The event to dispatch. May be marked as handled by a layer.
-    void OnEvent(Event& e);
+    void OnInputEvent(RoutedInputEvent& e);
 
     /// @brief Pushes a regular layer onto the layer stack and calls its OnAttach().
     /// @param layer Raw pointer to the layer. Ownership is transferred to the LayerStack.
@@ -87,6 +90,10 @@ public:
     /// @return Reference to the JobSystem instance.
     JobSystem& GetJobSystem();
 
+    /// @brief Returns a reference to the application's event bus.
+    /// @reutnr Reference to EventBus instance.
+    EventBus& GetEventBus();
+
     /// @brief Returns the specification used to initialize this application.
     /// @return Const reference to the ApplicationSpecification.
     const ApplicationSpecification& GetSpecification() const;
@@ -99,16 +106,18 @@ private:
     /// @brief Handles the WindowCloseEvent by setting the running flag to false.
     /// @param e The window close event.
     /// @return Always returns true (event is consumed).
-    bool OnWindowClose(WindowCloseEvent& e);
+    bool OnWindowClose(InputEvents::WindowClose& e);
 
     ApplicationSpecification m_Specification; ///< Stored copy of the startup configuration.
-    bool m_Running = true;                    ///< Main loop sentinel; false triggers shutdown.
+    bool m_Running{true};                     ///< Main loop sentinel; false triggers shutdown.
 
-    std::unique_ptr<Window> m_Window;         ///< The platform window (null in headless mode).
-    std::unique_ptr<ImGuiLayer> m_ImGuiLayer; ///< The ImGui overlay (null when GUI is disabled).
+    std::unique_ptr<Window> m_Window; ///< The platform window (null in headless mode).
+
+    ImGuiLayer* m_ImGuiLayer{nullptr}; ///< The ImGui overlay (owned by LayerStack).
+
     std::unique_ptr<LayerStack> m_LayerStack; ///< Ordered collection of active layers.
-
-    std::unique_ptr<JobSystem> m_JobSystem; ///< The multithreaded job system.
+    std::unique_ptr<JobSystem> m_JobSystem;   ///< The multithreaded job system.
+    std::unique_ptr<EventBus> m_EventBus;     ///< The event bus system.
 
     float m_LastFrameTime{0.0f}; ///< Timestamp of the previous frame (seconds since start).
 

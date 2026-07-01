@@ -1,28 +1,29 @@
 import Nodens;
-import Example.AsyncEventLayer;
+import Example.PlanetaryScanLayer;
 
 // -----------------------------------------------------------------------------
 // Step 3: Define the Application class, the root object in charge of the
 // application, managing the window, layers, and the main event loop.
 // -----------------------------------------------------------------------------
 
-class AsyncEventApp : public Nodens::Application
+class PlanetaryScanApp : public Nodens::Application
 {
 public:
     static inline const Nodens::ApplicationSpecification appSpecifications = {
-        .Name = "[NodensApp Example] AsyncEvents",
+        .Name = "[NodensApp Example] PlanetaryScans",
         .WindowWidth = 800,
         .WindowHeight = 600,
         .EnableGUI = true,
         .IsHeadless = false,
-    };
+        .ShouldImGuiBlockInputs = true,
+        .DefaultTheme = Nodens::EDefaultTheme::Dark};
 
-    AsyncEventApp() : Application(appSpecifications)
+    PlanetaryScanApp() : Application(appSpecifications)
     {
-        PushLayer(new AsyncEventLayer());
+        PushLayer(new PlanetaryScanLayer());
     }
 
-    ~AsyncEventApp() = default;
+    ~PlanetaryScanApp() = default;
 };
 
 // -----------------------------------------------------------------------------
@@ -33,7 +34,7 @@ int main()
 {
     Nodens::InitializeLoggers();
 
-    auto app = AsyncEventApp();
+    auto app = PlanetaryScanApp();
     app.Run();
 
     return 0;

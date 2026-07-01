@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.30)
 set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
+set(CMAKE_EXPERIMENTAL_CXX_MODULE_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
 project(Nodens VERSION 0.1.0 LANGUAGES CXX)
-
 # -----------------------------------------------------------------------------
 # Core Build Settings
 # -----------------------------------------------------------------------------
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithDebInfo" CACHE STRING "" FORCE)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_COMPILER_IMPORT_STD ON)
 set(CMAKE_CXX_MODULE_STD ON)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -18,10 +21,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Default to building examples only when Nodens is the top-level project,
 # not when consumed via add_subdirectory().
 if(PROJECT_IS_TOP_LEVEL)
-    option(ND_BUILD_EXAMPLES "Build the Nodens example applications" ON)
+  option(ND_BUILD_EXAMPLES "Build the Nodens example applications" ON)
 else()
-    option(ND_BUILD_EXAMPLES "Build the Nodens example applications" OFF)
+  option(ND_BUILD_EXAMPLES "Build the Nodens example applications" OFF)
 endif()
+
 
 # -----------------------------------------------------------------------------
 # Dependencies
@@ -38,12 +42,13 @@ include(NodensImGui)
 set(ND_FRAMEWORK_IMPLEMENTATION_UNITS
     # Core
     src/Nodens/Core/Application.cpp
-    src/Nodens/Core/Layer.cpp
-    src/Nodens/Core/LayerStack.cpp
+    # Layers
+    src/Nodens/Layers/Layer.cpp
+    src/Nodens/Layers/LayerStack.cpp
+    # Events
+    src/Nodens/Events/EventBus.cpp
     # Concurrency
     src/Nodens/Concurrency/JobSystem.cpp
-    # Events
-    src/Nodens/Events/AsyncEventBus.cpp
     # ImGui
     src/Nodens/ImGui/ImGuiLayer.cpp
     src/Nodens/ImGui/DefaultTheme.cpp
@@ -57,15 +62,17 @@ set(ND_FRAMEWORK_IMPLEMENTATION_UNITS
 set(ND_FRAMEWORK_MODULE_INTERFACES
     # Core
     src/Nodens/Core/Application.cppm
-    src/Nodens/Core/Layer.cppm
-    src/Nodens/Core/LayerStack.cppm
     src/Nodens/Core/Log.cppm
     src/Nodens/Core/TimeStep.cppm
-    # Concurrency
-    src/Nodens/Concurrency/JobSystem.cppm
+    # Layers
+    src/Nodens/Layers/Layer.cppm
+    src/Nodens/Layers/LayerStack.cppm
     # Events
     src/Nodens/Events/Event.cppm
-    src/Nodens/Events/AsyncEventBus.cppm
+    src/Nodens/Events/EventBus.cppm
+    src/Nodens/Events/InputEvents.cppm
+    # Concurrency
+    src/Nodens/Concurrency/JobSystem.cppm
     # ImGui
     src/Nodens/ImGui/ImGuiRenderer.cppm
     src/Nodens/ImGui/ImGuiLayer.cppm
@@ -96,6 +103,14 @@ target_sources(Nodens
         FILES ${ND_FRAMEWORK_MODULE_INTERFACES}
 )
 
+target_compile_features(Nodens PUBLIC cxx_std_23)
+
+target_compile_definitions(Nodens PUBLIC
+    $<$<CONFIG:Debug>:ND_DEBUG>
+    $<$<CONFIG:Release>:ND_RELEASE>
+    SPDLOG_USE_STD_FORMAT
+)
+
 target_link_libraries(Nodens
     PUBLIC
         spdlog::spdlog
@@ -107,16 +122,11 @@ target_link_libraries(Nodens
         TracyClient
 )
 
-target_compile_definitions(Nodens PUBLIC
-    $<$<CONFIG:Debug>:ND_DEBUG>
-    $<$<CONFIG:Release>:ND_RELEASE>
-)
-
 # -----------------------------------------------------------------------------
 # Examples
 # -----------------------------------------------------------------------------
 if(ND_BUILD_EXAMPLES)
-    add_subdirectory(examples)
+  add_subdirectory(examples)
 endif()
 
 # -----------------------------------------------------------------------------
@@ -125,15 +135,15 @@ endif()
 find_package(Doxygen QUIET)
 
 if(DOXYGEN_FOUND)
-    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
-    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
+  set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-    add_custom_target(nodens-docs
+  add_custom_target(nodens-docs
         COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM
     )
 
-    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+  configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
 endif()

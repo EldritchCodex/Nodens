@@ -8,7 +8,7 @@ import Nodens.ImGuiRenderer;
 import Nodens.Layer;
 import Nodens.TimeStep;
 import Nodens.DefaultTheme;
-import Nodens.Events;
+import Nodens.InputEvents;
 import std;
 
 export namespace Nodens
@@ -48,7 +48,7 @@ public:
 
     /// @brief Optionally consumes mouse/keyboard events when ImGui wants input capture.
     /// @param e The event to inspect. May be marked as handled.
-    void OnEvent(Event& e) override;
+    void OnInputEvent(RoutedInputEvent& e) override;
 
     /// @brief Begins a new ImGui frame. Call this before layers issue draw commands.
     /// @details Delegates NewFrame() to the renderer, then starts the ImGui frame
@@ -62,11 +62,11 @@ public:
     /// @param block If true, mouse and keyboard events are consumed when ImGui wants them.
     void BlockEvents(bool block)
     {
-        m_BlockEvents = block;
+        m_BlockInputEvents = block;
     }
 
 private:
-    bool m_BlockEvents = true;                   ///< Whether to consume events captured by ImGui.
+    bool m_BlockInputEvents = true;              ///< Whether to consume events captured by ImGui.
     EDefaultTheme m_Theme = EDefaultTheme::Dark; ///< The visual theme applied during OnAttach().
     std::shared_ptr<ImGuiRenderer> m_Renderer;   ///< The injected rendering backend.
 };

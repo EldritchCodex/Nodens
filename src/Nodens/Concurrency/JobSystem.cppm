@@ -13,7 +13,8 @@ import std;
 export namespace Nodens
 {
 
-/// @brief A multithreaded job system utilizing C++20 jthreads for automatic joining and cancellation.
+/// @brief A multithreaded job system utilizing C++20 jthreads for automatic joining and
+/// cancellation.
 /// @details This system manages a pool of worker threads that consume tasks from a shared queue.
 /// It uses a 'future-based' approach for task submission.
 class JobSystem

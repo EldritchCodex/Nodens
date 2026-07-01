@@ -12,7 +12,6 @@ module;
 
 module Nodens.Window;
 
-import Nodens.Events;
 import Nodens.GraphicsContext;
 import Nodens.Log;
 import Nodens.OpenGLContext;
@@ -61,9 +60,9 @@ public:
 
     /// @brief Sets the event callback function invoked on window/input events.
     /// @param callback The function to receive Event references.
-    void SetEventCallback(const EventCallbackFn& callback) override
+    void SetInputEventCallback(const InputEventCallbackFn& callback) override
     {
-        m_Data.EventCallback = callback;
+        m_Data.InputEventCallback = callback;
     }
 
     /// @brief Enables or disables VSync via glfwSwapInterval.
@@ -98,7 +97,6 @@ private:
     /// @brief Destroys the GLFW window.
     void Shutdown();
 
-private:
     GLFWwindow* m_Window = nullptr;       ///< The native GLFW window handle.
     GraphicsContext* m_Context = nullptr; ///< The OpenGL rendering context bound to this window.
 
@@ -112,7 +110,7 @@ private:
         unsigned int Height; ///< Current height in pixels.
         bool VSync;          ///< Whether VSync is enabled.
 
-        EventCallbackFn EventCallback; ///< The application's event callback.
+        InputEventCallbackFn InputEventCallback; ///< The application's event callback.
     };
 
     WindowData m_Data; ///< Cached window state accessible from GLFW callbacks.
@@ -169,7 +167,8 @@ void GLFWWindow::Init(const WindowProps& props)
         s_GLFWInitialized = true;
     }
 
-    m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+    m_Window = glfwCreateWindow(
+        (int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 
     m_Context = new OpenGLContext(m_Window);
     m_Context->Init();
@@ -185,89 +184,99 @@ void GLFWWindow::Init(const WindowProps& props)
     //----------------------------------------------------------------------------
     // Set GLFW callbacks
     glfwSetWindowSizeCallback(m_Window,
-        [](GLFWwindow* window, int width, int height)
-        {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            data.Width = width;
-            data.Height = height;
+                              [](GLFWwindow* window, int width, int height)
+                              {
+                                  auto& data = *(WindowData*)glfwGetWindowUserPointer(window);
+                                  data.Width = width;
+                                  data.Height = height;
 
-            WindowResizeEvent event(width, height);
-            data.EventCallback(event);
-            // EventCallback is a void function that recieves an Event&.
-            // So this line is executing the callback function assigned by
-        });
+                                  RoutedInputEvent eventData{.Event = InputEvents::WindowResize{
+                                                                 .Width = (unsigned int)width,
+                                                                 .Height = (unsigned int)height}};
+                                  data.InputEventCallback(eventData);
+                              });
 
     glfwSetWindowCloseCallback(m_Window,
-        [](GLFWwindow* window)
-        {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            WindowCloseEvent event;
-            data.EventCallback(event);
-        });
+                               [](GLFWwindow* window)
+                               {
+                                   auto& data = *(WindowData*)glfwGetWindowUserPointer(window);
+                                   RoutedInputEvent eventData{.Event = InputEvents::WindowClose{}};
+                                   data.InputEventCallback(eventData);
+                               });
 
-    glfwSetKeyCallback(m_Window,
+    glfwSetKeyCallback(
+        m_Window,
         [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            auto& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
             switch (action)
             {
                 case GLFW_PRESS:
                 {
-                    KeyPressedEvent event(key, 0);
-                    data.EventCallback(event);
+                    RoutedInputEvent eventData{
+                        .Event = InputEvents::KeyPressed{.KeyCode = key, .RepeatCount = 0}};
+                    data.InputEventCallback(eventData);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    KeyReleasedEvent event(key);
-                    data.EventCallback(event);
+                    RoutedInputEvent eventData{.Event = InputEvents::KeyReleased{.KeyCode = key}};
+                    data.InputEventCallback(eventData);
                     break;
                 }
                 case GLFW_REPEAT:
                 {
-                    KeyPressedEvent event(key, 1);
-                    data.EventCallback(event);
+                    RoutedInputEvent eventData{
+                        .Event = InputEvents::KeyPressed{.KeyCode = key, .RepeatCount = 1}};
+                    data.InputEventCallback(eventData);
                     break;
                 }
             }
         });
 
-    glfwSetMouseButtonCallback(m_Window,
+    glfwSetMouseButtonCallback(
+        m_Window,
         [](GLFWwindow* window, int button, int action, int mods)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            auto& data = *(WindowData*)glfwGetWindowUserPointer(window);
             switch (action)
             {
                 case GLFW_PRESS:
                 {
-                    MouseButtonPressedEvent event(button);
-                    data.EventCallback(event);
+                    RoutedInputEvent eventData{
+                        .Event = InputEvents::MouseButtonPressed{.Button = button}};
+                    data.InputEventCallback(eventData);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    MouseButtonReleasedEvent event(button);
-                    data.EventCallback(event);
+                    RoutedInputEvent eventData{
+                        .Event = InputEvents::MouseButtonReleased{.Button = button}};
+                    data.InputEventCallback(eventData);
                     break;
                 }
             }
         });
 
     glfwSetScrollCallback(m_Window,
-        [](GLFWwindow* window, double xOffset, double yOffset)
-        {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            MouseScrolledEvent event((float)xOffset, (float)yOffset);
-            data.EventCallback(event);
-        });
+                          [](GLFWwindow* window, double xOffset, double yOffset)
+                          {
+                              auto& data = *(WindowData*)glfwGetWindowUserPointer(window);
+                              RoutedInputEvent eventData{
+                                  .Event = InputEvents::MouseScrolled{.XOffset = (float)xOffset,
+                                                                      .YOffset = (float)yOffset}};
+                              data.InputEventCallback(eventData);
+                          });
 
-    glfwSetCursorPosCallback(m_Window,
+    glfwSetCursorPosCallback(
+        m_Window,
         [](GLFWwindow* window, double xPos, double yPos)
         {
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            MouseMovedEvent event((float)xPos, (float)yPos);
-            data.EventCallback(event);
+            auto& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            RoutedInputEvent eventData{
+                .Event = InputEvents::MouseMoved{.X = (float)xPos, .Y = (float)yPos}};
+            data.InputEventCallback(eventData);
         });
 }
 
