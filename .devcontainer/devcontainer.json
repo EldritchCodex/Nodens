@@ -1,0 +1,11 @@
+{
+    "name": "EldritchCodex/Nodens",
+    "image": "ghcr.io/eldritchcodex/nodens-devcontainer:dev",
+    "remoteUser": "eldritchcodex",
+    "postCreateCommand": "cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+    "customizations": {
+        "zed": {
+            "extensions": ["slang"]
+        }
+    }
+}

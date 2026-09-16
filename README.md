@@ -24,65 +24,11 @@ The framework compiles into a single **static library** that is linked to your a
 
 # Quick Start
 
-> 📖 For a full walkthrough, see the **[Getting Started](https://github.com/EldritchCodex/Nodens/wiki/Getting-Started)** wiki page.
+> 📖 For build, integration, and development-environment instructions, see the **[Getting Started](https://github.com/EldritchCodex/Nodens/wiki/Getting-Started)** wiki page.
 
-**Requirements:** Clang 22+, CMake 3.30+, Ninja 1.13.2. See the **[Building and Toolchain](https://github.com/EldritchCodex/Nodens/wiki/Building-and-Toolchain)** wiki page for compatibility details.
+> ⚠️ **Platform limitation:** The supported and validated development environment is based on Arch Linux and currently builds Nodens for **Linux only**. Native Windows and macOS builds are not currently supported or validated.
 
-### Minimal Application Using Nodens
-
-```cmake
-# CMakeLists.txt
-include(FetchContent)
-
-FetchContent_Declare(nodens
-    GIT_REPOSITORY https://github.com/EldritchCodex/Nodens.git
-    GIT_TAG        dev # Or a specific commit hash for stability
-)
-FetchContent_MakeAvailable(nodens)
-
-add_executable(myapp main.cpp)
-target_link_libraries(myapp PRIVATE Nodens::Nodens)
-```
-
-```cpp
-// main.cpp
-import Nodens;
-
-class MyApp : public Nodens::Application {
-public:
-    static inline const Nodens::ApplicationSpecification appSpecifications = {
-        .Name         = "My Nodens Application",
-        .WindowWidth  = 1280,
-        .WindowHeight = 720,
-        .EnableGUI    = true,
-        .IsHeadless   = false,        
-        .ShouldImGuiBlockInputs = true,
-        .DefaultTheme = Nodens::EDefaultTheme::Dark
-    };
-
-    MyApp() : Application(appSpecifications) {
-        // Add layers here, e.g., PushLayer(new MyLayer());
-    }
-};
-
-int main()
-{
-    Nodens::InitializeLoggers();
-    auto app = MyApp();
-    app.Run();
-    
-    return 0;
-}
-```
-
-# Cloning & Building Locally
-
-```shell
-git clone https://github.com/EldritchCodex/Nodens.git
-cd Nodens
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
-cmake --build build
-```
+Nodens can be consumed from CMake with `FetchContent`; the wiki guide explains how to configure the devcontainer, build an application, use a local Nodens checkout, or build directly on a Linux machine.
 
 # Example Applications
 
