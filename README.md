@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> ⚠️ **Development Status:** Nodens is currently in **active, experimental development** with no stable release. It serves primarily as a learning ground and playground for exploring game engine architecture and modern C++ features (specifically C++20 modules, concepts for metaprogramming, `std::jthread`/`std::future` for concurrency; and C++23 `import std;`, `std::move_only_function`, `std::to_underlying`, etc). APIs are highly subject to change.
+> ⚠️ **Development Status:** Nodens is currently in **active, experimental development** with no stable release. It serves primarily as a learning ground and playground for exploring game engine architecture and modern C++20/23 features. APIs are highly subject to change.
 
 # Introduction
 
