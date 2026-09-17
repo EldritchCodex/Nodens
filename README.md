@@ -28,7 +28,20 @@ The framework compiles into a single **static library** that is linked to your a
 
 > ⚠️ **Platform limitation:** The supported and validated development environment is based on Arch Linux and currently builds Nodens for **Linux only**. Native Windows and macOS builds are not currently supported or validated.
 
-Nodens can be consumed from CMake with `FetchContent`; the wiki guide explains how to configure the devcontainer, build an application, use a local Nodens checkout, or build directly on a Linux machine.
+For new applications, start from the [Nodens Application Template](https://github.com/EldritchCodex/Template-NodensApp). Nodens can also be consumed from CMake with `FetchContent`; the wiki covers framework development, local checkouts, and native Linux builds.
+
+## Development Environment
+
+Nodens includes a Linux Dev Container using
+`ghcr.io/eldritchcodex/linux-graphics-dev:main`. Open the repository in Zed or
+Visual Studio Code, then reopen it in the Dev Container.
+
+NVIDIA hosts need the host NVIDIA driver and NVIDIA Container Toolkit before
+using the default GPU configuration. Intel/AMD hosts should select the
+alternative `/dev/dri` configuration in `.devcontainer/devcontainer.json`.
+
+See [Getting Started](https://github.com/EldritchCodex/Nodens/wiki/Getting-Started)
+for host setup, toolkit installation, GPU configuration, and build instructions.
 
 # Example Applications
 
@@ -56,17 +69,17 @@ https://github.com/user-attachments/assets/28be4bea-d0bd-46aa-bd1c-004daedd4243
 
 # Dependencies
 
-All dependencies are resolved automatically at configure time via CMake `FetchContent` and are downloaded and built from source. 
+All dependencies are resolved automatically at configure time via CMake `FetchContent` and are downloaded and built from source (except from glad which is included in the `vendor` folder). 
 
-| Library                                             | Role / Domain      | Description                                               | Version            | Resolution Strategy                 |
-| :-------------------------------------------------- | :----------------- | :-------------------------------------------------------- | :----------------- | :---------------------------------- |
-| **[GLAD](https://glad.dav1d.de/)**                  | **Graphics Core**  | OpenGL function loader.                                   | v0.1.35            | Generated from the website                |
-| **[GLFW](https://www.glfw.org/)**                   | **System & Input** | Cross-platform for window, context, and input management. | 3.4                | FetchContent + `find_package`       |
-| **[ImGui](https://github.com/ocornut/imgui)**       | **UI / Tools**     | Bloat-free Immediate Mode GUI.                            | v1.92.8-docking    | FetchContent (always from source)   |
-| **[ImPlot](https://github.com/epezent/implot)**     | **Visualization**  | 2D data plotting extension for ImGui.                     | v1.0               | FetchContent (always from source)   |
-| **[ImPlot3D](https://github.com/brenocq/implot3d)** | **Visualization**  | 3D data plotting extension for ImGui.                     | v0.4               | FetchContent (always from source)   |
-| **[spdlog](https://github.com/gabime/spdlog)**      | **Utilities**      | Fast, header-only/compiled logging library.               | v1.17.0            | FetchContent + `find_package`       |
-| **[Tracy](https://github.com/wolfpld/tracy)**       | **Profiling**      | Real-time frame profiler.                                 | v0.13.1            | FetchContent + `find_package`       |
+| Library                                             | Description                                               | Version            | 
+| :-------------------------------------------------- | :-------------------------------------------------------- | :----------------- | 
+| **[GLAD](https://glad.dav1d.de/)**                  | OpenGL function loader.                                   | v0.1.35            | 
+| **[GLFW](https://www.glfw.org/)**                   | Cross-platform for window, context, and input management. | 3.4                | 
+| **[ImGui](https://github.com/ocornut/imgui)**       | Bloat-free Immediate Mode GUI.                            | v1.92.8-docking    | 
+| **[ImPlot](https://github.com/epezent/implot)**     | 2D data plotting extension for ImGui.                     | v1.0               | 
+| **[ImPlot3D](https://github.com/brenocq/implot3d)** | 3D data plotting extension for ImGui.                     | v0.4               | 
+| **[spdlog](https://github.com/gabime/spdlog)**      | Fast, header-only/compiled logging library.               | v1.17.0            | 
+| **[Tracy](https://github.com/wolfpld/tracy)**       | Real-time frame profiler.                                 | v0.13.1            | 
 
 # Acknowledgements
 

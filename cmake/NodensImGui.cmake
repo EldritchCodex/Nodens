@@ -1,5 +1,6 @@
 # =============================================================================
-# NodensImGui.cmake - Build ImGui, ImPlot, and ImPlot3d from FetchContent sources
+# NodensImGui.cmake - Build ImGui, ImPlot, and ImPlot3d from FetchContent
+# sources
 # =============================================================================
 # These libraries have no official CMake build system. We create targets from
 # the source directories populated by FetchContent in NodensDependencies.cmake.
@@ -36,7 +37,13 @@ if(NOT TARGET ImGui)
 
   set_target_properties(ImGui PROPERTIES CXX_MODULE_STD OFF)
 
-  if(UNIX AND NOT APPLE)
+  # Nodens currently targets Linux desktop environments. The GLFW backend
+  # and Dear ImGui's docking backend are built with both X11 and Wayland
+  # support; the active backend is selected at runtime.
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    # Dear ImGui's GLFW docking backend includes X11 headers and uses X11
+    # facilities for X11 multi-viewport support. This is a compile-time
+    # dependency even when the application is later run under Wayland.
     find_package(X11 REQUIRED)
 
     if(TARGET X11::X11)
@@ -45,6 +52,22 @@ if(NOT TARGET ImGui)
       target_include_directories(ImGui PUBLIC ${X11_INCLUDE_DIR})
       target_link_libraries(ImGui PUBLIC ${X11_LIBRARIES})
     endif()
+
+    # Fail during configuration instead of silently compiling an incomplete
+    # backend when the Wayland development files are missing. GLFW itself
+    # consumes wayland-scanner while configuring its Wayland backend.
+    find_path(WAYLAND_CLIENT_INCLUDE_DIR
+      NAMES wayland-client.h
+      REQUIRED
+    )
+    find_program(WAYLAND_SCANNER_EXECUTABLE
+      NAMES wayland-scanner
+      REQUIRED
+    )
+
+    target_include_directories(ImGui PRIVATE
+      ${WAYLAND_CLIENT_INCLUDE_DIR}
+    )
   endif()
 endif()
 

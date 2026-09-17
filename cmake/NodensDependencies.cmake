@@ -27,6 +27,12 @@ set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
+# Build both Linux window-system backends into GLFW. Runtime selection is then
+# handled by GLFW (or an explicit GLFW_PLATFORM hint) rather than being fixed
+# by the build configuration.
+set(GLFW_BUILD_X11     ON CACHE BOOL "" FORCE)
+set(GLFW_BUILD_WAYLAND ON CACHE BOOL "" FORCE)
+
 FetchContent_Declare(glfw
     GIT_REPOSITORY https://github.com/glfw/glfw.git
     GIT_TAG        3.4
