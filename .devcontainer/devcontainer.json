@@ -1,6 +1,9 @@
 {
     "name": "EldritchCodex/Nodens",
-    "image": "ghcr.io/eldritchcodex/nodens-devcontainer:dev",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "."
+    },
     "remoteUser": "eldritchcodex",
     "postCreateCommand": "cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
     "customizations": {
