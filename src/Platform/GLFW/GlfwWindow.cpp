@@ -15,6 +15,9 @@ module Nodens.Window;
 import Nodens.GraphicsContext;
 import Nodens.Log;
 import Nodens.OpenGLContext;
+#if defined(ND_HAS_VULKAN)
+import Nodens.VulkanContext;
+#endif
 import std;
 
 namespace Nodens
@@ -94,6 +97,13 @@ public:
         return m_Window;
     }
 
+    /// @brief Returns the graphics context owned by this window.
+    /// @return Borrowed graphics context, or null when no context exists.
+    IGraphicsContext* GetGraphicsContext() const override
+    {
+        return m_Context;
+    }
+
 private:
     /// @brief Initializes GLFW (if needed), creates the window, and registers all callbacks.
     /// @param props Window configuration.
@@ -103,7 +113,7 @@ private:
     void Shutdown();
 
     GLFWwindow* m_Window = nullptr;       ///< The native GLFW window handle.
-    GraphicsContext* m_Context = nullptr; ///< The OpenGL rendering context bound to this window.
+    IGraphicsContext* m_Context = nullptr; ///< The backend context bound to this window.
 
     /// @brief Internal data bundle attached to the GLFW window via glfwSetWindowUserPointer.
     /// @details GLFW callbacks retrieve this struct to dispatch Nodens events and update
@@ -184,8 +194,18 @@ void GLFWWindow::Init(const FWindowProps& props)
     if (props.API == EGraphicsAPI::OpenGL)
     {
         m_Context = new OpenGLContext(m_Window);
-        m_Context->Init();
     }
+    else if (props.API == EGraphicsAPI::Vulkan)
+    {
+#if defined(ND_HAS_VULKAN)
+        m_Context = new VulkanContext(m_Window);
+#else
+        FatalCore("Nodens was built without Vulkan support!");
+#endif
+    }
+
+    if (m_Context)
+        m_Context->Init();
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
     // This function assigns the WindowData struct to the GLFWwindow object.

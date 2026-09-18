@@ -13,6 +13,7 @@ import Nodens.TimeStep;
 import Nodens.Event;
 import Nodens.LayerStack;
 import Nodens.Log;
+import Nodens.Window;
 import Nodens.ImGuiRenderer;
 import Nodens.ImGuiLayer;
 import Nodens.OpenGLImGuiRenderer;
@@ -39,14 +40,20 @@ Application::Application(const FApplicationSpecification& specification)
 
     if (!m_Specification.IsHeadless)
     {
-        FWindowProps props(
-            m_Specification.Name, m_Specification.WindowWidth, m_Specification.WindowHeight);
+        FWindowProps props(m_Specification.Name,
+                           m_Specification.WindowWidth,
+                           m_Specification.WindowHeight,
+                           true,
+                           m_Specification.GraphicsAPI);
         m_Window = std::unique_ptr<IWindow>(IWindow::Create(props));
         m_Window->SetInputEventCallback([this](RoutedInputEvent& event) { OnInputEvent(event); });
     }
 
     if (m_Specification.EnableGUI && !m_Specification.IsHeadless)
     {
+        if (m_Specification.GraphicsAPI != EGraphicsAPI::OpenGL)
+            FatalCore("ImGui renderer is not available for this graphics API yet!");
+
         std::shared_ptr<ImGuiRenderer> imguiRenderer = std::make_shared<OpenGLImGuiRenderer>();
         m_ImGuiLayer = new ImGuiLayer{imguiRenderer, m_Specification.DefaultTheme};
         m_ImGuiLayer->BlockEvents(m_Specification.ShouldImGuiBlockInputs);

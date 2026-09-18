@@ -14,6 +14,7 @@ module Nodens.ImGuiLayer;
 
 import Nodens.Application;
 import Nodens.DefaultTheme;
+import Nodens.Window;
 import Nodens.Log;
 import std;
 
@@ -43,7 +44,8 @@ void ImGuiLayer::OnAttach()
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    if (Application::Get().GetSpecification().GraphicsAPI == EGraphicsAPI::OpenGL)
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigFlags |= ImGuiDockNodeFlags_PassthruCentralNode;
 
     switch (m_Theme)
@@ -119,7 +121,8 @@ void ImGuiLayer::End()
         GLFWwindow* backup_current_context = glfwGetCurrentContext();
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
-        glfwMakeContextCurrent(backup_current_context);
+        if (app.GetSpecification().GraphicsAPI == EGraphicsAPI::OpenGL)
+            glfwMakeContextCurrent(backup_current_context);
     }
 }
 

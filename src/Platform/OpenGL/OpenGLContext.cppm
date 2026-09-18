@@ -1,5 +1,5 @@
 /// @file OpenGLContext.cppm
-/// @brief OpenGL implementation of the GraphicsContext interface.
+/// @brief OpenGL implementation of the IGraphicsContext interface.
 /// @ingroup Platform
 
 module;
@@ -12,13 +12,13 @@ import Nodens.GraphicsContext;
 
 export namespace Nodens
 {
-/// @brief Concrete GraphicsContext implementation for OpenGL via GLFW.
+/// @brief Concrete IGraphicsContext implementation for OpenGL via GLFW.
 /// @details Creates an OpenGL rendering context on the provided GLFW window, loads
 ///          function pointers with GLAD, enables default GL state (multisample,
 ///          depth test, face culling, alpha blending), and handles buffer swapping.
-/// @see GraphicsContext, GlfwWindow
+/// @see IGraphicsContext, GlfwWindow
 /// @ingroup Platform
-class OpenGLContext : public GraphicsContext
+class OpenGLContext : public IGraphicsContext
 {
 public:
     /// @brief Constructs the OpenGL context for a given GLFW window.

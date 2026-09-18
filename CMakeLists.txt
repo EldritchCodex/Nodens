@@ -35,6 +35,50 @@ add_subdirectory(vendor/glad)
 include(NodensDependencies)
 include(NodensImGui)
 
+find_package(Vulkan QUIET)
+if(Vulkan_FOUND)
+    target_sources(ImGui PRIVATE
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp"
+    )
+    target_link_libraries(ImGui PUBLIC Vulkan::Vulkan)
+endif()
+
+set(ND_VULKAN_MODULES)
+if(Vulkan_FOUND)
+    if(NOT TARGET Vulkan::cppm)
+        add_library(NodensVulkanCppModule STATIC)
+        add_library(Vulkan::cppm ALIAS NodensVulkanCppModule)
+
+        target_compile_definitions(NodensVulkanCppModule PUBLIC
+            VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1
+            VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1
+            VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING=1
+        )
+        target_include_directories(NodensVulkanCppModule PRIVATE
+            "${Vulkan_INCLUDE_DIR}"
+        )
+        target_link_libraries(NodensVulkanCppModule PUBLIC Vulkan::Vulkan)
+        set_target_properties(NodensVulkanCppModule PROPERTIES
+            CXX_STANDARD 23
+            CXX_STANDARD_REQUIRED ON
+        )
+        target_sources(NodensVulkanCppModule PUBLIC
+            FILE_SET vulkan_modules TYPE CXX_MODULES
+            BASE_DIRS "${Vulkan_INCLUDE_DIR}"
+            FILES "${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm"
+        )
+
+        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+            target_compile_options(NodensVulkanCppModule PRIVATE
+                -Wno-reserved-module-identifier
+                -Wno-include-angled-in-module-purview
+            )
+        endif()
+    endif()
+
+    list(APPEND ND_VULKAN_MODULES src/Platform/Vulkan/VulkanContext.cppm)
+endif()
+
 # -----------------------------------------------------------------------------
 # Developer Touchpoint: Framework Source Lists
 # -----------------------------------------------------------------------------
@@ -86,6 +130,8 @@ set(ND_FRAMEWORK_MODULE_INTERFACES
     # Platform
     src/Platform/OpenGL/OpenGLContext.cppm
     src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
+    # Optional Vulkan platform context
+    ${ND_VULKAN_MODULES}
     # Umbrella module
     src/Nodens/nodens.cppm
 )
@@ -109,6 +155,11 @@ target_compile_definitions(Nodens PUBLIC
     $<$<CONFIG:Release>:ND_RELEASE>
     SPDLOG_USE_STD_FORMAT
 )
+
+if(Vulkan_FOUND)
+    target_compile_definitions(Nodens PRIVATE ND_HAS_VULKAN)
+    target_link_libraries(Nodens PUBLIC Vulkan::cppm)
+endif()
 
 target_link_libraries(Nodens
     PUBLIC

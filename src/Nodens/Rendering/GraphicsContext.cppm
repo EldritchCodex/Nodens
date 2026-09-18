@@ -7,17 +7,17 @@ export module Nodens.GraphicsContext;
 export namespace Nodens
 {
 /// @brief Abstract base class representing a GPU rendering context.
-/// @details A GraphicsContext encapsulates backend initialization and frame presentation
+/// @details An IGraphicsContext encapsulates backend initialization and frame presentation
 ///          for a specific graphics API. The concrete implementation is created by the
 ///          platform window or an external renderer during initialization.
 ///          A Vulkan implementation may own its instance, device, swapchain, and
 ///          synchronization without exposing Vulkan types through this interface.
 /// @see OpenGLContext, IWindow
 /// @ingroup Rendering
-class GraphicsContext
+class IGraphicsContext
 {
 public:
-    virtual ~GraphicsContext() = default;
+    virtual ~IGraphicsContext() = default;
 
     /// @brief Initializes backend state and resources.
     virtual void Init() = 0;

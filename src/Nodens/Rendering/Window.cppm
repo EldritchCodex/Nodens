@@ -4,6 +4,7 @@
 
 export module Nodens.Window;
 
+import Nodens.GraphicsContext;
 import Nodens.InputEvents;
 import std;
 
@@ -93,6 +94,12 @@ public:
     ///          the window is destroyed.
     /// @return Borrowed opaque pointer to the native window.
     virtual void* GetNativeWindow() const = 0;
+
+    /// @brief Returns the graphics context owned by the window.
+    /// @details The returned pointer is borrowed and remains valid until this window is destroyed.
+    ///          It may be null when the window uses `NoAPI` or when no context was created.
+    /// @return Borrowed graphics context, or null when no context exists.
+    virtual IGraphicsContext* GetGraphicsContext() const = 0;
 
     /// @brief Static factory method that creates a platform-specific Window.
     /// @param props The configuration properties for the new window.
