@@ -1,7 +1,7 @@
 /// @file VulkanContext.cppm
-/// @brief Nodens-owned Vulkan instance, surface, and physical-device context.
-/// @details Nodens owns loader, instance, surface, and physical-device selection.
-///          Logical device, swapchain, and frame scheduling follow later.
+/// @brief Nodens-owned Vulkan instance, device, surface, and physical-device context.
+/// @details Nodens owns loader, instance, surface, physical-device selection, and
+///          logical-device creation. Swapchain and frame scheduling follow later.
 /// @ingroup Platform
 
 module;
@@ -36,7 +36,7 @@ public:
 
     ~VulkanContext() override = default;
 
-    /// @brief Creates the Vulkan instance, window surface, and physical device.
+    /// @brief Creates the Vulkan instance, surface, physical device, and logical device.
     void Init() override
     {
         if (static_cast<VkInstance>(*m_Instance) != VK_NULL_HANDLE)
@@ -71,6 +71,7 @@ public:
 
         m_Surface = vk::raii::SurfaceKHR{m_Instance, rawSurface};
         PickPhysicalDevice();
+        CreateLogicalDevice();
     }
 
     /// @brief Does nothing until Nodens owns Vulkan frame submission.
@@ -111,6 +112,26 @@ public:
     const vk::raii::PhysicalDevice& GetPhysicalDevice() const
     {
         return m_PhysicalDevice;
+    }
+
+    /// @brief Returns the logical device created by Nodens.
+    /// @return Borrowed reference to the logical device.
+    const vk::raii::Device& GetDeviceRAII() const
+    {
+        return m_Device;
+    }
+
+    /// @brief Returns the graphics and presentation queue created by Nodens.
+    /// @return Borrowed reference to the queue.
+    const vk::raii::Queue& GetGraphicsQueueRAII() const
+    {
+        return m_GraphicsQueue;
+    }
+
+    /// @brief Returns the graphics and presentation queue family index.
+    uint32_t GetGraphicsQueueFamilyIndex() const
+    {
+        return m_GraphicsQueueFamilyIndex;
     }
 
 private:
@@ -179,10 +200,59 @@ private:
         CoreLogger().info("  Driver Version: {}", properties.driverVersion);
     }
 
+    /// @brief Creates logical device with one graphics-and-present queue.
+    void CreateLogicalDevice()
+    {
+        const auto queueFamilies = m_PhysicalDevice.getQueueFamilyProperties();
+        const auto queueIterator =
+            std::ranges::find_if(std::views::iota(size_t{0}, queueFamilies.size()),
+                                 [&](size_t index)
+                                 {
+                                     return static_cast<bool>(queueFamilies[index].queueFlags &
+                                                              vk::QueueFlagBits::eGraphics) &&
+                                            m_PhysicalDevice.getSurfaceSupportKHR(
+                                                static_cast<uint32_t>(index), *m_Surface);
+                                 });
+        if (queueIterator == std::views::iota(size_t{0}, queueFamilies.size()).end())
+            throw std::runtime_error{"Nodens found no graphics and presentation queue"};
+
+        m_GraphicsQueueFamilyIndex = static_cast<uint32_t>(*queueIterator);
+        constexpr float queuePriority{1.0f};
+        const vk::DeviceQueueCreateInfo queueCreateInfo{
+            .queueFamilyIndex = m_GraphicsQueueFamilyIndex,
+            .queueCount = 1,
+            .pQueuePriorities = &queuePriority,
+        };
+
+        vk::StructureChain<vk::PhysicalDeviceFeatures2,
+                           vk::PhysicalDeviceVulkan11Features,
+                           vk::PhysicalDeviceVulkan13Features,
+                           vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>
+            featureChain = {{},
+                            {.shaderDrawParameters = true},
+                            {.synchronization2 = true, .dynamicRendering = true},
+                            {.extendedDynamicState = true}};
+
+        const std::vector<const char*> requiredExtensions{vk::KHRSwapchainExtensionName};
+        const vk::DeviceCreateInfo deviceCreateInfo{
+            .pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
+            .queueCreateInfoCount = 1,
+            .pQueueCreateInfos = &queueCreateInfo,
+            .enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size()),
+            .ppEnabledExtensionNames = requiredExtensions.data(),
+        };
+
+        m_Device = vk::raii::Device{m_PhysicalDevice, deviceCreateInfo};
+        m_GraphicsQueue = vk::raii::Queue{m_Device, m_GraphicsQueueFamilyIndex, 0};
+    }
+
     GLFWwindow* m_WindowHandle{nullptr};                ///< Borrowed GLFW window owned by IWindow.
     vk::raii::Context m_Context{};                      ///< Vulkan loader context.
     vk::raii::Instance m_Instance{nullptr};             ///< Nodens-owned Vulkan instance.
-    vk::raii::SurfaceKHR m_Surface{nullptr};            ///< Nodens-owned window surface.
+    vk::raii::SurfaceKHR m_Surface{nullptr};            ///< Nodens-owned Vulkan surface.
     vk::raii::PhysicalDevice m_PhysicalDevice{nullptr}; ///< Nodens-selected physical device.
+    vk::raii::Device m_Device{nullptr};                 ///< Nodens-owned logical device.
+    vk::raii::Queue m_GraphicsQueue{nullptr};           ///< Graphics and presentation queue.
+    uint32_t m_GraphicsQueueFamilyIndex{};              ///< Graphics and presentation queue family.
 };
 } // namespace Nodens
