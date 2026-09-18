@@ -2,6 +2,7 @@
 .cache/
 .zed/
 .vscode/
+__cmake_systeminformation/
 
 # Build output
 build/
