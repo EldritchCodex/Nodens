@@ -1,4 +1,5 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT) 
+![Supported platforms: Linux ](https://img.shields.io/badge/Supported%20platforms-Linux-blue.svg?style=flat-square)
 
 > ⚠️ **Development Status:** Nodens is currently in **active, experimental development** with no stable release. It serves primarily as a learning ground and playground for exploring game engine architecture and modern C++20/23 features. APIs are highly subject to change.
 
@@ -33,7 +34,7 @@ For new applications, start from the [Nodens Application Template](https://githu
 ## Development Environment
 
 Nodens includes a Linux Dev Container using
-`ghcr.io/eldritchcodex/linux-graphics-dev:main`. Open the repository in Zed or
+`ghcr.io/eldritchcodex/arch-dev:main`. Open the repository in Zed or
 Visual Studio Code, then reopen it in the Dev Container.
 
 NVIDIA hosts need the host NVIDIA driver and NVIDIA Container Toolkit before

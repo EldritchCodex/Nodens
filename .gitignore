@@ -1,8 +1,7 @@
 # Editor and local tooling caches
 .cache/
-.zed/*
-!.zed/settings.json
-!.zed/tasks.json
+.zed/
+.vscode/
 
 # Build output
 build/
