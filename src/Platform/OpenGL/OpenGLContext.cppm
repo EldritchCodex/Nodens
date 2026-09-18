@@ -28,8 +28,8 @@ public:
     /// @brief Makes the context current, loads GL functions via GLAD, and sets default GL state.
     void Init() override;
 
-    /// @brief Swaps the GLFW window's front and back buffers.
-    void SwapBuffers() override;
+    /// @brief Presents the rendered frame by swapping GLFW buffers.
+    void Present() override;
 
 private:
     GLFWwindow* m_WindowHandle; ///< The GLFW window this context is bound to.

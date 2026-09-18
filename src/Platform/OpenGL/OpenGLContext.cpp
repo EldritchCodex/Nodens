@@ -43,7 +43,7 @@ void OpenGLContext::Init()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void OpenGLContext::SwapBuffers()
+void OpenGLContext::Present()
 {
     glfwSwapBuffers(m_WindowHandle);
 }

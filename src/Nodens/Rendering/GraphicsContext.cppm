@@ -7,20 +7,24 @@ export module Nodens.GraphicsContext;
 export namespace Nodens
 {
 /// @brief Abstract base class representing a GPU rendering context.
-/// @details A GraphicsContext encapsulates the initialization and buffer-swapping logic
-///          for a specific graphics API (e.g., OpenGL, Vulkan). The concrete implementation
-///          is created by the platform Window during initialization.
-/// @see OpenGLContext, Window
+/// @details A GraphicsContext encapsulates backend initialization and frame presentation
+///          for a specific graphics API. The concrete implementation is created by the
+///          platform window or an external renderer during initialization.
+///          A Vulkan implementation may own its instance, device, swapchain, and
+///          synchronization without exposing Vulkan types through this interface.
+/// @see OpenGLContext, IWindow
 /// @ingroup Rendering
 class GraphicsContext
 {
 public:
     virtual ~GraphicsContext() = default;
 
-    /// @brief Initializes the graphics context (e.g., loads function pointers, sets GL state).
+    /// @brief Initializes backend state and resources.
     virtual void Init() = 0;
 
-    /// @brief Swaps the front and back framebuffers, presenting the rendered frame.
-    virtual void SwapBuffers() = 0;
+    /// @brief Presents the completed frame when the backend owns presentation.
+    /// @details OpenGL swaps its window buffers. Vulkan implementations may submit
+    ///          and present through their swapchain or delegate presentation to a renderer.
+    virtual void Present() = 0;
 };
 } // namespace Nodens

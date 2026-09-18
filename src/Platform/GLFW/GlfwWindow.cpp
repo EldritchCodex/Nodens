@@ -21,8 +21,8 @@ namespace Nodens
 {
 
 /// @brief Concrete GLFW-backed Window implementation.
-/// @details Owns the GLFWwindow handle, an OpenGLContext, and a WindowData struct that
-///          stores dimensions, VSync state, and the event callback. GLFW callbacks are
+/// @details Owns the GLFWwindow handle, an optional OpenGLContext, and a WindowData
+///          struct that stores dimensions, VSync state, and the event callback. GLFW callbacks are
 ///          registered during Init() and dispatch Nodens Event objects to the application.
 /// @ingroup Platform
 class GLFWWindow : public IWindow
@@ -37,15 +37,17 @@ public:
 
     ~GLFWWindow() override
     {
+        Shutdown();
     }
 
-    /// @brief Polls GLFW events and swaps the OpenGL buffers.
+    /// @brief Polls GLFW events and swaps OpenGL buffers when an OpenGL context exists.
     void OnUpdate() override
     {
         ZoneScoped;
 
         glfwPollEvents();
-        m_Context->SwapBuffers();
+        if (m_Context)
+            m_Context->Present();
     }
 
     unsigned int GetWidth() const override
@@ -65,14 +67,17 @@ public:
         m_Data.InputEventCallback = callback;
     }
 
-    /// @brief Enables or disables VSync via glfwSwapInterval.
+    /// @brief Enables or disables VSync for an OpenGL context.
     /// @param enabled True to enable VSync (swap interval 1), false to disable (swap interval 0).
     void SetVSync(bool enabled) override
     {
-        if (enabled)
-            glfwSwapInterval(1);
-        else
-            glfwSwapInterval(0);
+        if (m_Data.API == EGraphicsAPI::OpenGL)
+        {
+            if (enabled)
+                glfwSwapInterval(1);
+            else
+                glfwSwapInterval(0);
+        }
 
         m_Data.VSync = enabled;
     }
@@ -109,6 +114,7 @@ private:
         unsigned int Width;  ///< Current width in pixels.
         unsigned int Height; ///< Current height in pixels.
         bool VSync;          ///< Whether VSync is enabled.
+        EGraphicsAPI API;    ///< The graphics API to use for rendering.
 
         InputEventCallbackFn InputEventCallback; ///< The application's event callback.
     };
@@ -135,7 +141,7 @@ IWindow* IWindow::Create(const FWindowProps& props)
     return new GLFWWindow(props);
 }
 
-/// @brief Initializes GLFW, creates the window, sets up the OpenGL context, and registers
+/// @brief Initializes GLFW, creates the window, optionally sets up OpenGL, and registers
 ///        all GLFW event callbacks (resize, close, key, mouse button, scroll, cursor).
 void GLFWWindow::Init(const FWindowProps& props)
 {
@@ -145,6 +151,7 @@ void GLFWWindow::Init(const FWindowProps& props)
     m_Data.Width = props.Width;
     m_Data.Height = props.Height;
     m_Data.VSync = props.VSync;
+    m_Data.API = props.API;
 
     CoreLogger().info("Creating window {} ({}, {})", props.Title, props.Width, props.Height);
 
@@ -155,23 +162,30 @@ void GLFWWindow::Init(const FWindowProps& props)
             FatalCore("Could not initialize GLFW!");
         glfwSetErrorCallback(GLFWErrorCallback);
 
-        // Set OpenGL version to 4.6
+        s_GLFWInitialized = true;
+    }
+
+    if (props.API == EGraphicsAPI::OpenGL)
+    {
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-
         glfwWindowHint(GLFW_SAMPLES, 4);
-
-        // Use Core Profile
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        s_GLFWInitialized = true;
+    }
+    else
+    {
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     }
 
     m_Window = glfwCreateWindow(
         (int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 
-    m_Context = new OpenGLContext(m_Window);
-    m_Context->Init();
+    if (props.API == EGraphicsAPI::OpenGL)
+    {
+        m_Context = new OpenGLContext(m_Window);
+        m_Context->Init();
+    }
 
     glfwSetWindowUserPointer(m_Window, &m_Data);
     // This function assigns the WindowData struct to the GLFWwindow object.
@@ -283,7 +297,19 @@ void GLFWWindow::Init(const FWindowProps& props)
 /// @brief Destroys the underlying GLFW window.
 void GLFWWindow::Shutdown()
 {
-    glfwDestroyWindow(m_Window);
-    glfwTerminate();
+    delete m_Context;
+    m_Context = nullptr;
+
+    if (m_Window)
+    {
+        glfwDestroyWindow(m_Window);
+        m_Window = nullptr;
+    }
+
+    if (s_GLFWInitialized)
+    {
+        glfwTerminate();
+        s_GLFWInitialized = false;
+    }
 }
 } // namespace Nodens

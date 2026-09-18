@@ -10,6 +10,16 @@ import std;
 export namespace Nodens
 {
 
+/// @brief Client graphics API requested by a platform window.
+/// @details `OpenGL` creates an OpenGL context. `NoAPI` and `Vulkan` create a
+///          GLFW window without a client API so an external renderer can own setup.
+enum class EGraphicsAPI
+{
+    NoAPI,
+    Vulkan,
+    OpenGL,
+};
+
 /// @brief Configuration properties for creating a Window.
 /// @details Passed to the static IWindow::Create() factory. Provides sensible defaults
 ///          for title, dimensions, and VSync.
@@ -20,17 +30,20 @@ struct FWindowProps
     unsigned int Width;  ///< Initial window width in pixels.
     unsigned int Height; ///< Initial window height in pixels.
     bool VSync;          ///< Whether vertical synchronization is enabled.
+    EGraphicsAPI API;    ///< The graphics API to use for rendering.
 
     /// @brief Constructs window properties with optional overrides.
     /// @param title  Window title.
     /// @param width  Window width in pixels.
     /// @param height Window height in pixels.
     /// @param vsync  Enable VSync.
+    /// @param api    Graphics/client API requested by the window.
     FWindowProps(const std::string& title = "[Nodens]",
                  unsigned int width = 1280,
                  unsigned int height = 720,
-                 bool vsync = true)
-        : Title(title), Width(width), Height(height), VSync(vsync)
+                 bool vsync = true,
+                 EGraphicsAPI api = EGraphicsAPI::OpenGL)
+        : Title(title), Width(width), Height(height), VSync(vsync), API(api)
     {
     }
 };
@@ -56,7 +69,7 @@ public:
     {
     }
 
-    /// @brief Polls platform events and swaps buffers. Called once per frame.
+    /// @brief Polls platform events and presents a frame when the backend supports it.
     virtual void OnUpdate() = 0;
 
     virtual unsigned int GetWidth() const = 0;
@@ -75,9 +88,10 @@ public:
     virtual bool IsVSyncOn() const = 0;
 
     /// @brief Returns a raw pointer to the underlying native window handle.
-    /// @details For GLFW this returns a `GLFWwindow*`. Cast the result to the
-    ///          appropriate type.
-    /// @return Opaque pointer to the native window.
+    /// @details For GLFW this returns a borrowed `GLFWwindow*`. Cast the result to
+    ///          the appropriate type. Nodens owns the handle and keeps it valid until
+    ///          the window is destroyed.
+    /// @return Borrowed opaque pointer to the native window.
     virtual void* GetNativeWindow() const = 0;
 
     /// @brief Static factory method that creates a platform-specific Window.
