@@ -112,7 +112,7 @@ private:
     /// @brief Destroys the GLFW window.
     void Shutdown();
 
-    GLFWwindow* m_Window = nullptr;       ///< The native GLFW window handle.
+    GLFWwindow* m_Window = nullptr;        ///< The native GLFW window handle.
     IGraphicsContext* m_Context = nullptr; ///< The backend context bound to this window.
 
     /// @brief Internal data bundle attached to the GLFW window via glfwSetWindowUserPointer.

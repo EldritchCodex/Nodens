@@ -1,5 +1,6 @@
 /// @file OpenGLImGuiRenderer.cpp
-/// @brief Implementation of OpenGLImGuiRenderer - delegates to imgui_impl_opengl3 and imgui_impl_glfw.
+/// @brief Implementation of OpenGLImGuiRenderer - delegates to imgui_impl_opengl3 and
+/// imgui_impl_glfw.
 /// @ingroup Platform
 
 module;
