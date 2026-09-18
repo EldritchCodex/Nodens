@@ -4,7 +4,7 @@ project(Nodens VERSION 0.1.0 LANGUAGES CXX)
 # -----------------------------------------------------------------------------
 # Core Build Settings
 # -----------------------------------------------------------------------------
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithDebInfo" CACHE STRING "" FORCE)
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_COMPILER_IMPORT_STD ON)

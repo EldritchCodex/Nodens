@@ -28,6 +28,7 @@ export namespace Nodens
 class VulkanContext : public IGraphicsContext
 {
 public:
+    static constexpr uint32_t FramesInFlight{2};
     /// @brief Constructs a Vulkan context for an existing GLFW window.
     /// @param windowHandle A valid GLFW window created without a client API.
     explicit VulkanContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
@@ -75,6 +76,7 @@ public:
         PickPhysicalDevice();
         CreateLogicalDevice();
         CreateSwapchain();
+        CreateFrameSynchronization();
     }
 
     /// @brief Does nothing until Nodens owns Vulkan frame submission.
@@ -175,8 +177,101 @@ public:
     {
         m_Device.waitIdle();
         m_SwapchainImageViews.clear();
+        m_RenderFinishedSemaphores.clear();
         m_Swapchain = nullptr;
         CreateSwapchain();
+        CreateRenderFinishedSemaphores();
+    }
+
+    /// @brief Returns number of frames Nodens schedules concurrently.
+    uint32_t GetFramesInFlight() const
+    {
+        return FramesInFlight;
+    }
+
+    /// @brief Returns current frame slot used by Nodens.
+    uint32_t GetCurrentFrameIndex() const
+    {
+        return m_CurrentFrameIndex;
+    }
+
+    /// @brief Waits until all Nodens-owned Vulkan work completes.
+    void WaitIdle() const
+    {
+        m_Device.waitIdle();
+    }
+
+    /// @brief Acquires a swapchain image and starts one frame.
+    /// @return Image index, or no value when swapchain recreation is required.
+    std::optional<uint32_t> BeginFrame()
+    {
+        int framebufferWidth{0};
+        int framebufferHeight{0};
+        glfwGetFramebufferSize(m_WindowHandle, &framebufferWidth, &framebufferHeight);
+        if (framebufferWidth == 0 || framebufferHeight == 0)
+            return std::nullopt;
+
+        const auto fenceResult = m_Device.waitForFences(
+            *m_InFlightFences[m_CurrentFrameIndex], vk::True, std::numeric_limits<uint64_t>::max());
+        if (fenceResult != vk::Result::eSuccess)
+            throw std::runtime_error{"Nodens failed to wait for frame fence"};
+
+        auto [result, imageIndex] =
+            m_Swapchain.acquireNextImage(std::numeric_limits<uint64_t>::max(),
+                                         *m_PresentCompleteSemaphores[m_CurrentFrameIndex],
+                                         nullptr);
+        if (result == vk::Result::eErrorOutOfDateKHR)
+        {
+            RecreateSwapchain();
+            return std::nullopt;
+        }
+        if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+            throw std::runtime_error{"Nodens failed to acquire swapchain image"};
+
+        m_Device.resetFences(*m_InFlightFences[m_CurrentFrameIndex]);
+        m_CurrentImageIndex = imageIndex;
+        m_FrameStarted = true;
+        return imageIndex;
+    }
+
+    /// @brief Submits a recorded frame and presents its swapchain image.
+    /// @param commandBuffer Command buffer recorded by the attached renderer.
+    /// @param imageIndex Image acquired by BeginFrame().
+    void EndFrame(vk::CommandBuffer commandBuffer, uint32_t imageIndex)
+    {
+        if (!m_FrameStarted)
+            throw std::logic_error{"VulkanContext::EndFrame called without BeginFrame"};
+        if (imageIndex != m_CurrentImageIndex)
+            throw std::logic_error{"VulkanContext::EndFrame image index does not match BeginFrame"};
+
+        const vk::PipelineStageFlags waitStage{vk::PipelineStageFlagBits::eColorAttachmentOutput};
+        const vk::SubmitInfo submitInfo{
+            .waitSemaphoreCount = 1,
+            .pWaitSemaphores = &*m_PresentCompleteSemaphores[m_CurrentFrameIndex],
+            .pWaitDstStageMask = &waitStage,
+            .commandBufferCount = 1,
+            .pCommandBuffers = &commandBuffer,
+            .signalSemaphoreCount = 1,
+            .pSignalSemaphores = &*m_RenderFinishedSemaphores[imageIndex],
+        };
+        m_GraphicsQueue.submit(submitInfo, *m_InFlightFences[m_CurrentFrameIndex]);
+
+        const vk::PresentInfoKHR presentInfo{
+            .waitSemaphoreCount = 1,
+            .pWaitSemaphores = &*m_RenderFinishedSemaphores[imageIndex],
+            .swapchainCount = 1,
+            .pSwapchains = &*m_Swapchain,
+            .pImageIndices = &imageIndex,
+        };
+        const auto result = m_GraphicsQueue.presentKHR(presentInfo);
+        m_FrameStarted = false;
+
+        if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR)
+            RecreateSwapchain();
+        else if (result != vk::Result::eSuccess)
+            throw std::runtime_error{"Nodens failed to present swapchain image"};
+        else
+            m_CurrentFrameIndex = (m_CurrentFrameIndex + 1) % FramesInFlight;
     }
 
 private:
@@ -300,6 +395,26 @@ private:
         return imageCount;
     }
 
+    /// @brief Creates synchronization objects for each frame in flight.
+    void CreateFrameSynchronization()
+    {
+        CreateRenderFinishedSemaphores();
+        for (uint32_t index = 0; index < FramesInFlight; ++index)
+        {
+            m_PresentCompleteSemaphores.emplace_back(m_Device, vk::SemaphoreCreateInfo{});
+            m_InFlightFences.emplace_back(
+                m_Device, vk::FenceCreateInfo{.flags = vk::FenceCreateFlagBits::eSignaled});
+        }
+    }
+
+    /// @brief Creates one render-finished semaphore per swapchain image.
+    void CreateRenderFinishedSemaphores()
+    {
+        m_RenderFinishedSemaphores.clear();
+        for (size_t index = 0; index < m_SwapchainImages.size(); ++index)
+            m_RenderFinishedSemaphores.emplace_back(m_Device, vk::SemaphoreCreateInfo{});
+    }
+
     /// @brief Creates swapchain and image views for the current surface.
     void CreateSwapchain()
     {
@@ -402,6 +517,12 @@ private:
     vk::Extent2D m_SwapchainExtent{};                   ///< Current swapchain dimensions.
     vk::SurfaceFormatKHR m_SwapchainSurfaceFormat{};    ///< Current swapchain format.
     std::vector<vk::Image> m_SwapchainImages{};         ///< Swapchain image handles.
-    std::vector<vk::raii::ImageView> m_SwapchainImageViews{}; ///< Nodens-owned image views.
+    std::vector<vk::raii::ImageView> m_SwapchainImageViews{};       ///< Nodens-owned image views.
+    std::vector<vk::raii::Semaphore> m_PresentCompleteSemaphores{}; ///< Image-acquire signals.
+    std::vector<vk::raii::Semaphore> m_RenderFinishedSemaphores{};  ///< Render-complete signals.
+    std::vector<vk::raii::Fence> m_InFlightFences{};                ///< CPU/GPU frame fences.
+    uint32_t m_CurrentFrameIndex{0}; ///< Current frame-in-flight slot.
+    uint32_t m_CurrentImageIndex{0}; ///< Current acquired image.
+    bool m_FrameStarted{false};      ///< BeginFrame has acquired an image.
 };
 } // namespace Nodens
