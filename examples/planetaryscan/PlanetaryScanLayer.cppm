@@ -1,5 +1,5 @@
 export module Example.PlanetaryScanLayer;
-import Nodens;
+import nodens;
 import std;
 
 // -----------------------------------------------------------------------------

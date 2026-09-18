@@ -1,4 +1,4 @@
-import Nodens;
+import nodens;
 import Example.CircularWave3DLayer;
 import std;
 

@@ -87,7 +87,7 @@ set(ND_FRAMEWORK_MODULE_INTERFACES
     src/Platform/OpenGL/OpenGLContext.cppm
     src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
     # Umbrella module
-    src/Nodens/Nodens.cppm
+    src/Nodens/nodens.cppm
 )
 
 # -----------------------------------------------------------------------------

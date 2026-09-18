@@ -12,7 +12,7 @@ It unifies excellent third-party libraries (e.g. [ImGui](https://github.com/ocor
 - **Event System** with InputEvent routing through the LayerStack and a pub/sub thread-safe EventBus for both immediate and queued dispatch of custom event types (see [wiki](https://github.com/EldritchCodex/Nodens/wiki/Event-System));
 - **Job System** for multithreaded task execution (see [wiki](https://github.com/EldritchCodex/Nodens/wiki/Concurrency-and-JobSystem)).
 
-Nodens follows a **module-first architecture** where public APIs are C++20 module interfaces (`.cppm`), third-party headers are isolated on the global fragment module, and consumers simply `import Nodens;`.
+Nodens follows a **module-first architecture** where public APIs are C++20 module interfaces (`.cppm`), third-party headers are isolated on the global fragment module, and consumers simply `import nodens;`.
 
 The framework compiles into a single **static library** that is linked to your application, ensuring the final product is a single portable executable to streamline distribution.
 

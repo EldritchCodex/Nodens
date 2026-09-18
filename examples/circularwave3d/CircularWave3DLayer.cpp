@@ -7,7 +7,7 @@ module;
 
 module Example.CircularWave3DLayer;
 
-import Nodens;
+import nodens;
 import std;
 
 CircularWave3DLayer::CircularWave3DLayer() : Layer("CircularWave3D")
@@ -37,8 +37,8 @@ void CircularWave3DLayer::OnUpdate(Nodens::TimeStep previous_update_duration)
         ys[i] = std::cos(m_Frequency * t[i]);
     }
 
-    Nodens::ClientLogger().info(
-        "Updated CircularWave3DLayer with timestep: {:.3f} ms", previous_update_duration.GetMilliseconds());
+    Nodens::ClientLogger().info("Updated CircularWave3DLayer with timestep: {:.3f} ms",
+                                previous_update_duration.GetMilliseconds());
 } // CircularWave3DLayer::OnUpdate
 
 void CircularWave3DLayer::OnImGuiRender(Nodens::TimeStep ts)

@@ -1,6 +1,6 @@
 export module Example.CircularWave3DLayer;
 
-import Nodens;
+import nodens;
 import std;
 
 // -----------------------------------------------------------------------------

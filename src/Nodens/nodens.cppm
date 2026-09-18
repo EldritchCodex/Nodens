@@ -1,6 +1,6 @@
-/// @file Nodens.cppm
+/// @file nodens.cppm
 /// @brief Umbrella module for the Nodens framework.
-/// @details Importing this single module (`import Nodens;`) brings in every public submodule
+/// @details Importing this single module (`import nodens;`) brings in every public submodule
 /// of the framework - Core, Events, Concurrency, Input, ImGui, and Rendering - so that
 /// client applications never need to import individual modules.
 ///
@@ -25,7 +25,7 @@
 /// @defgroup Platform Platform
 /// @brief Concrete platform implementations (GLFW, OpenGL).
 
-export module Nodens;
+export module nodens;
 
 export import Nodens.Application;
 export import Nodens.Event;
