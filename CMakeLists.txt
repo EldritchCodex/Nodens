@@ -83,6 +83,7 @@ if(Vulkan_FOUND)
         src/Platform/Vulkan/VulkanImGuiRenderer.cppm
     )
     list(APPEND ND_VULKAN_IMPLEMENTATION_UNITS
+        src/Platform/Vulkan/VulkanContext.cpp
         src/Platform/Vulkan/VulkanImGuiRenderer.cpp
     )
 endif()
