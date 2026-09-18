@@ -29,7 +29,7 @@ protected:
     /// @brief Checks whether a keyboard key is currently pressed via GLFW.
     /// @param keycode The key to query.
     /// @return True if the key is pressed or held (GLFW_PRESS or GLFW_REPEAT).
-    bool IsKeyPressedImpl(KeyboardKey keycode) override
+    bool IsKeyPressedImpl(EKeyboardKey keycode) override
     {
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
         int state{glfwGetKey(window, std::to_underlying(keycode))};
@@ -39,7 +39,7 @@ protected:
     /// @brief Checks whether a mouse button is currently pressed via GLFW.
     /// @param buttoncode The mouse button to query.
     /// @return True if the button is pressed (GLFW_PRESS).
-    bool IsMouseButtonPressedImpl(MouseButton buttoncode) override
+    bool IsMouseButtonPressedImpl(EMouseButton buttoncode) override
     {
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
         int state{glfwGetMouseButton(window, std::to_underlying(buttoncode))};

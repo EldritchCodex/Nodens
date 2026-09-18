@@ -21,7 +21,7 @@ namespace Nodens
 {
 
 ImGuiLayer::ImGuiLayer(const std::shared_ptr<ImGuiRenderer>& renderer, EDefaultTheme theme)
-    : Layer("ImGuiLayer"), m_Renderer(renderer), m_Theme(theme)
+    : ILayer("ImGuiLayer"), m_Renderer(renderer), m_Theme(theme)
 {
 }
 

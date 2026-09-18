@@ -10,7 +10,7 @@ import std;
 class CircularWave3DApp : public Nodens::Application
 {
 public:
-    static inline const Nodens::ApplicationSpecification appSpecifications = {
+    static inline const Nodens::FApplicationSpecification appSpecifications = {
         .Name = "[NodensApp Example] CircularWave3D",
         .WindowWidth = 800,
         .WindowHeight = 600,

@@ -2,7 +2,7 @@
 /// @brief GLFW implementation of the Window interface.
 /// @details Contains the GlfwWindow class which manages GLFW window creation, event
 ///          callback registration, and per-frame update. Also provides the factory
-///          implementation for Window::Create().
+///          implementation for IWindow::Create().
 /// @ingroup Platform
 
 module;
@@ -25,12 +25,12 @@ namespace Nodens
 ///          stores dimensions, VSync state, and the event callback. GLFW callbacks are
 ///          registered during Init() and dispatch Nodens Event objects to the application.
 /// @ingroup Platform
-class GLFWWindow : public Window
+class GLFWWindow : public IWindow
 {
 public:
     /// @brief Constructs and initializes a GLFW window with the given properties.
     /// @param props Window configuration (title, dimensions, VSync).
-    GLFWWindow(const WindowProps& props)
+    GLFWWindow(const FWindowProps& props)
     {
         Init(props);
     }
@@ -92,7 +92,7 @@ public:
 private:
     /// @brief Initializes GLFW (if needed), creates the window, and registers all callbacks.
     /// @param props Window configuration.
-    void Init(const WindowProps& props);
+    void Init(const FWindowProps& props);
 
     /// @brief Destroys the GLFW window.
     void Shutdown();
@@ -129,15 +129,15 @@ static void GLFWErrorCallback(int error, const char* description)
 
 /// @brief Factory implementation: creates a GlfwWindow.
 /// @param props Window configuration.
-/// @return A new GlfwWindow (caller takes ownership).
-Window* Window::Create(const WindowProps& props)
+/// @return A new GLFWWindow (caller takes ownership).
+IWindow* IWindow::Create(const FWindowProps& props)
 {
     return new GLFWWindow(props);
 }
 
 /// @brief Initializes GLFW, creates the window, sets up the OpenGL context, and registers
 ///        all GLFW event callbacks (resize, close, key, mouse button, scroll, cursor).
-void GLFWWindow::Init(const WindowProps& props)
+void GLFWWindow::Init(const FWindowProps& props)
 {
     ZoneScoped;
 

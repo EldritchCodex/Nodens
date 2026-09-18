@@ -10,7 +10,7 @@ export namespace Nodens
 {
 /// @brief      Key codes for keyboard keys.
 ///             These key codes are based on the key codes from glfw3.h.
-enum class KeyboardKey : std::uint16_t
+enum class EKeyboardKey : std::uint16_t
 {
     // From glfw3.h
     Space = 32,      ///< The Space key.
@@ -150,7 +150,7 @@ enum class KeyboardKey : std::uint16_t
 /// @param      os  The output stream.
 /// @param[in]  key The key code to print.
 /// @return     The output stream.
-inline std::ostream& operator<<(std::ostream& os, KeyboardKey key)
+inline std::ostream& operator<<(std::ostream& os, EKeyboardKey key)
 {
     os << std::to_underlying(key);
     return os;

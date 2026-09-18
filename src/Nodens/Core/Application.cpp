@@ -23,7 +23,7 @@ namespace Nodens
 
 Application* Application::s_Instance = nullptr;
 
-Application::Application(const ApplicationSpecification& specification)
+Application::Application(const FApplicationSpecification& specification)
     : m_Specification(specification)
 {
     ZoneScoped;
@@ -39,9 +39,9 @@ Application::Application(const ApplicationSpecification& specification)
 
     if (!m_Specification.IsHeadless)
     {
-        WindowProps props(
+        FWindowProps props(
             m_Specification.Name, m_Specification.WindowWidth, m_Specification.WindowHeight);
-        m_Window = std::unique_ptr<Window>(Window::Create(props));
+        m_Window = std::unique_ptr<IWindow>(IWindow::Create(props));
         m_Window->SetInputEventCallback([this](RoutedInputEvent& event) { OnInputEvent(event); });
     }
 
@@ -60,21 +60,21 @@ Application::~Application()
     // Cleanup logic if necessary
 }
 
-void Application::PushLayer(Layer* layer)
+void Application::PushLayer(ILayer* layer)
 {
     ZoneScoped;
     m_LayerStack->PushLayer(layer);
     layer->OnAttach();
 }
 
-void Application::PushOverlay(Layer* overlay)
+void Application::PushOverlay(ILayer* overlay)
 {
     ZoneScoped;
     m_LayerStack->PushOverlay(overlay);
     overlay->OnAttach();
 }
 
-Window& Application::GetWindow()
+IWindow& Application::GetWindow()
 {
     if (!m_Window)
         FatalCore("Attempted to access Window in a headless application!");
@@ -91,7 +91,7 @@ EventBus& Application::GetEventBus()
     return *m_EventBus;
 }
 
-const ApplicationSpecification& Application::GetSpecification() const
+const FApplicationSpecification& Application::GetSpecification() const
 {
     return m_Specification;
 }
@@ -118,13 +118,13 @@ void Application::Run()
         m_EventBus->Flush();
 
         // Update each layer
-        for (Layer* layer : *m_LayerStack)
+        for (ILayer* layer : *m_LayerStack)
             layer->OnUpdate(timestep);
 
         if (m_ImGuiLayer)
         {
             m_ImGuiLayer->Begin();
-            for (Layer* layer : *m_LayerStack)
+            for (ILayer* layer : *m_LayerStack)
                 layer->OnImGuiRender(timestep);
             m_ImGuiLayer->End();
         }

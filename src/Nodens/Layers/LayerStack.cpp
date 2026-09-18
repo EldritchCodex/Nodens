@@ -14,24 +14,24 @@ LayerStack::LayerStack()
 
 LayerStack::~LayerStack()
 {
-    for (Layer* layer : m_Layers)
+    for (ILayer* layer : m_Layers)
     {
         layer->OnDetach();
         delete layer;
     }
 }
 
-void LayerStack::PushLayer(Layer* layer)
+void LayerStack::PushLayer(ILayer* layer)
 {
     m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex++, layer);
 }
 
-void LayerStack::PushOverlay(Layer* overlay)
+void LayerStack::PushOverlay(ILayer* overlay)
 {
     m_Layers.emplace_back(overlay);
 }
 
-void LayerStack::PopLayer(Layer* layer)
+void LayerStack::PopLayer(ILayer* layer)
 {
     auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
     if (it != m_Layers.end())
@@ -41,7 +41,7 @@ void LayerStack::PopLayer(Layer* layer)
     }
 }
 
-void LayerStack::PopOverlay(Layer* overlay)
+void LayerStack::PopOverlay(ILayer* overlay)
 {
     auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
     if (it != m_Layers.end())

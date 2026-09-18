@@ -9,7 +9,7 @@ import Example.PlanetaryScanLayer;
 class PlanetaryScanApp : public Nodens::Application
 {
 public:
-    static inline const Nodens::ApplicationSpecification appSpecifications = {
+    static inline const Nodens::FApplicationSpecification appSpecifications = {
         .Name = "[NodensApp Example] PlanetaryScans",
         .WindowWidth = 800,
         .WindowHeight = 600,

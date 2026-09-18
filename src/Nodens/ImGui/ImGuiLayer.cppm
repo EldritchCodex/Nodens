@@ -23,9 +23,9 @@ export namespace Nodens
 ///
 ///          By default, ImGuiLayer blocks keyboard and mouse events from propagating
 ///          to lower layers when ImGui wants to capture them.
-/// @see ImGuiRenderer, Layer, DefaultTheme
+/// @see ImGuiRenderer, ILayer, DefaultTheme
 /// @ingroup ImGui
-class ImGuiLayer : public Layer
+class ImGuiLayer : public ILayer
 {
 public:
     /// @brief Constructs the ImGui layer with a rendering backend and a visual theme.

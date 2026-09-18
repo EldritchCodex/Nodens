@@ -10,7 +10,7 @@ module Example.PlanetaryScanLayer;
 import nodens;
 import std;
 
-PlanetaryScanLayer::PlanetaryScanLayer() : Layer("PlanetaryScanLayer")
+PlanetaryScanLayer::PlanetaryScanLayer() : ILayer("PlanetaryScanLayer")
 {
 }
 

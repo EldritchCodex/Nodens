@@ -9,7 +9,7 @@ import std;
 namespace Nodens
 {
 
-Layer::Layer(const std::string& name) : m_Name(name)
+ILayer::ILayer(const std::string& name) : m_Name(name)
 {
 }
 

@@ -20,7 +20,7 @@ public:
     /// @brief      Checks if a specific key is currently pressed.
     /// @param[in]  keycode The key to check.
     /// @return     `true` if the key is pressed, `false` otherwise.
-    inline static bool IsKeyPressed(KeyboardKey keycode)
+    inline static bool IsKeyPressed(EKeyboardKey keycode)
     {
         return s_Instance->IsKeyPressedImpl(keycode);
     }
@@ -28,7 +28,7 @@ public:
     /// @brief      Checks if a specific mouse button is currently pressed.
     /// @param[in]  button The mouse button to check.
     /// @return     `true` if the mouse button is pressed, `false` otherwise.
-    inline static bool IsMouseButtonPressed(MouseButton button)
+    inline static bool IsMouseButtonPressed(EMouseButton button)
     {
         return s_Instance->IsMouseButtonPressedImpl(button);
     }
@@ -58,12 +58,12 @@ protected:
     /// @brief      Platform-specific implementation for checking if a key is pressed.
     /// @param[in]  keycode The key to check.
     /// @return     `true` if the key is pressed, `false` otherwise.
-    virtual bool IsKeyPressedImpl(KeyboardKey keycode) = 0;
+    virtual bool IsKeyPressedImpl(EKeyboardKey keycode) = 0;
 
     /// @brief      Platform-specific implementation for checking if a mouse button is pressed.
     /// @param[in]  button The mouse button to check.
     /// @return     `true` if the mouse button is pressed, `false` otherwise.
-    virtual bool IsMouseButtonPressedImpl(MouseButton button) = 0;
+    virtual bool IsMouseButtonPressedImpl(EMouseButton button) = 0;
 
     /// @brief      Platform-specific implementation for getting the mouse position.
     /// @return     A pair of floats representing the X and Y coordinates of the mouse.

@@ -10,7 +10,7 @@ module Example.CircularWave3DLayer;
 import nodens;
 import std;
 
-CircularWave3DLayer::CircularWave3DLayer() : Layer("CircularWave3D")
+CircularWave3DLayer::CircularWave3DLayer() : ILayer("CircularWave3D")
 {
     ZoneScoped;
 

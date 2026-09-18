@@ -18,13 +18,13 @@ export namespace Nodens
 /// ImGui) to consume input before other layers.
 /// @see LayerStack, Application::PushLayer, Application::PushOverlay
 /// @ingroup Core
-class Layer
+class ILayer
 {
 public:
     /// @param name A human-readable name used for logging and profiling.
-    Layer(const std::string& name = "Layer");
+    ILayer(const std::string& name = "Layer");
 
-    virtual ~Layer() = default;
+    virtual ~ILayer() = default;
 
     /// @brief Called once when the layer is pushed onto the LayerStack.
     /// @details Use this to allocate resources, subscribe to events, etc.

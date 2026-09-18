@@ -21,7 +21,7 @@ export namespace Nodens
 /// @details Provides sensible defaults for a windowed GUI application.
 ///          Pass a customized instance to the Application constructor to override.
 /// @ingroup Core
-struct ApplicationSpecification
+struct FApplicationSpecification
 {
     std::string Name{"Nodens Application"}; ///< Window title and application identifier.
     std::uint32_t WindowWidth{1280};        ///< Initial window width in pixels.
@@ -33,7 +33,7 @@ struct ApplicationSpecification
 };
 
 /// @brief The central singleton that owns the window, layer stack, job system, and main loop.
-/// @details A client application subclasses Application and pushes its own Layer instances
+/// @details A client application subclasses Application and pushes its own ILayer instances
 ///          in the constructor. Exactly one Application instance may exist at any time;
 ///          creating a second one terminates the process.
 ///
@@ -52,7 +52,7 @@ struct ApplicationSpecification
 /// }
 /// @endcode
 ///
-/// @see Layer, LayerStack, ApplicationSpecification
+/// @see ILayer, LayerStack, FApplicationSpecification
 /// @ingroup Core
 class Application
 {
@@ -60,7 +60,7 @@ public:
     /// @brief Constructs the application, creating the window, job system, and optional ImGui
     /// layer.
     /// @param specification The configuration to use for initialization.
-    explicit Application(const ApplicationSpecification& specification);
+    explicit Application(const FApplicationSpecification& specification);
 
     virtual ~Application();
 
@@ -75,16 +75,16 @@ public:
 
     /// @brief Pushes a regular layer onto the layer stack and calls its OnAttach().
     /// @param layer Raw pointer to the layer. Ownership is transferred to the LayerStack.
-    void PushLayer(Layer* layer);
+    void PushLayer(ILayer* layer);
 
     /// @brief Pushes an overlay layer (rendered last) and calls its OnAttach().
     /// @param overlay Raw pointer to the overlay. Ownership is transferred to the LayerStack.
-    void PushOverlay(Layer* overlay);
+    void PushOverlay(ILayer* overlay);
 
     /// @brief Returns a reference to the application window.
     /// @warning Calling this on a headless application triggers a fatal error.
-    /// @return Reference to the Window instance.
-    Window& GetWindow();
+    /// @return Reference to the IWindow instance.
+    IWindow& GetWindow();
 
     /// @brief Returns a reference to the application's job system.
     /// @return Reference to the JobSystem instance.
@@ -95,8 +95,8 @@ public:
     EventBus& GetEventBus();
 
     /// @brief Returns the specification used to initialize this application.
-    /// @return Const reference to the ApplicationSpecification.
-    const ApplicationSpecification& GetSpecification() const;
+    /// @return Const reference to the FApplicationSpecification.
+    const FApplicationSpecification& GetSpecification() const;
 
     /// @brief Retrieves the global singleton Application instance.
     /// @return Reference to the running Application.
@@ -108,10 +108,10 @@ private:
     /// @return Always returns true (event is consumed).
     bool OnWindowClose(InputEvents::WindowClose& e);
 
-    ApplicationSpecification m_Specification; ///< Stored copy of the startup configuration.
-    bool m_Running{true};                     ///< Main loop sentinel; false triggers shutdown.
+    FApplicationSpecification m_Specification; ///< Stored copy of the startup configuration.
+    bool m_Running{true};                      ///< Main loop sentinel; false triggers shutdown.
 
-    std::unique_ptr<Window> m_Window; ///< The platform window (null in headless mode).
+    std::unique_ptr<IWindow> m_Window; ///< The platform window (null in headless mode).
 
     ImGuiLayer* m_ImGuiLayer{nullptr}; ///< The ImGui overlay (owned by LayerStack).
 

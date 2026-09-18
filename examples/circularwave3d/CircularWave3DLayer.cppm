@@ -9,7 +9,7 @@ import std;
 // and the Nodens GUI infrastructure.
 // -----------------------------------------------------------------------------
 
-export class CircularWave3DLayer : public Nodens::Layer
+export class CircularWave3DLayer : public Nodens::ILayer
 {
 public:
     CircularWave3DLayer();

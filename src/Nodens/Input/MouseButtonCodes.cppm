@@ -10,7 +10,7 @@ export namespace Nodens
 {
 /// @brief      Mouse button codes.
 ///             These mouse button codes are based on the button codes from glfw3.h.
-enum class MouseButton : std::uint16_t
+enum class EMouseButton : std::uint16_t
 {
     // From glfw3.h
     Button0 = 0, ///< The 0 mouse button.

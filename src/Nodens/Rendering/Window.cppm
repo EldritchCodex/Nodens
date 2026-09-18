@@ -11,10 +11,10 @@ export namespace Nodens
 {
 
 /// @brief Configuration properties for creating a Window.
-/// @details Passed to the static Window::Create() factory. Provides sensible defaults
+/// @details Passed to the static IWindow::Create() factory. Provides sensible defaults
 ///          for title, dimensions, and VSync.
 /// @ingroup Rendering
-struct WindowProps
+struct FWindowProps
 {
     std::string Title;   ///< The window title displayed in the title bar.
     unsigned int Width;  ///< Initial window width in pixels.
@@ -26,10 +26,10 @@ struct WindowProps
     /// @param width  Window width in pixels.
     /// @param height Window height in pixels.
     /// @param vsync  Enable VSync.
-    WindowProps(const std::string& title = "[Nodens]",
-                unsigned int width = 1280,
-                unsigned int height = 720,
-                bool vsync = true)
+    FWindowProps(const std::string& title = "[Nodens]",
+                 unsigned int width = 1280,
+                 unsigned int height = 720,
+                 bool vsync = true)
         : Title(title), Width(width), Height(height), VSync(vsync)
     {
     }
@@ -42,9 +42,9 @@ struct WindowProps
 ///
 ///          The concrete implementation (e.g., GlfwWindow) is created via the static
 ///          factory method Create().
-/// @see WindowProps, GlfwWindow
+/// @see FWindowProps, GlfwWindow
 /// @ingroup Rendering
-class Window
+class IWindow
 {
 public:
     /// @brief Type alias for the event callback function.
@@ -52,7 +52,7 @@ public:
     ///          whenever a platform event (resize, close, key, mouse) occurs.
     using InputEventCallbackFn = std::function<void(RoutedInputEvent&)>;
 
-    virtual ~Window()
+    virtual ~IWindow()
     {
     }
 
@@ -82,8 +82,8 @@ public:
 
     /// @brief Static factory method that creates a platform-specific Window.
     /// @param props The configuration properties for the new window.
-    /// @return A raw pointer to the newly created Window. Caller takes ownership.
-    static Window* Create(const WindowProps& props = WindowProps());
+    /// @return A raw pointer to the newly created IWindow. Caller takes ownership.
+    static IWindow* Create(const FWindowProps& props = FWindowProps());
 };
 
 } // namespace Nodens

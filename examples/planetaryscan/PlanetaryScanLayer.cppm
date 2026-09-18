@@ -23,7 +23,7 @@ export struct PlanetaryScanResultEvent
 // and data.
 // -----------------------------------------------------------------------------
 
-export class PlanetaryScanLayer : public Nodens::Layer
+export class PlanetaryScanLayer : public Nodens::ILayer
 {
 public:
     PlanetaryScanLayer();
