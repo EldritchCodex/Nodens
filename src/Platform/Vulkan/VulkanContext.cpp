@@ -23,7 +23,7 @@ VulkanContext::VulkanContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHa
 
 void VulkanContext::Init()
 {
-    if (static_cast<VkInstance>(*m_Instance) != VK_NULL_HANDLE)
+    if (*m_Instance)
         return;
 
     uint32_t extensionCount{0};

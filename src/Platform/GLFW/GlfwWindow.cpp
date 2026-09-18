@@ -14,7 +14,9 @@ module Nodens.Window;
 
 import Nodens.GraphicsContext;
 import Nodens.Log;
+#if defined(ND_HAS_OPENGL)
 import Nodens.OpenGLContext;
+#endif
 #if defined(ND_HAS_VULKAN)
 import Nodens.VulkanContext;
 #endif
@@ -193,7 +195,11 @@ void GLFWWindow::Init(const FWindowProps& props)
 
     if (props.API == EGraphicsAPI::OpenGL)
     {
+#if defined(ND_HAS_OPENGL)
         m_Context = new OpenGLContext(m_Window);
+#else
+        FatalCore("Nodens was built without OpenGL support!");
+#endif
     }
     else if (props.API == EGraphicsAPI::Vulkan)
     {

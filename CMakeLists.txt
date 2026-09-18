@@ -16,6 +16,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # -----------------------------------------------------------------------------
 # Developer Options (primary touchpoints)
+option(ND_ENABLE_OPENGL "Build the OpenGL backend" ON)
+option(ND_ENABLE_VULKAN "Build the Vulkan backend when Vulkan is available" ON)
 
 # Default to building examples only when Nodens is the top-level project,
 # not when consumed via add_subdirectory().
@@ -31,22 +33,40 @@ endif()
 # -----------------------------------------------------------------------------
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-add_subdirectory(vendor/glad)
+if(ND_ENABLE_OPENGL)
+    add_subdirectory(vendor/glad)
+endif()
 include(NodensDependencies)
+
+if(ND_ENABLE_VULKAN)
+    find_package(Vulkan QUIET)
+endif()
 include(NodensImGui)
 
-find_package(Vulkan QUIET)
-if(Vulkan_FOUND)
+if(ND_ENABLE_VULKAN AND Vulkan_FOUND)
     target_sources(ImGui PRIVATE
         "${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp"
     )
     target_link_libraries(ImGui PUBLIC Vulkan::Vulkan)
 endif()
 
+set(ND_OPENGL_MODULES)
+set(ND_OPENGL_IMPLEMENTATION_UNITS)
+if(ND_ENABLE_OPENGL)
+    list(APPEND ND_OPENGL_MODULES
+        src/Platform/OpenGL/OpenGLContext.cppm
+        src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
+    )
+    list(APPEND ND_OPENGL_IMPLEMENTATION_UNITS
+        src/Platform/OpenGL/OpenGLContext.cpp
+        src/Platform/OpenGL/OpenGLImGuiRenderer.cpp
+    )
+endif()
+
 set(ND_VULKAN_MODULES)
 # Dear ImGui's Vulkan backend has a conventional implementation unit alongside its module.
 set(ND_VULKAN_IMPLEMENTATION_UNITS)
-if(Vulkan_FOUND)
+if(ND_ENABLE_VULKAN AND Vulkan_FOUND)
     if(NOT TARGET Vulkan::cppm)
         add_library(NodensVulkanCppModule STATIC)
         add_library(Vulkan::cppm ALIAS NodensVulkanCppModule)
@@ -105,8 +125,7 @@ set(ND_FRAMEWORK_IMPLEMENTATION_UNITS
     src/Nodens/ImGui/ImGuiLayer.cpp
     src/Nodens/ImGui/DefaultTheme.cpp
     # Platform
-    src/Platform/OpenGL/OpenGLContext.cpp
-    src/Platform/OpenGL/OpenGLImGuiRenderer.cpp
+    ${ND_OPENGL_IMPLEMENTATION_UNITS}
     ${ND_VULKAN_IMPLEMENTATION_UNITS}
     src/Platform/GLFW/GlfwInput.cpp
     src/Platform/GLFW/GlfwWindow.cpp
@@ -138,8 +157,7 @@ set(ND_FRAMEWORK_MODULE_INTERFACES
     src/Nodens/Rendering/GraphicsContext.cppm
     src/Nodens/Rendering/Window.cppm
     # Platform
-    src/Platform/OpenGL/OpenGLContext.cppm
-    src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
+    ${ND_OPENGL_MODULES}
     # Optional Vulkan platform context and ImGui renderer
     ${ND_VULKAN_MODULES}
     # Umbrella module
@@ -166,7 +184,10 @@ target_compile_definitions(Nodens PUBLIC
     SPDLOG_USE_STD_FORMAT
 )
 
-if(Vulkan_FOUND)
+if(ND_ENABLE_OPENGL)
+    target_compile_definitions(Nodens PRIVATE ND_HAS_OPENGL)
+endif()
+if(ND_ENABLE_VULKAN AND Vulkan_FOUND)
     target_compile_definitions(Nodens PRIVATE ND_HAS_VULKAN)
     target_link_libraries(Nodens PUBLIC Vulkan::cppm)
 endif()
@@ -174,13 +195,15 @@ endif()
 target_link_libraries(Nodens
     PUBLIC
         spdlog::spdlog
-        glad
         glfw
         ImGui
         ImPlot
         ImPlot3d
         TracyClient
 )
+if(ND_ENABLE_OPENGL)
+    target_link_libraries(Nodens PUBLIC glad)
+endif()
 
 # -----------------------------------------------------------------------------
 # Examples

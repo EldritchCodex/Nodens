@@ -11,6 +11,15 @@
 
 # ─── ImGui ───────────────────────────────────────────────────────────────────
 if(NOT TARGET ImGui)
+  set(ND_IMGUI_BACKEND_SOURCES
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+    )
+  if(ND_ENABLE_OPENGL)
+    list(APPEND ND_IMGUI_BACKEND_SOURCES
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+    )
+  endif()
+
   add_library(ImGui STATIC
         # Core
         ${imgui_SOURCE_DIR}/imgui.cpp
@@ -18,9 +27,8 @@ if(NOT TARGET ImGui)
         ${imgui_SOURCE_DIR}/imgui_tables.cpp
         ${imgui_SOURCE_DIR}/imgui_widgets.cpp
 
-        # Backends (GLFW + OpenGL3)
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+        # Backends
+        ${ND_IMGUI_BACKEND_SOURCES}
     )
 
   target_include_directories(ImGui PUBLIC
@@ -28,12 +36,12 @@ if(NOT TARGET ImGui)
         ${imgui_SOURCE_DIR}/backends
     )
 
-  target_compile_definitions(ImGui PUBLIC
-        IMGUI_IMPL_OPENGL_LOADER_GLAD
-        GLFW_INCLUDE_NONE
-    )
-
-  target_link_libraries(ImGui PUBLIC glfw glad)
+  target_compile_definitions(ImGui PUBLIC GLFW_INCLUDE_NONE)
+  target_link_libraries(ImGui PUBLIC glfw)
+  if(ND_ENABLE_OPENGL)
+    target_compile_definitions(ImGui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
+    target_link_libraries(ImGui PUBLIC glad)
+  endif()
 
   set_target_properties(ImGui PROPERTIES CXX_MODULE_STD OFF)
 

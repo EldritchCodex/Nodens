@@ -16,7 +16,9 @@ import Nodens.Log;
 import Nodens.Window;
 import Nodens.ImGuiRenderer;
 import Nodens.ImGuiLayer;
+#if defined(ND_HAS_OPENGL)
 import Nodens.OpenGLImGuiRenderer;
+#endif
 #if defined(ND_HAS_VULKAN)
 import Nodens.VulkanContext;
 import Nodens.VulkanImGuiRenderer;
@@ -56,12 +58,16 @@ Application::Application(const FApplicationSpecification& specification)
     if (m_Specification.EnableGUI && !m_Specification.IsHeadless)
     {
         std::shared_ptr<ImGuiRenderer> imguiRenderer;
+        bool rendererCreated{false};
+#if defined(ND_HAS_OPENGL)
         if (m_Specification.GraphicsAPI == EGraphicsAPI::OpenGL)
         {
             imguiRenderer = std::make_shared<OpenGLImGuiRenderer>();
+            rendererCreated = true;
         }
+#endif
 #if defined(ND_HAS_VULKAN)
-        else if (m_Specification.GraphicsAPI == EGraphicsAPI::Vulkan)
+        if (!rendererCreated && m_Specification.GraphicsAPI == EGraphicsAPI::Vulkan)
         {
             // Borrow the window's initialized context; the ImGui backend must not create a second
             // device.
@@ -69,12 +75,11 @@ Application::Application(const FApplicationSpecification& specification)
             if (!context)
                 FatalCore("Vulkan window has no Vulkan graphics context!");
             imguiRenderer = std::make_shared<VulkanImGuiRenderer>(*context);
+            rendererCreated = true;
         }
 #endif
-        else
-        {
+        if (!rendererCreated)
             FatalCore("ImGui renderer is not available for this graphics API!");
-        }
 
         m_ImGuiLayer = new ImGuiLayer{imguiRenderer, m_Specification.DefaultTheme};
         m_ImGuiLayer->BlockEvents(m_Specification.ShouldImGuiBlockInputs);
