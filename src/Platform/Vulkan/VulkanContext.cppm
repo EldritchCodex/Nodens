@@ -1,13 +1,15 @@
 /// @file VulkanContext.cppm
-/// @brief Nodens-owned Vulkan instance, device, surface, and physical-device context.
-/// @details Nodens owns loader, instance, surface, physical-device selection, and
-///          logical-device creation. Swapchain and frame scheduling follow later.
+/// @brief Nodens-owned Vulkan instance, device, surface, and swapchain context.
+/// @details Nodens owns loader, instance, surface, physical-device selection,
+///          logical-device creation, and swapchain resources. Frame scheduling
+///          follows later.
 /// @ingroup Platform
 
 module;
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <cassert>
 
 export module Nodens.VulkanContext;
 
@@ -19,8 +21,8 @@ export import vulkan;
 export namespace Nodens
 {
 /// @brief Vulkan context shared by Nodens and an attached renderer.
-/// @details Nodens owns the Vulkan instance and surface. Consumers borrow these
-///          handles and must not destroy them. The context requires a GLFW window
+/// @details Nodens owns Vulkan platform and swapchain resources. Consumers borrow
+///          these handles and must not destroy them. The context requires a GLFW window
 ///          created with `GLFW_NO_API`.
 /// @ingroup Platform
 class VulkanContext : public IGraphicsContext
@@ -72,6 +74,7 @@ public:
         m_Surface = vk::raii::SurfaceKHR{m_Instance, rawSurface};
         PickPhysicalDevice();
         CreateLogicalDevice();
+        CreateSwapchain();
     }
 
     /// @brief Does nothing until Nodens owns Vulkan frame submission.
@@ -132,6 +135,48 @@ public:
     uint32_t GetGraphicsQueueFamilyIndex() const
     {
         return m_GraphicsQueueFamilyIndex;
+    }
+
+    /// @brief Returns the Nodens-owned swapchain.
+    /// @return Borrowed reference to the swapchain.
+    const vk::raii::SwapchainKHR& GetSwapchainRAII() const
+    {
+        return m_Swapchain;
+    }
+
+    /// @brief Returns swapchain image handles owned by Nodens.
+    /// @return Borrowed reference to swapchain images.
+    const std::vector<vk::Image>& GetSwapchainImages() const
+    {
+        return m_SwapchainImages;
+    }
+
+    /// @brief Returns swapchain image views owned by Nodens.
+    /// @return Borrowed reference to swapchain image views.
+    const std::vector<vk::raii::ImageView>& GetSwapchainImageViews() const
+    {
+        return m_SwapchainImageViews;
+    }
+
+    /// @brief Returns current swapchain extent.
+    vk::Extent2D GetSwapchainExtent() const
+    {
+        return m_SwapchainExtent;
+    }
+
+    /// @brief Returns current swapchain surface format.
+    vk::SurfaceFormatKHR GetSwapchainSurfaceFormat() const
+    {
+        return m_SwapchainSurfaceFormat;
+    }
+
+    /// @brief Recreates swapchain resources after a surface change.
+    void RecreateSwapchain()
+    {
+        m_Device.waitIdle();
+        m_SwapchainImageViews.clear();
+        m_Swapchain = nullptr;
+        CreateSwapchain();
     }
 
 private:
@@ -200,6 +245,105 @@ private:
         CoreLogger().info("  Driver Version: {}", properties.driverVersion);
     }
 
+    /// @brief Prefers sRGB color; falls back to first surface format.
+    vk::SurfaceFormatKHR
+    ChooseSwapchainSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats) const
+    {
+        assert(!availableFormats.empty());
+        const auto formatIterator =
+            std::ranges::find_if(availableFormats,
+                                 [](const vk::SurfaceFormatKHR& format)
+                                 {
+                                     return format.format == vk::Format::eB8G8R8A8Srgb &&
+                                            format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear;
+                                 });
+        return formatIterator != availableFormats.end() ? *formatIterator
+                                                        : availableFormats.front();
+    }
+
+    /// @brief Prefers mailbox presentation and falls back to FIFO.
+    vk::PresentModeKHR
+    ChooseSwapchainPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes) const
+    {
+        assert(std::ranges::any_of(availablePresentModes,
+                                   [](vk::PresentModeKHR mode)
+                                   { return mode == vk::PresentModeKHR::eFifo; }));
+        return std::ranges::any_of(availablePresentModes,
+                                   [](vk::PresentModeKHR mode)
+                                   { return mode == vk::PresentModeKHR::eMailbox; })
+                   ? vk::PresentModeKHR::eMailbox
+                   : vk::PresentModeKHR::eFifo;
+    }
+
+    /// @brief Clamps framebuffer size to surface limits when needed.
+    vk::Extent2D ChooseSwapchainExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const
+    {
+        if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+            return capabilities.currentExtent;
+
+        int width{0};
+        int height{0};
+        glfwGetFramebufferSize(m_WindowHandle, &width, &height);
+        return {.width = std::clamp<uint32_t>(
+                    width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width),
+                .height = std::clamp<uint32_t>(height,
+                                               capabilities.minImageExtent.height,
+                                               capabilities.maxImageExtent.height)};
+    }
+
+    /// @brief Chooses at least three swapchain images within surface limits.
+    uint32_t ChooseSwapchainImageCount(const vk::SurfaceCapabilitiesKHR& capabilities) const
+    {
+        auto imageCount = std::max(3u, capabilities.minImageCount);
+        if (capabilities.maxImageCount != 0 && capabilities.maxImageCount < imageCount)
+            imageCount = capabilities.maxImageCount;
+        return imageCount;
+    }
+
+    /// @brief Creates swapchain and image views for the current surface.
+    void CreateSwapchain()
+    {
+        const auto capabilities = m_PhysicalDevice.getSurfaceCapabilitiesKHR(*m_Surface);
+        m_SwapchainExtent = ChooseSwapchainExtent(capabilities);
+        const auto formats = m_PhysicalDevice.getSurfaceFormatsKHR(*m_Surface);
+        m_SwapchainSurfaceFormat = ChooseSwapchainSurfaceFormat(formats);
+        const auto presentModes = m_PhysicalDevice.getSurfacePresentModesKHR(*m_Surface);
+
+        const vk::SwapchainCreateInfoKHR createInfo{
+            .surface = *m_Surface,
+            .minImageCount = ChooseSwapchainImageCount(capabilities),
+            .imageFormat = m_SwapchainSurfaceFormat.format,
+            .imageColorSpace = m_SwapchainSurfaceFormat.colorSpace,
+            .imageExtent = m_SwapchainExtent,
+            .imageArrayLayers = 1,
+            .imageUsage = vk::ImageUsageFlagBits::eColorAttachment,
+            .imageSharingMode = vk::SharingMode::eExclusive,
+            .preTransform = capabilities.currentTransform,
+            .compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque,
+            .presentMode = ChooseSwapchainPresentMode(presentModes),
+            .clipped = true,
+        };
+
+        m_Swapchain = vk::raii::SwapchainKHR{m_Device, createInfo};
+        m_SwapchainImages = m_Swapchain.getImages();
+
+        const vk::ImageViewCreateInfo imageViewInfo{
+            .viewType = vk::ImageViewType::e2D,
+            .format = m_SwapchainSurfaceFormat.format,
+            .subresourceRange = {.aspectMask = vk::ImageAspectFlagBits::eColor,
+                                 .baseMipLevel = 0,
+                                 .levelCount = 1,
+                                 .baseArrayLayer = 0,
+                                 .layerCount = 1},
+        };
+        for (const auto image : m_SwapchainImages)
+        {
+            auto viewInfo = imageViewInfo;
+            viewInfo.image = image;
+            m_SwapchainImageViews.emplace_back(m_Device, viewInfo);
+        }
+    }
+
     /// @brief Creates logical device with one graphics-and-present queue.
     void CreateLogicalDevice()
     {
@@ -254,5 +398,10 @@ private:
     vk::raii::Device m_Device{nullptr};                 ///< Nodens-owned logical device.
     vk::raii::Queue m_GraphicsQueue{nullptr};           ///< Graphics and presentation queue.
     uint32_t m_GraphicsQueueFamilyIndex{};              ///< Graphics and presentation queue family.
+    vk::raii::SwapchainKHR m_Swapchain{nullptr};        ///< Nodens-owned presentation swapchain.
+    vk::Extent2D m_SwapchainExtent{};                   ///< Current swapchain dimensions.
+    vk::SurfaceFormatKHR m_SwapchainSurfaceFormat{};    ///< Current swapchain format.
+    std::vector<vk::Image> m_SwapchainImages{};         ///< Swapchain image handles.
+    std::vector<vk::raii::ImageView> m_SwapchainImageViews{}; ///< Nodens-owned image views.
 };
 } // namespace Nodens
