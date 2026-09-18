@@ -76,12 +76,48 @@ public:
         PickPhysicalDevice();
         CreateLogicalDevice();
         CreateSwapchain();
+        CreateCommandResources();
         CreateFrameSynchronization();
     }
 
-    /// @brief Does nothing until Nodens owns Vulkan frame submission.
+    /// @brief Completes, submits, and presents the active frame.
     void Present() override
     {
+        if (!m_FrameStarted)
+            return;
+
+        auto& commandBuffer = m_CommandBuffers[m_CurrentFrameIndex];
+        commandBuffer.end();
+        const vk::CommandBuffer rawCommandBuffer = *commandBuffer;
+
+        const vk::PipelineStageFlags waitStage{vk::PipelineStageFlagBits::eColorAttachmentOutput};
+        const vk::SubmitInfo submitInfo{
+            .waitSemaphoreCount = 1,
+            .pWaitSemaphores = &*m_PresentCompleteSemaphores[m_CurrentFrameIndex],
+            .pWaitDstStageMask = &waitStage,
+            .commandBufferCount = 1,
+            .pCommandBuffers = &rawCommandBuffer,
+            .signalSemaphoreCount = 1,
+            .pSignalSemaphores = &*m_RenderFinishedSemaphores[m_CurrentImageIndex],
+        };
+        m_GraphicsQueue.submit(submitInfo, *m_InFlightFences[m_CurrentFrameIndex]);
+
+        const vk::PresentInfoKHR presentInfo{
+            .waitSemaphoreCount = 1,
+            .pWaitSemaphores = &*m_RenderFinishedSemaphores[m_CurrentImageIndex],
+            .swapchainCount = 1,
+            .pSwapchains = &*m_Swapchain,
+            .pImageIndices = &m_CurrentImageIndex,
+        };
+        const auto result = m_GraphicsQueue.presentKHR(presentInfo);
+        m_FrameStarted = false;
+
+        if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR)
+            RecreateSwapchain();
+        else if (result != vk::Result::eSuccess)
+            throw std::runtime_error{"Nodens failed to present swapchain image"};
+        else
+            m_CurrentFrameIndex = (m_CurrentFrameIndex + 1) % FramesInFlight;
     }
 
     /// @brief Returns the Vulkan instance owned by Nodens.
@@ -195,6 +231,13 @@ public:
         return m_CurrentFrameIndex;
     }
 
+    /// @brief Returns command buffer receiving commands for the active frame.
+    /// @return Borrowed reference to the active RAII command buffer.
+    const vk::raii::CommandBuffer& GetActiveCommandBuffer() const
+    {
+        return m_CommandBuffers[m_CurrentFrameIndex];
+    }
+
     /// @brief Waits until all Nodens-owned Vulkan work completes.
     void WaitIdle() const
     {
@@ -230,48 +273,10 @@ public:
 
         m_Device.resetFences(*m_InFlightFences[m_CurrentFrameIndex]);
         m_CurrentImageIndex = imageIndex;
+        m_CommandBuffers[m_CurrentFrameIndex].reset();
+        m_CommandBuffers[m_CurrentFrameIndex].begin({});
         m_FrameStarted = true;
         return imageIndex;
-    }
-
-    /// @brief Submits a recorded frame and presents its swapchain image.
-    /// @param commandBuffer Command buffer recorded by the attached renderer.
-    /// @param imageIndex Image acquired by BeginFrame().
-    void EndFrame(vk::CommandBuffer commandBuffer, uint32_t imageIndex)
-    {
-        if (!m_FrameStarted)
-            throw std::logic_error{"VulkanContext::EndFrame called without BeginFrame"};
-        if (imageIndex != m_CurrentImageIndex)
-            throw std::logic_error{"VulkanContext::EndFrame image index does not match BeginFrame"};
-
-        const vk::PipelineStageFlags waitStage{vk::PipelineStageFlagBits::eColorAttachmentOutput};
-        const vk::SubmitInfo submitInfo{
-            .waitSemaphoreCount = 1,
-            .pWaitSemaphores = &*m_PresentCompleteSemaphores[m_CurrentFrameIndex],
-            .pWaitDstStageMask = &waitStage,
-            .commandBufferCount = 1,
-            .pCommandBuffers = &commandBuffer,
-            .signalSemaphoreCount = 1,
-            .pSignalSemaphores = &*m_RenderFinishedSemaphores[imageIndex],
-        };
-        m_GraphicsQueue.submit(submitInfo, *m_InFlightFences[m_CurrentFrameIndex]);
-
-        const vk::PresentInfoKHR presentInfo{
-            .waitSemaphoreCount = 1,
-            .pWaitSemaphores = &*m_RenderFinishedSemaphores[imageIndex],
-            .swapchainCount = 1,
-            .pSwapchains = &*m_Swapchain,
-            .pImageIndices = &imageIndex,
-        };
-        const auto result = m_GraphicsQueue.presentKHR(presentInfo);
-        m_FrameStarted = false;
-
-        if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR)
-            RecreateSwapchain();
-        else if (result != vk::Result::eSuccess)
-            throw std::runtime_error{"Nodens failed to present swapchain image"};
-        else
-            m_CurrentFrameIndex = (m_CurrentFrameIndex + 1) % FramesInFlight;
     }
 
 private:
@@ -393,6 +398,23 @@ private:
         if (capabilities.maxImageCount != 0 && capabilities.maxImageCount < imageCount)
             imageCount = capabilities.maxImageCount;
         return imageCount;
+    }
+
+    /// @brief Creates command pool and one command buffer per frame in flight.
+    void CreateCommandResources()
+    {
+        const vk::CommandPoolCreateInfo poolCreateInfo{
+            .flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+            .queueFamilyIndex = m_GraphicsQueueFamilyIndex,
+        };
+        m_CommandPool = vk::raii::CommandPool{m_Device, poolCreateInfo};
+
+        const vk::CommandBufferAllocateInfo allocateInfo{
+            .commandPool = *m_CommandPool,
+            .level = vk::CommandBufferLevel::ePrimary,
+            .commandBufferCount = FramesInFlight,
+        };
+        m_CommandBuffers = vk::raii::CommandBuffers{m_Device, allocateInfo};
     }
 
     /// @brief Creates synchronization objects for each frame in flight.
@@ -517,7 +539,10 @@ private:
     vk::Extent2D m_SwapchainExtent{};                   ///< Current swapchain dimensions.
     vk::SurfaceFormatKHR m_SwapchainSurfaceFormat{};    ///< Current swapchain format.
     std::vector<vk::Image> m_SwapchainImages{};         ///< Swapchain image handles.
-    std::vector<vk::raii::ImageView> m_SwapchainImageViews{};       ///< Nodens-owned image views.
+    std::vector<vk::raii::ImageView> m_SwapchainImageViews{}; ///< Nodens-owned image views.
+    vk::raii::CommandPool m_CommandPool{nullptr};             ///< Nodens-owned command pool.
+    std::vector<vk::raii::CommandBuffer>
+        m_CommandBuffers{}; ///< Nodens-owned frame command buffers.
     std::vector<vk::raii::Semaphore> m_PresentCompleteSemaphores{}; ///< Image-acquire signals.
     std::vector<vk::raii::Semaphore> m_RenderFinishedSemaphores{};  ///< Render-complete signals.
     std::vector<vk::raii::Fence> m_InFlightFences{};                ///< CPU/GPU frame fences.
