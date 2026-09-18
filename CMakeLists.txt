@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "f35a9ac6-8463-4d38-8eec-5d6008153e7d")
 project(Nodens VERSION 0.1.0 LANGUAGES CXX)
+
 # -----------------------------------------------------------------------------
 # Core Build Settings
 # -----------------------------------------------------------------------------
@@ -27,37 +28,36 @@ else()
   option(ND_BUILD_EXAMPLES "Build the Nodens example applications" OFF)
 endif()
 
-
 # -----------------------------------------------------------------------------
 # Dependencies
 # -----------------------------------------------------------------------------
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if(ND_ENABLE_OPENGL)
-    add_subdirectory(vendor/glad)
+  add_subdirectory(vendor/glad)
 endif()
 include(NodensDependencies)
 
 if(ND_ENABLE_VULKAN)
-    find_package(Vulkan QUIET)
+  find_package(Vulkan QUIET)
 endif()
 include(NodensImGui)
 
 if(ND_ENABLE_VULKAN AND Vulkan_FOUND)
-    target_sources(ImGui PRIVATE
+  target_sources(ImGui PRIVATE
         "${imgui_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp"
     )
-    target_link_libraries(ImGui PUBLIC Vulkan::Vulkan)
+  target_link_libraries(ImGui PUBLIC Vulkan::Vulkan)
 endif()
 
 set(ND_OPENGL_MODULES)
 set(ND_OPENGL_IMPLEMENTATION_UNITS)
 if(ND_ENABLE_OPENGL)
-    list(APPEND ND_OPENGL_MODULES
+  list(APPEND ND_OPENGL_MODULES
         src/Platform/OpenGL/OpenGLContext.cppm
         src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
     )
-    list(APPEND ND_OPENGL_IMPLEMENTATION_UNITS
+  list(APPEND ND_OPENGL_IMPLEMENTATION_UNITS
         src/Platform/OpenGL/OpenGLContext.cpp
         src/Platform/OpenGL/OpenGLImGuiRenderer.cpp
     )
@@ -67,42 +67,42 @@ set(ND_VULKAN_MODULES)
 # Dear ImGui's Vulkan backend has a conventional implementation unit alongside its module.
 set(ND_VULKAN_IMPLEMENTATION_UNITS)
 if(ND_ENABLE_VULKAN AND Vulkan_FOUND)
-    if(NOT TARGET Vulkan::cppm)
-        add_library(NodensVulkanCppModule STATIC)
-        add_library(Vulkan::cppm ALIAS NodensVulkanCppModule)
+  if(NOT TARGET Vulkan::cppm)
+    add_library(NodensVulkanCppModule STATIC)
+    add_library(Vulkan::cppm ALIAS NodensVulkanCppModule)
 
-        target_compile_definitions(NodensVulkanCppModule PUBLIC
+    target_compile_definitions(NodensVulkanCppModule PUBLIC
             VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1
             VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1
             VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING=1
         )
-        target_include_directories(NodensVulkanCppModule PRIVATE
+    target_include_directories(NodensVulkanCppModule PRIVATE
             "${Vulkan_INCLUDE_DIR}"
         )
-        target_link_libraries(NodensVulkanCppModule PUBLIC Vulkan::Vulkan)
-        set_target_properties(NodensVulkanCppModule PROPERTIES
+    target_link_libraries(NodensVulkanCppModule PUBLIC Vulkan::Vulkan)
+    set_target_properties(NodensVulkanCppModule PROPERTIES
             CXX_STANDARD 23
             CXX_STANDARD_REQUIRED ON
         )
-        target_sources(NodensVulkanCppModule PUBLIC
+    target_sources(NodensVulkanCppModule PUBLIC
             FILE_SET vulkan_modules TYPE CXX_MODULES
             BASE_DIRS "${Vulkan_INCLUDE_DIR}"
             FILES "${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm"
         )
 
-        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-            target_compile_options(NodensVulkanCppModule PRIVATE
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      target_compile_options(NodensVulkanCppModule PRIVATE
                 -Wno-reserved-module-identifier
                 -Wno-include-angled-in-module-purview
             )
-        endif()
     endif()
+  endif()
 
-    list(APPEND ND_VULKAN_MODULES
+  list(APPEND ND_VULKAN_MODULES
         src/Platform/Vulkan/VulkanContext.cppm
         src/Platform/Vulkan/VulkanImGuiRenderer.cppm
     )
-    list(APPEND ND_VULKAN_IMPLEMENTATION_UNITS
+  list(APPEND ND_VULKAN_IMPLEMENTATION_UNITS
         src/Platform/Vulkan/VulkanContext.cpp
         src/Platform/Vulkan/VulkanImGuiRenderer.cpp
     )
@@ -185,11 +185,11 @@ target_compile_definitions(Nodens PUBLIC
 )
 
 if(ND_ENABLE_OPENGL)
-    target_compile_definitions(Nodens PRIVATE ND_HAS_OPENGL)
+  target_compile_definitions(Nodens PRIVATE ND_HAS_OPENGL)
 endif()
 if(ND_ENABLE_VULKAN AND Vulkan_FOUND)
-    target_compile_definitions(Nodens PRIVATE ND_HAS_VULKAN)
-    target_link_libraries(Nodens PUBLIC Vulkan::cppm)
+  target_compile_definitions(Nodens PRIVATE ND_HAS_VULKAN)
+  target_link_libraries(Nodens PUBLIC Vulkan::cppm)
 endif()
 
 target_link_libraries(Nodens
@@ -202,7 +202,7 @@ target_link_libraries(Nodens
         TracyClient
 )
 if(ND_ENABLE_OPENGL)
-    target_link_libraries(Nodens PUBLIC glad)
+  target_link_libraries(Nodens PUBLIC glad)
 endif()
 
 # -----------------------------------------------------------------------------
