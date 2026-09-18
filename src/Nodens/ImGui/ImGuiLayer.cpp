@@ -107,9 +107,9 @@ void ImGuiLayer::End()
 
     ImGuiIO& io = ImGui::GetIO();
     Application& app = Application::Get();
-    io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
-    // Rendering
+    // Keep DisplaySize in GLFW's logical coordinate space; Vulkan supplies the physical framebuffer
+    // scale in its renderer so mouse coordinates and rasterization remain consistent.
     ImGui::Render();
 
     if (m_Renderer)

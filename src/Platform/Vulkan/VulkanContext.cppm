@@ -86,6 +86,7 @@ public:
         if (!m_FrameStarted)
             return;
 
+        TransitionActiveImageToPresent();
         auto& commandBuffer = m_CommandBuffers[m_CurrentFrameIndex];
         commandBuffer.end();
         const vk::CommandBuffer rawCommandBuffer = *commandBuffer;
@@ -231,11 +232,50 @@ public:
         return m_CurrentFrameIndex;
     }
 
+    /// @brief Returns the swapchain image acquired for the active frame.
+    uint32_t GetCurrentImageIndex() const
+    {
+        return m_CurrentImageIndex;
+    }
+
+    /// @brief Reports whether BeginFrame() started a frame for recording.
+    bool IsFrameActive() const
+    {
+        return m_FrameStarted;
+    }
+
     /// @brief Returns command buffer receiving commands for the active frame.
     /// @return Borrowed reference to the active RAII command buffer.
     const vk::raii::CommandBuffer& GetActiveCommandBuffer() const
     {
         return m_CommandBuffers[m_CurrentFrameIndex];
+    }
+
+    /// @brief Transitions the active swapchain image to the presentation layout.
+    /// @details Called by Present() after all renderers finish recording. Renderers can
+    ///          therefore append work after Nyar's scene pass without ending the frame.
+    void TransitionActiveImageToPresent()
+    {
+        const vk::ImageMemoryBarrier2 barrier{
+            .srcStageMask = vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+            .srcAccessMask = vk::AccessFlagBits2::eColorAttachmentWrite,
+            .dstStageMask = vk::PipelineStageFlagBits2::eBottomOfPipe,
+            .dstAccessMask = {},
+            .oldLayout = vk::ImageLayout::eColorAttachmentOptimal,
+            .newLayout = vk::ImageLayout::ePresentSrcKHR,
+            .srcQueueFamilyIndex = vk::QueueFamilyIgnored,
+            .dstQueueFamilyIndex = vk::QueueFamilyIgnored,
+            .image = m_SwapchainImages[m_CurrentImageIndex],
+            .subresourceRange = {.aspectMask = vk::ImageAspectFlagBits::eColor,
+                                 .baseMipLevel = 0,
+                                 .levelCount = 1,
+                                 .baseArrayLayer = 0,
+                                 .layerCount = 1},
+        };
+        const vk::DependencyInfo dependencyInfo{.imageMemoryBarrierCount = 1,
+                                                .pImageMemoryBarriers = &barrier};
+        m_CommandBuffers[m_CurrentFrameIndex].pipelineBarrier2(dependencyInfo);
+        m_SwapchainImageLayouts[m_CurrentImageIndex] = vk::ImageLayout::ePresentSrcKHR;
     }
 
     /// @brief Waits until all Nodens-owned Vulkan work completes.
@@ -253,6 +293,16 @@ public:
         glfwGetFramebufferSize(m_WindowHandle, &framebufferWidth, &framebufferHeight);
         if (framebufferWidth == 0 || framebufferHeight == 0)
             return std::nullopt;
+
+        // Recreate before recording when a resize leaves the swapchain extent stale.
+        const auto surfaceCapabilities = m_PhysicalDevice.getSurfaceCapabilitiesKHR(*m_Surface);
+        const auto expectedExtent = ChooseSwapchainExtent(surfaceCapabilities);
+        if (expectedExtent.width != m_SwapchainExtent.width ||
+            expectedExtent.height != m_SwapchainExtent.height)
+        {
+            RecreateSwapchain();
+            return std::nullopt;
+        }
 
         const auto fenceResult = m_Device.waitForFences(
             *m_InFlightFences[m_CurrentFrameIndex], vk::True, std::numeric_limits<uint64_t>::max());
@@ -275,11 +325,40 @@ public:
         m_CurrentImageIndex = imageIndex;
         m_CommandBuffers[m_CurrentFrameIndex].reset();
         m_CommandBuffers[m_CurrentFrameIndex].begin({});
+        TransitionActiveImageToColorAttachment();
         m_FrameStarted = true;
         return imageIndex;
     }
 
 private:
+    /// @brief Transitions the acquired swapchain image for color rendering.
+    /// @details The acquired image can come from any swapchain slot, so its tracked previous
+    ///          layout is used instead of assuming every acquisition starts undefined.
+    void TransitionActiveImageToColorAttachment()
+    {
+        const vk::ImageMemoryBarrier2 barrier{
+            .srcStageMask = vk::PipelineStageFlagBits2::eBottomOfPipe,
+            .srcAccessMask = {},
+            .dstStageMask = vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+            .dstAccessMask = vk::AccessFlagBits2::eColorAttachmentRead |
+                             vk::AccessFlagBits2::eColorAttachmentWrite,
+            .oldLayout = m_SwapchainImageLayouts[m_CurrentImageIndex],
+            .newLayout = vk::ImageLayout::eColorAttachmentOptimal,
+            .srcQueueFamilyIndex = vk::QueueFamilyIgnored,
+            .dstQueueFamilyIndex = vk::QueueFamilyIgnored,
+            .image = m_SwapchainImages[m_CurrentImageIndex],
+            .subresourceRange = {.aspectMask = vk::ImageAspectFlagBits::eColor,
+                                 .baseMipLevel = 0,
+                                 .levelCount = 1,
+                                 .baseArrayLayer = 0,
+                                 .layerCount = 1},
+        };
+        const vk::DependencyInfo dependencyInfo{.imageMemoryBarrierCount = 1,
+                                                .pImageMemoryBarriers = &barrier};
+        m_CommandBuffers[m_CurrentFrameIndex].pipelineBarrier2(dependencyInfo);
+        m_SwapchainImageLayouts[m_CurrentImageIndex] = vk::ImageLayout::eColorAttachmentOptimal;
+    }
+
     /// @brief Checks whether a physical device meets current Nyar requirements.
     bool IsDeviceSuitable(const vk::raii::PhysicalDevice& physicalDevice) const
     {
@@ -345,7 +424,7 @@ private:
         CoreLogger().info("  Driver Version: {}", properties.driverVersion);
     }
 
-    /// @brief Prefers sRGB color; falls back to first surface format.
+    /// @brief Prefers an UNORM color format for Dear ImGui's linear shader output.
     vk::SurfaceFormatKHR
     ChooseSwapchainSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats) const
     {
@@ -354,7 +433,7 @@ private:
             std::ranges::find_if(availableFormats,
                                  [](const vk::SurfaceFormatKHR& format)
                                  {
-                                     return format.format == vk::Format::eB8G8R8A8Srgb &&
+                                     return format.format == vk::Format::eB8G8R8A8Unorm &&
                                             format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear;
                                  });
         return formatIterator != availableFormats.end() ? *formatIterator
@@ -463,6 +542,8 @@ private:
 
         m_Swapchain = vk::raii::SwapchainKHR{m_Device, createInfo};
         m_SwapchainImages = m_Swapchain.getImages();
+        // A recreated swapchain has new images, so reset layout tracking with each image set.
+        m_SwapchainImageLayouts.assign(m_SwapchainImages.size(), vk::ImageLayout::eUndefined);
 
         const vk::ImageViewCreateInfo imageViewInfo{
             .viewType = vk::ImageViewType::e2D,
@@ -539,6 +620,7 @@ private:
     vk::Extent2D m_SwapchainExtent{};                   ///< Current swapchain dimensions.
     vk::SurfaceFormatKHR m_SwapchainSurfaceFormat{};    ///< Current swapchain format.
     std::vector<vk::Image> m_SwapchainImages{};         ///< Swapchain image handles.
+    std::vector<vk::ImageLayout> m_SwapchainImageLayouts{}; ///< Current layout per swapchain image.
     std::vector<vk::raii::ImageView> m_SwapchainImageViews{}; ///< Nodens-owned image views.
     vk::raii::CommandPool m_CommandPool{nullptr};             ///< Nodens-owned command pool.
     std::vector<vk::raii::CommandBuffer>

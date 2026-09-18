@@ -44,6 +44,8 @@ if(Vulkan_FOUND)
 endif()
 
 set(ND_VULKAN_MODULES)
+# Dear ImGui's Vulkan backend has a conventional implementation unit alongside its module.
+set(ND_VULKAN_IMPLEMENTATION_UNITS)
 if(Vulkan_FOUND)
     if(NOT TARGET Vulkan::cppm)
         add_library(NodensVulkanCppModule STATIC)
@@ -76,7 +78,13 @@ if(Vulkan_FOUND)
         endif()
     endif()
 
-    list(APPEND ND_VULKAN_MODULES src/Platform/Vulkan/VulkanContext.cppm)
+    list(APPEND ND_VULKAN_MODULES
+        src/Platform/Vulkan/VulkanContext.cppm
+        src/Platform/Vulkan/VulkanImGuiRenderer.cppm
+    )
+    list(APPEND ND_VULKAN_IMPLEMENTATION_UNITS
+        src/Platform/Vulkan/VulkanImGuiRenderer.cpp
+    )
 endif()
 
 # -----------------------------------------------------------------------------
@@ -98,6 +106,7 @@ set(ND_FRAMEWORK_IMPLEMENTATION_UNITS
     # Platform
     src/Platform/OpenGL/OpenGLContext.cpp
     src/Platform/OpenGL/OpenGLImGuiRenderer.cpp
+    ${ND_VULKAN_IMPLEMENTATION_UNITS}
     src/Platform/GLFW/GlfwInput.cpp
     src/Platform/GLFW/GlfwWindow.cpp
 )
@@ -130,7 +139,7 @@ set(ND_FRAMEWORK_MODULE_INTERFACES
     # Platform
     src/Platform/OpenGL/OpenGLContext.cppm
     src/Platform/OpenGL/OpenGLImGuiRenderer.cppm
-    # Optional Vulkan platform context
+    # Optional Vulkan platform context and ImGui renderer
     ${ND_VULKAN_MODULES}
     # Umbrella module
     src/Nodens/nodens.cppm

@@ -17,6 +17,10 @@ import Nodens.Window;
 import Nodens.ImGuiRenderer;
 import Nodens.ImGuiLayer;
 import Nodens.OpenGLImGuiRenderer;
+#if defined(ND_HAS_VULKAN)
+import Nodens.VulkanContext;
+import Nodens.VulkanImGuiRenderer;
+#endif
 import std;
 
 namespace Nodens
@@ -51,10 +55,27 @@ Application::Application(const FApplicationSpecification& specification)
 
     if (m_Specification.EnableGUI && !m_Specification.IsHeadless)
     {
-        if (m_Specification.GraphicsAPI != EGraphicsAPI::OpenGL)
-            FatalCore("ImGui renderer is not available for this graphics API yet!");
+        std::shared_ptr<ImGuiRenderer> imguiRenderer;
+        if (m_Specification.GraphicsAPI == EGraphicsAPI::OpenGL)
+        {
+            imguiRenderer = std::make_shared<OpenGLImGuiRenderer>();
+        }
+#if defined(ND_HAS_VULKAN)
+        else if (m_Specification.GraphicsAPI == EGraphicsAPI::Vulkan)
+        {
+            // Borrow the window's initialized context; the ImGui backend must not create a second
+            // device.
+            auto* context = dynamic_cast<VulkanContext*>(m_Window->GetGraphicsContext());
+            if (!context)
+                FatalCore("Vulkan window has no Vulkan graphics context!");
+            imguiRenderer = std::make_shared<VulkanImGuiRenderer>(*context);
+        }
+#endif
+        else
+        {
+            FatalCore("ImGui renderer is not available for this graphics API!");
+        }
 
-        std::shared_ptr<ImGuiRenderer> imguiRenderer = std::make_shared<OpenGLImGuiRenderer>();
         m_ImGuiLayer = new ImGuiLayer{imguiRenderer, m_Specification.DefaultTheme};
         m_ImGuiLayer->BlockEvents(m_Specification.ShouldImGuiBlockInputs);
         PushOverlay(m_ImGuiLayer);
@@ -123,6 +144,17 @@ void Application::Run()
 
         // Flush queued non-input events
         m_EventBus->Flush();
+
+#if defined(ND_HAS_VULKAN)
+        if (m_Specification.GraphicsAPI == EGraphicsAPI::Vulkan)
+        {
+            // Acquire once before layers run so Nyar and ImGui append to the same command buffer.
+            auto* context = dynamic_cast<VulkanContext*>(m_Window->GetGraphicsContext());
+            if (!context)
+                FatalCore("Vulkan window has no Vulkan graphics context!");
+            context->BeginFrame();
+        }
+#endif
 
         // Update each layer
         for (ILayer* layer : *m_LayerStack)
