@@ -13,7 +13,7 @@ export module Nodens.VulkanContext;
 
 import Nodens.GraphicsContext;
 import std;
-import vulkan;
+export import vulkan;
 
 export namespace Nodens
 {
