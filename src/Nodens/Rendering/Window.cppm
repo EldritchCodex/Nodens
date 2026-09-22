@@ -27,26 +27,11 @@ enum class EGraphicsAPI
 /// @ingroup Rendering
 struct FWindowProps
 {
-    std::string Title;   ///< The window title displayed in the title bar.
-    unsigned int Width;  ///< Initial window width in pixels.
-    unsigned int Height; ///< Initial window height in pixels.
-    bool VSync;          ///< Whether vertical synchronization is enabled.
-    EGraphicsAPI API;    ///< The graphics API to use for rendering.
-
-    /// @brief Constructs window properties with optional overrides.
-    /// @param title  Window title.
-    /// @param width  Window width in pixels.
-    /// @param height Window height in pixels.
-    /// @param vsync  Enable VSync.
-    /// @param api    Graphics/client API requested by the window.
-    FWindowProps(const std::string& title = "[Nodens]",
-                 unsigned int width = 1280,
-                 unsigned int height = 720,
-                 bool vsync = true,
-                 EGraphicsAPI api = EGraphicsAPI::OpenGL)
-        : Title(title), Width(width), Height(height), VSync(vsync), API(api)
-    {
-    }
+    std::string Title{"Nodens"};            ///< The window title displayed in the title bar.
+    unsigned int Width{1280};               ///< Initial window width in pixels.
+    unsigned int Height{720};               ///< Initial window height in pixels.
+    bool VSync{false};                      ///< Whether vertical synchronization is enabled.
+    EGraphicsAPI API{EGraphicsAPI::OpenGL}; ///< The graphics API to use for rendering.
 };
 
 /// @brief Abstract base class for a platform window.

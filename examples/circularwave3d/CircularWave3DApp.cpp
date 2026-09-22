@@ -16,7 +16,6 @@ public:
         .WindowHeight = 600,
         .EnableGUI = true,
         .IsHeadless = false,
-        .GraphicsAPI = Nodens::EGraphicsAPI::Vulkan,
     };
 
     CircularWave3DApp() : Application(appSpecifications)

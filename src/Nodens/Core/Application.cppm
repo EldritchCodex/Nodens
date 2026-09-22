@@ -28,6 +28,7 @@ struct FApplicationSpecification
     std::uint32_t WindowHeight{720};        ///< Initial window height in pixels.
     bool EnableGUI{true};                   ///< Whether to create the ImGui overlay layer.
     bool IsHeadless{false};                 ///< If true, no window or graphics context is created.
+    bool VSync{false};                      ///< If true, vertical synchronization is enabled.
     EGraphicsAPI GraphicsAPI{
         EGraphicsAPI::OpenGL}; ///< Client graphics API for the application window.
     bool ShouldImGuiBlockInputs{true};

@@ -46,11 +46,13 @@ Application::Application(const FApplicationSpecification& specification)
 
     if (!m_Specification.IsHeadless)
     {
-        FWindowProps props(m_Specification.Name,
-                           m_Specification.WindowWidth,
-                           m_Specification.WindowHeight,
-                           true,
-                           m_Specification.GraphicsAPI);
+        FWindowProps props{
+            .Title = m_Specification.Name,
+            .Width = m_Specification.WindowWidth,
+            .Height = m_Specification.WindowHeight,
+            .VSync = m_Specification.VSync,
+            .API = m_Specification.GraphicsAPI,
+        };
         m_Window = std::unique_ptr<IWindow>(IWindow::Create(props));
         m_Window->SetInputEventCallback([this](RoutedInputEvent& event) { OnInputEvent(event); });
     }

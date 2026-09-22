@@ -15,8 +15,7 @@ public:
         .WindowHeight = 600,
         .EnableGUI = true,
         .IsHeadless = false,
-        .ShouldImGuiBlockInputs = true,
-        .DefaultTheme = Nodens::EDefaultTheme::Dark};
+    };
 
     PlanetaryScanApp() : Application(appSpecifications)
     {
