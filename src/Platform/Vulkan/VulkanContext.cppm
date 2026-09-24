@@ -15,6 +15,13 @@ import Nodens.GraphicsContext;
 import std;
 export import vulkan;
 
+namespace Nodens
+{
+/// @brief Opaque owner of the per-frame Tracy Vulkan profiling contexts.
+/// @details Defined in VulkanContext.cpp so Tracy headers stay out of this module.
+struct GpuProfilerState;
+} // namespace Nodens
+
 export namespace Nodens
 {
 /// @brief Vulkan context shared by Nodens and an attached renderer.
@@ -31,13 +38,39 @@ public:
     /// @param windowHandle A valid GLFW window created without a client API.
     explicit VulkanContext(GLFWwindow* windowHandle);
 
-    ~VulkanContext() override = default;
+    ~VulkanContext() override;
 
     /// @brief Creates the Vulkan instance, surface, physical device, and logical device.
     void Init() override;
 
+    /// @brief Acquires a swapchain image and starts one frame.
+    /// @return Image index, or no value when swapchain recreation is required.
+    std::optional<uint32_t> BeginFrame();
+
+    /// @brief Reports whether BeginFrame() started a frame for recording.
+    bool IsFrameActive() const;
+
+    /// @brief Returns command buffer receiving commands for the active frame.
+    /// @return Borrowed reference to the active RAII command buffer.
+    const vk::raii::CommandBuffer& GetActiveCommandBuffer() const;
+
+    /// @brief Transitions the active swapchain image to the presentation layout.
+    /// @details Called by Present() after all renderers finish recording. Renderers can
+    ///          therefore append work after Nyar's scene pass without ending the frame.
+    void TransitionActiveImageToPresent();
+
     /// @brief Completes, submits, and presents the active frame.
     void Present() override;
+
+    /// @brief Recreates swapchain resources after a surface change.
+    void RecreateSwapchain();
+
+    /// @brief Waits until all Nodens-owned Vulkan work completes.
+    void WaitIdle() const;
+
+    /// @brief Returns the Tracy Vulkan context for a frame slot.
+    /// @return TracyVkCtx handle, or null when profiling is not compiled in.
+    void* GetGpuProfilerContext(uint32_t frameIndex) const;
 
     /// @brief Returns the Vulkan instance owned by Nodens.
     /// @return Borrowed Vulkan instance handle.
@@ -88,9 +121,6 @@ public:
     /// @brief Returns current swapchain surface format.
     vk::SurfaceFormatKHR GetSwapchainSurfaceFormat() const;
 
-    /// @brief Recreates swapchain resources after a surface change.
-    void RecreateSwapchain();
-
     /// @brief Returns number of frames Nodens schedules concurrently.
     uint32_t GetFramesInFlight() const;
 
@@ -100,50 +130,48 @@ public:
     /// @brief Returns the swapchain image acquired for the active frame.
     uint32_t GetCurrentImageIndex() const;
 
-    /// @brief Reports whether BeginFrame() started a frame for recording.
-    bool IsFrameActive() const;
-
-    /// @brief Returns command buffer receiving commands for the active frame.
-    /// @return Borrowed reference to the active RAII command buffer.
-    const vk::raii::CommandBuffer& GetActiveCommandBuffer() const;
-
-    /// @brief Transitions the active swapchain image to the presentation layout.
-    /// @details Called by Present() after all renderers finish recording. Renderers can
-    ///          therefore append work after Nyar's scene pass without ending the frame.
-    void TransitionActiveImageToPresent();
-
-    /// @brief Waits until all Nodens-owned Vulkan work completes.
-    void WaitIdle() const;
-
-    /// @brief Acquires a swapchain image and starts one frame.
-    /// @return Image index, or no value when swapchain recreation is required.
-    std::optional<uint32_t> BeginFrame();
-
 private:
-    /// @brief Transitions the acquired swapchain image for color rendering.
-    /// @details The acquired image can come from any swapchain slot, so its tracked previous
-    ///          layout is used instead of assuming every acquisition starts undefined.
-    void TransitionActiveImageToColorAttachment();
+    /// @brief Creates the Vulkan instance for the context.
+    void CreateInstance();
+
+    /// @brief Returns the required instance layers for the Vulkan context.
+    /// @details For now the only required layers are validation layers, enabled only in debug mode.
+    std::vector<const char*> GetRequiredInstanceLayers() const;
+
+    /// @brief Returns the required instance extensions for the Vulkan context.
+    std::vector<const char*> GetRequiredInstanceExtensions() const;
+
+    /// @brief Sets up the debug messenger for the Vulkan context.
+    void SetupDebugMessenger();
+
+    /// @brief Creates the Vulkan surface for the window.
+    void CreateSurface();
+
+    /// @brief Selects the first physical device meeting current requirements.
+    void PickPhysicalDevice();
 
     /// @brief Checks whether a physical device meets current Nyar requirements.
     bool IsDeviceSuitable(const vk::raii::PhysicalDevice& physicalDevice) const;
 
-    /// @brief Selects the first physical device meeting current requirements.
-    void PickPhysicalDevice();
+    /// @brief Creates logical device with one graphics-and-present queue.
+    void CreateLogicalDevice();
+
+    /// @brief Creates swapchain and image views for the current surface.
+    void CreateSwapchain();
+
+    /// @brief Clamps framebuffer size to surface limits when needed.
+    vk::Extent2D ChooseSwapchainExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const;
 
     /// @brief Prefers an UNORM color format for Dear ImGui's linear shader output.
     vk::SurfaceFormatKHR
     ChooseSwapchainSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats) const;
 
+    /// @brief Chooses at least three swapchain images within surface limits.
+    uint32_t ChooseSwapchainImageCount(const vk::SurfaceCapabilitiesKHR& capabilities) const;
+
     /// @brief Prefers mailbox presentation and falls back to FIFO.
     vk::PresentModeKHR
     ChooseSwapchainPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes) const;
-
-    /// @brief Clamps framebuffer size to surface limits when needed.
-    vk::Extent2D ChooseSwapchainExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const;
-
-    /// @brief Chooses at least three swapchain images within surface limits.
-    uint32_t ChooseSwapchainImageCount(const vk::SurfaceCapabilitiesKHR& capabilities) const;
 
     /// @brief Creates command pool and one command buffer per frame in flight.
     void CreateCommandResources();
@@ -154,14 +182,18 @@ private:
     /// @brief Creates one render-finished semaphore per swapchain image.
     void CreateRenderFinishedSemaphores();
 
-    /// @brief Creates swapchain and image views for the current surface.
-    void CreateSwapchain();
+    /// @brief Initializes GPU profiler state.
+    void InitializeGpuProfilerState();
 
-    /// @brief Creates logical device with one graphics-and-present queue.
-    void CreateLogicalDevice();
+    /// @brief Transitions the acquired swapchain image for color rendering.
+    /// @details The acquired image can come from any swapchain slot, so its tracked previous
+    ///          layout is used instead of assuming every acquisition starts undefined.
+    void TransitionActiveImageToColorAttachment();
 
-    GLFWwindow* m_WindowHandle{nullptr};                ///< Borrowed GLFW window owned by IWindow.
-    vk::raii::Context m_Context{};                      ///< Vulkan loader context.
+    GLFWwindow* m_WindowHandle{nullptr}; ///< Borrowed GLFW window owned by IWindow.
+    vk::raii::Context m_Context{};       ///< Vulkan loader context.
+    vk::raii::DebugUtilsMessengerEXT m_DebugMessenger{
+        nullptr};                                       ///< Debug messenger for Vulkan validation.
     vk::raii::Instance m_Instance{nullptr};             ///< Nodens-owned Vulkan instance.
     vk::raii::SurfaceKHR m_Surface{nullptr};            ///< Nodens-owned Vulkan surface.
     vk::raii::PhysicalDevice m_PhysicalDevice{nullptr}; ///< Nodens-selected physical device.
@@ -180,8 +212,9 @@ private:
     std::vector<vk::raii::Semaphore> m_PresentCompleteSemaphores{}; ///< Image-acquire signals.
     std::vector<vk::raii::Semaphore> m_RenderFinishedSemaphores{};  ///< Render-complete signals.
     std::vector<vk::raii::Fence> m_InFlightFences{};                ///< CPU/GPU frame fences.
-    uint32_t m_CurrentFrameIndex{0}; ///< Current frame-in-flight slot.
-    uint32_t m_CurrentImageIndex{0}; ///< Current acquired image.
-    bool m_FrameStarted{false};      ///< BeginFrame has acquired an image.
+    uint32_t m_CurrentFrameIndex{0};                 ///< Current frame-in-flight slot.
+    uint32_t m_CurrentImageIndex{0};                 ///< Current acquired image.
+    bool m_FrameStarted{false};                      ///< BeginFrame has acquired an image.
+    std::unique_ptr<GpuProfilerState> m_GpuProfiler; ///< Per-frame GPU profiling contexts.
 };
 } // namespace Nodens

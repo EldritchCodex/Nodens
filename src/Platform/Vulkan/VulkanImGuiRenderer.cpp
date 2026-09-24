@@ -8,6 +8,7 @@ module;
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_vulkan.h>
 #include <imgui.h>
+#include <tracy/TracyVulkan.hpp>
 
 module Nodens.VulkanImGuiRenderer;
 
@@ -110,6 +111,11 @@ void VulkanImGuiRenderer::RenderDrawData(ImDrawData* drawData)
         .colorAttachmentCount = 1,
         .pColorAttachments = &attachment,
     };
+
+    TracyVkZone(
+        static_cast<TracyVkCtx>(m_Context.GetGpuProfilerContext(m_Context.GetCurrentFrameIndex())),
+        *commandBuffer,
+        "ImGui");
 
     commandBuffer.beginRendering(renderingInfo);
     ImGui_ImplVulkan_RenderDrawData(drawData, *commandBuffer);
