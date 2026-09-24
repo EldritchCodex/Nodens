@@ -28,6 +28,8 @@ void PlanetaryScanLayer::OnUpdate(Nodens::TimeStep ts)
 
 void PlanetaryScanLayer::AddResult(const PlanetaryScanResultEvent& e)
 {
+    Nodens::ClientLogger().info("PlanetaryScan: received {}", e);
+
     std::lock_guard<std::mutex> lock(m_DataMutex);
 
     m_GalaxyDistances.push_back(e.m_Distance);

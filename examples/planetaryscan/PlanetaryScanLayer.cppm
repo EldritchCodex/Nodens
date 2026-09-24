@@ -17,6 +17,27 @@ export struct PlanetaryScanResultEvent
 };
 
 // -----------------------------------------------------------------------------
+// Optional: a std::formatter so the event can be logged or std::format'd.
+// Declared in the same module as the event, right after it.
+// -----------------------------------------------------------------------------
+
+template <>
+struct std::formatter<PlanetaryScanResultEvent> : std::formatter<std::string_view>
+{
+    template <typename FormatContext>
+    auto format(const PlanetaryScanResultEvent& e, FormatContext& ctx) const
+    {
+        return std::format_to(ctx.out(),
+                              "PlanetaryScanResult(id={}, distance={:.2f} ly, density={:.3f}, "
+                              "latency={:.1f} ms)",
+                              e.m_ID,
+                              e.m_Distance,
+                              e.m_AtmosphereDensity,
+                              e.m_CalculationTime * 1000.0f);
+    }
+};
+
+// -----------------------------------------------------------------------------
 // Step 2: Define the Layer class. This layer will be responsible for
 // creating async tasks, handling their results, and rendering the UI.
 // It is essentially the heart of the application, managing all the logic
