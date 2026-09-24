@@ -4,12 +4,22 @@
 
 module;
 
+#include <spdlog/cfg/env.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
 export module Nodens.Log;
 
 import std;
+
+namespace Nodens::LogDefaults
+{
+#if defined(ND_DEBUG)
+inline constexpr spdlog::level::level_enum Level = spdlog::level::trace;
+#else
+inline constexpr spdlog::level::level_enum Level = spdlog::level::info;
+#endif
+} // namespace Nodens::LogDefaults
 
 export namespace Nodens
 {
@@ -28,7 +38,7 @@ inline spdlog::logger& CoreLogger()
         if (!logger)
         {
             logger = spdlog::stdout_color_mt("NODENS");
-            logger->set_level(spdlog::level::trace);
+            logger->set_level(LogDefaults::Level);
         }
 
         return logger;
@@ -52,7 +62,7 @@ inline spdlog::logger& ClientLogger()
         if (!logger)
         {
             logger = spdlog::stdout_color_mt("APP");
-            logger->set_level(spdlog::level::trace);
+            logger->set_level(LogDefaults::Level);
         }
 
         return logger;
@@ -70,6 +80,8 @@ inline void InitializeLoggers()
 {
     (void)CoreLogger();
     (void)ClientLogger();
+    if (std::getenv("SPDLOG_LEVEL"))
+        spdlog::cfg::load_env_levels();
 }
 
 /// @brief Logs a critical error message to the core logger and terminates the application.
