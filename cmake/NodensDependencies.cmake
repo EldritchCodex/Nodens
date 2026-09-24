@@ -40,11 +40,13 @@ FetchContent_Declare(glfw
 )
 
 # ─── Tracy ───────────────────────────────────────────────────────────────────
+# This disables the Tracy profiler by default, preventing the profiler from
+# being linked into the build unless explicitly enabled later.
 set(TRACY_ENABLE OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(tracy
     GIT_REPOSITORY https://github.com/wolfpld/tracy.git
-    GIT_TAG        v0.13.1
+    GIT_TAG        v0.14.1
     GIT_SHALLOW    TRUE
 )
 
@@ -73,3 +75,9 @@ FetchContent_Declare(implot3d
 # spdlog, glfw, tracy: find_package attempted first, fallback to source.
 # imgui, implot, implot3d: always downloaded (no CMake packaging upstream).
 FetchContent_MakeAvailable(spdlog tracy imgui implot implot3d)
+
+# Enable Tracy instrumentation only for the `Profiling` build config.
+# Set to PUBLIC so TracyClient.cpp itself and every consumer (Nodens, examples)
+# agree on the macro definition.
+target_compile_definitions(TracyClient PUBLIC
+    $<$<CONFIG:Profiling>:TRACY_ENABLE>)

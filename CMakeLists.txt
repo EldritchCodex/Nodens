@@ -5,7 +5,17 @@ project(Nodens VERSION 0.1.0 LANGUAGES CXX)
 # -----------------------------------------------------------------------------
 # Core Build Settings
 # -----------------------------------------------------------------------------
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release;Profiling" CACHE
+  STRING "" FORCE)
+
+set(CMAKE_CXX_FLAGS_PROFILING
+  "${CMAKE_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer"
+  CACHE STRING "Profiling build flags" FORCE)
+set(CMAKE_C_FLAGS_PROFILING
+  "${CMAKE_C_FLAGS_RELEASE} -g -fno-omit-frame-pointer"
+  CACHE STRING "Profiling build flags" FORCE)
+# Note that `-fno-omit-frame-pointer` is only for GCC/Clang. When adding MSVC
+# support we should tweak this.
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_COMPILER_IMPORT_STD ON)
@@ -19,12 +29,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Developer Options (primary touchpoints)
 option(ND_ENABLE_OPENGL "Build the OpenGL backend" ON)
 option(ND_ENABLE_VULKAN "Build the Vulkan backend when Vulkan is available" ON)
+option(ND_BUILD_EXAMPLES
+  "Build the Nodens example applications" ON)
+option(ND_BUILD_TRACY_PROFILER
+  "Build the Tracy Profiler GUI from Tracy source" OFF)
 
-# Default to building examples only when Nodens is the top-level project,
-# not when consumed via add_subdirectory().
-if(PROJECT_IS_TOP_LEVEL)
-  option(ND_BUILD_EXAMPLES "Build the Nodens example applications" ON)
-else()
+if(NOT PROJECT_IS_TOP_LEVEL)
   option(ND_BUILD_EXAMPLES "Build the Nodens example applications" OFF)
 endif()
 
@@ -37,6 +47,21 @@ if(ND_ENABLE_OPENGL)
   add_subdirectory(vendor/glad)
 endif()
 include(NodensDependencies)
+
+if(ND_BUILD_TRACY_PROFILER)
+  include(ExternalProject)
+  ExternalProject_Add(tracy-profiler
+    SOURCE_DIR "${Tracy_SOURCE_DIR}/profiler"
+    BINARY_DIR "${Tracy_BINARY_DIR}/tracy-profiler"
+    CMAKE_ARGS
+      -DCMAKE_BUILD_TYPE=Release
+      -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+      -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+      -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/tracy-profiler
+    UPDATE_COMMAND ""
+    EXCLUDE_FROM_ALL TRUE
+  )
+endif()
 
 if(ND_ENABLE_VULKAN)
   find_package(Vulkan QUIET)
@@ -180,7 +205,7 @@ target_compile_features(Nodens PUBLIC cxx_std_23)
 
 target_compile_definitions(Nodens PUBLIC
     $<$<CONFIG:Debug>:ND_DEBUG>
-    $<$<CONFIG:Release>:ND_RELEASE>
+    $<$<CONFIG:Release,Profiling>:ND_RELEASE>
     SPDLOG_USE_STD_FORMAT
 )
 
