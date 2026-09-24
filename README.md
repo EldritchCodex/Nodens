@@ -7,12 +7,13 @@
 
 **Nodens** is an experimental C++23 framework designed for rapidly developing interactive desktop applications with an optional immediate mode graphical user interface. 
 
-It unifies excellent third-party libraries (e.g. [ImGui](https://github.com/ocornut/imgui), [ImPlot](https://github.com/epezent/implot), [ImPlot3D](https://github.com/brenocq/implot3d), [Tracy](https://github.com/wolfpld/tracy)) with a custom core that integrates 3 main systems:
+It unifies excellent third-party libraries (e.g. [ImGui](https://github.com/ocornut/imgui), [ImPlot](https://github.com/epezent/implot), [ImPlot3D](https://github.com/brenocq/implot3d), [Tracy](https://github.com/wolfpld/tracy)) with a custom core that integrates 4 main systems:
+- **GLFW Windows** with both OpenGL and Vulkan backends.
 - **Layer System** that governs the application lifetime and execution flow, visual rendering priority and input event routing (see [wiki](https://github.com/EldritchCodex/Nodens/wiki/Layer-System));
 - **Event System** with InputEvent routing through the LayerStack and a pub/sub thread-safe EventBus for both immediate and queued dispatch of custom event types (see [wiki](https://github.com/EldritchCodex/Nodens/wiki/Event-System));
 - **Job System** for multithreaded task execution (see [wiki](https://github.com/EldritchCodex/Nodens/wiki/Concurrency-and-JobSystem)).
 
-Nodens follows a **module-first architecture** where public APIs are C++20 module interfaces (`.cppm`), third-party headers are isolated on the global fragment module, and consumers simply `import nodens;`.
+Nodens follows a **module-first architecture** where public APIs are module interfaces (`.cppm`), third-party headers are isolated on the global fragment module, and consumers simply `import nodens;`.
 
 The framework compiles into a single **static library** that is linked to your application, ensuring the final product is a single portable executable to streamline distribution.
 
@@ -30,6 +31,8 @@ The framework compiles into a single **static library** that is linked to your a
 > ⚠️ **Platform limitation:** The supported and validated development environment is based on Arch Linux and currently builds Nodens for **Linux only**. Native Windows and macOS builds are not currently supported or validated.
 
 For new applications, start from the [Nodens Application Template](https://github.com/EldritchCodex/Template-NodensApp). Nodens can also be consumed from CMake with `FetchContent`; the wiki covers framework development, local checkouts, and native Linux builds.
+
+Build configurations and their options are documented in the wiki, under [Building and Toolchain](https://github.com/EldritchCodex/Nodens/wiki/Building-and-Toolchain) and [Profiling with Tracy](https://github.com/EldritchCodex/Nodens/wiki/Profiling-with-Tracy).
 
 ## Development Environment
 
@@ -76,11 +79,11 @@ All dependencies are resolved automatically at configure time via CMake `FetchCo
 | :-------------------------------------------------- | :-------------------------------------------------------- | :----------------- | 
 | **[GLAD](https://glad.dav1d.de/)**                  | OpenGL function loader.                                   | v0.1.35            | 
 | **[GLFW](https://www.glfw.org/)**                   | Cross-platform for window, context, and input management. | 3.4                | 
-| **[ImGui](https://github.com/ocornut/imgui)**       | Bloat-free Immediate Mode GUI.                            | v1.92.8-docking    | 
+| **[ImGui](https://github.com/ocornut/imgui)**       | Bloat-free Immediate Mode GUI.                            | v1.92.9b-docking |
 | **[ImPlot](https://github.com/epezent/implot)**     | 2D data plotting extension for ImGui.                     | v1.0               | 
 | **[ImPlot3D](https://github.com/brenocq/implot3d)** | 3D data plotting extension for ImGui.                     | v0.4               | 
 | **[spdlog](https://github.com/gabime/spdlog)**      | Fast, header-only/compiled logging library.               | v1.17.0            | 
-| **[Tracy](https://github.com/wolfpld/tracy)**       | Real-time frame profiler.                                 | v0.13.1            | 
+| **[Tracy](https://github.com/wolfpld/tracy)**       | Real-time frame and GPU profiler.                         | v0.14.1 |
 
 # Acknowledgements
 
