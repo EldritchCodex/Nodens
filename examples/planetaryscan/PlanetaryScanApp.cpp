@@ -14,7 +14,6 @@ public:
         .WindowWidth = 800,
         .WindowHeight = 600,
         .EnableGUI = true,
-        .IsHeadless = false,
     };
 
     PlanetaryScanApp() : Application(appSpecifications)

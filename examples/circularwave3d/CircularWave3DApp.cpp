@@ -15,7 +15,6 @@ public:
         .WindowWidth = 800,
         .WindowHeight = 600,
         .EnableGUI = true,
-        .IsHeadless = false,
     };
 
     CircularWave3DApp() : Application(appSpecifications)

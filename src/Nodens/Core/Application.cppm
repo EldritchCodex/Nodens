@@ -27,7 +27,6 @@ struct FApplicationSpecification
     std::uint32_t WindowWidth{1280};        ///< Initial window width in pixels.
     std::uint32_t WindowHeight{720};        ///< Initial window height in pixels.
     bool EnableGUI{true};                   ///< Whether to create the ImGui overlay layer.
-    bool IsHeadless{false};                 ///< If true, no window or graphics context is created.
     bool VSync{false};                      ///< If true, vertical synchronization is enabled.
     EGraphicsAPI GraphicsAPI{
         EGraphicsAPI::OpenGL}; ///< Client graphics API for the application window.
@@ -85,7 +84,6 @@ public:
     void PushOverlay(ILayer* overlay);
 
     /// @brief Returns a reference to the application window.
-    /// @warning Calling this on a headless application triggers a fatal error.
     /// @return Reference to the IWindow instance.
     IWindow& GetWindow();
 
@@ -114,7 +112,7 @@ private:
     FApplicationSpecification m_Specification; ///< Stored copy of the startup configuration.
     bool m_Running{true};                      ///< Main loop sentinel; false triggers shutdown.
 
-    std::unique_ptr<IWindow> m_Window; ///< The platform window (null in headless mode).
+    std::unique_ptr<IWindow> m_Window; ///< The platform window.
 
     ImGuiLayer* m_ImGuiLayer{nullptr}; ///< The ImGui overlay (owned by LayerStack).
 

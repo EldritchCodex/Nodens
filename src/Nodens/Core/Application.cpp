@@ -44,20 +44,17 @@ Application::Application(const FApplicationSpecification& specification)
     m_LayerStack = std::make_unique<LayerStack>();
     m_EventBus = std::make_unique<EventBus>();
 
-    if (!m_Specification.IsHeadless)
-    {
-        FWindowProps props{
-            .Title = m_Specification.Name,
-            .Width = m_Specification.WindowWidth,
-            .Height = m_Specification.WindowHeight,
-            .VSync = m_Specification.VSync,
-            .API = m_Specification.GraphicsAPI,
-        };
-        m_Window = std::unique_ptr<IWindow>(IWindow::Create(props));
-        m_Window->SetInputEventCallback([this](RoutedInputEvent& event) { OnInputEvent(event); });
-    }
+    FWindowProps props{
+        .Title = m_Specification.Name,
+        .Width = m_Specification.WindowWidth,
+        .Height = m_Specification.WindowHeight,
+        .VSync = m_Specification.VSync,
+        .API = m_Specification.GraphicsAPI,
+    };
+    m_Window = std::unique_ptr<IWindow>(IWindow::Create(props));
+    m_Window->SetInputEventCallback([this](RoutedInputEvent& event) { OnInputEvent(event); });
 
-    if (m_Specification.EnableGUI && !m_Specification.IsHeadless)
+    if (m_Specification.EnableGUI)
     {
         std::shared_ptr<ImGuiRenderer> imguiRenderer;
         bool rendererCreated{false};
@@ -111,8 +108,6 @@ void Application::PushOverlay(ILayer* overlay)
 
 IWindow& Application::GetWindow()
 {
-    if (!m_Window)
-        FatalCore("Attempted to access Window in a headless application!");
     return *m_Window;
 }
 
